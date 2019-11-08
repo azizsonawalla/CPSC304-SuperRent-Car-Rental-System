@@ -5,8 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * @author Crunchify.com
- * Simple Hello World MySQL Tutorial on how to make JDBC connection, Add and Retrieve Data by App Shah
  *
  */
 

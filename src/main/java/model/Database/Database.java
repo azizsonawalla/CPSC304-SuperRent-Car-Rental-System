@@ -5,6 +5,7 @@ import model.Util.Log;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.List;
 
 /**
  * Interface for the SuperRent database
@@ -73,6 +74,26 @@ public class Database {
      * @throws Exception if there is an error deleting entry, for example if entry doesn't exist already
      */
     public void deleteReservation(Reservation r) throws Exception {
+        // TODO: implement this
+        throw new Exception("Method not implemented");
+    }
+
+    public List<Reservation> getReservationsWith(VehicleType vt) throws Exception {
+        // TODO: implement this
+        throw new Exception("Method not implemented");
+    }
+
+    public List<Reservation> getReservationsWith(TimePeriod t) throws Exception {
+        // TODO: implement this
+        throw new Exception("Method not implemented");
+    }
+
+    public List<Reservation> getReservationsWith(TimePeriod t, VehicleType vt) throws Exception {
+        // TODO: implement this
+        throw new Exception("Method not implemented");
+    }
+
+    public Reservation getReservationMatching(Reservation r) throws Exception {
         // TODO: implement this
         throw new Exception("Method not implemented");
     }

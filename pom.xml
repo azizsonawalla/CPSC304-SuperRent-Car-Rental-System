@@ -16,4 +16,13 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/java/gui/views</directory>
+                <targetPath>gui/views</targetPath>
+            </resource>
+        </resources>
+    </build>
+
 </project>

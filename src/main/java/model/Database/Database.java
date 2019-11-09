@@ -78,6 +78,11 @@ public class Database {
         throw new Exception("Method not implemented");
     }
 
+    public List<Reservation> getAllReservations() throws Exception {
+        // TODO: implement this
+        throw new Exception("Method not implemented");
+    }
+
     public List<Reservation> getReservationsWith(VehicleType vt) throws Exception {
         // TODO: implement this
         throw new Exception("Method not implemented");
@@ -131,6 +136,26 @@ public class Database {
         throw new Exception("Method not implemented");
     }
 
+    public List<Rental> getRentalsWith(VehicleType vt) throws Exception {
+        // TODO: implement this
+        throw new Exception("Method not implemented");
+    }
+
+    public List<Rental> getRentalsWith(TimePeriod t) throws Exception {
+        // TODO: implement this
+        throw new Exception("Method not implemented");
+    }
+
+    public List<Rental> getRentalsWith(TimePeriod t, VehicleType vt) throws Exception {
+        // TODO: implement this
+        throw new Exception("Method not implemented");
+    }
+
+    public Rental getRentalMatching(Rental r) throws Exception {
+        // TODO: implement this
+        throw new Exception("Method not implemented");
+    }
+
     /* Customer */
 
     /**
@@ -160,6 +185,11 @@ public class Database {
      * @throws Exception if there is an error deleting entry, for example if entry doesn't exist already
      */
     public void deleteCustomer(Customer c) throws Exception {
+        // TODO: implement this
+        throw new Exception("Method not implemented");
+    }
+
+    public Customer getCustomerMatching(Customer c) throws Exception {
         // TODO: implement this
         throw new Exception("Method not implemented");
     }

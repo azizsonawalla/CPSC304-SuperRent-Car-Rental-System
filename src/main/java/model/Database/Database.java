@@ -78,26 +78,23 @@ public class Database {
         throw new Exception("Method not implemented");
     }
 
-    public List<Reservation> getAllReservations() throws Exception {
+    /**
+     * Returns all reservations with the given VehicleType, Location and that *start within* the given TimePeriod
+     * Params can be null - if param is null, results will not be filtered by that attribute. If all params are null,
+     * then all existing reservations will be returned.
+     * @throws Exception if there is any error getting results
+     */
+    public List<Reservation> getReservationsWith(TimePeriod t, VehicleType vt, Location l) throws Exception {
         // TODO: implement this
+        // NOTE: Make sure to do null checks on params!
         throw new Exception("Method not implemented");
     }
 
-    public List<Reservation> getReservationsWith(VehicleType vt) throws Exception {
-        // TODO: implement this
-        throw new Exception("Method not implemented");
-    }
-
-    public List<Reservation> getReservationsWith(TimePeriod t) throws Exception {
-        // TODO: implement this
-        throw new Exception("Method not implemented");
-    }
-
-    public List<Reservation> getReservationsWith(TimePeriod t, VehicleType vt) throws Exception {
-        // TODO: implement this
-        throw new Exception("Method not implemented");
-    }
-
+    /**
+     * Finds and returns the reservation entry with the same primary key as the reservation object given. Other
+     * attributes of the given object may be null. If no reservation found, returns null
+     * @throws Exception if there is any error getting results
+     */
     public Reservation getReservationMatching(Reservation r) throws Exception {
         // TODO: implement this
         throw new Exception("Method not implemented");
@@ -136,17 +133,7 @@ public class Database {
         throw new Exception("Method not implemented");
     }
 
-    public List<Rental> getRentalsWith(VehicleType vt) throws Exception {
-        // TODO: implement this
-        throw new Exception("Method not implemented");
-    }
-
-    public List<Rental> getRentalsWith(TimePeriod t) throws Exception {
-        // TODO: implement this
-        throw new Exception("Method not implemented");
-    }
-
-    public List<Rental> getRentalsWith(TimePeriod t, VehicleType vt) throws Exception {
+    public List<Rental> getRentalsWith(TimePeriod t, VehicleType vt, Location l) throws Exception {
         // TODO: implement this
         throw new Exception("Method not implemented");
     }
@@ -227,6 +214,11 @@ public class Database {
         throw new Exception("Method not implemented");
     }
 
+    public VehicleType getVehicleTypeMatching(VehicleType vt) throws Exception {
+        // TODO: implement this
+        throw new Exception("Method not implemented");
+    }
+
     /* Vehicle */
 
     /**
@@ -256,6 +248,16 @@ public class Database {
      * @throws Exception if there is an error deleting entry, for example if entry doesn't exist already
      */
     public void deleteVehicle(Vehicle v) throws Exception {
+        // TODO: implement this
+        throw new Exception("Method not implemented");
+    }
+
+    public List<Vehicle> getVehicleWith(VehicleType vt, Location l, boolean availableNow) throws Exception {
+        // TODO: implement this
+        throw new Exception("Method not implemented");
+    }
+
+    public Vehicle getVehicleMatching(Vehicle v) throws Exception {
         // TODO: implement this
         throw new Exception("Method not implemented");
     }

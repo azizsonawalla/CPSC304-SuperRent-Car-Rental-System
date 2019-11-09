@@ -1,4 +1,4 @@
 package model.Entities;
 
-public class CarType {
+public class VehicleType {
 }

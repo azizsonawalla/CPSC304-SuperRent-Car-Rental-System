@@ -1,5 +1,6 @@
 package model.Database;
 
+import model.Entities.Customer;
 import model.Entities.Rental;
 import model.Entities.Reservation;
 import model.Util.Log;
@@ -40,7 +41,7 @@ public class Database {
     public void createTables() throws Exception {
         // TODO: implement this
         // NOTE: Use the queries set in the static Queries class, for example:
-        String query = Queries.CreateTables.CREATE_TABLE_RESERVATIONS;
+        String query = Queries.Create.CREATE_TABLE_RESERVATIONS;
         throw new Exception("Method createTables() is not implemented");
     }
 
@@ -75,6 +76,23 @@ public class Database {
     }
 
     public void deleteRental(Rental r) throws Exception {
+        // TODO: implement this
+        throw new Exception("Method not implemented");
+    }
+
+    /* Customer */
+
+    public void addCustomer(Customer r) throws Exception {
+        // TODO: implement this
+        throw new Exception("Method not implemented");
+    }
+
+    public void updateCustomer(Customer r) throws Exception {
+        // TODO: implement this
+        throw new Exception("Method not implemented");
+    }
+
+    public void deleteCustomer(Customer r) throws Exception {
         // TODO: implement this
         throw new Exception("Method not implemented");
     }

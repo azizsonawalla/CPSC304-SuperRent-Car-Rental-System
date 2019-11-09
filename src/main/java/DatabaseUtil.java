@@ -5,7 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- *
+ * WARNING!! This class is just for reference code. Don't call this class anywhere and don't make any changes here.
+ * Just copy whatever code you want to whichever class you're working on. We will delete this class soon
  */
 
 public class DatabaseUtil {

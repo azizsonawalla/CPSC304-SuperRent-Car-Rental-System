@@ -1,5 +1,7 @@
 package model.Database;
 
+import model.Entities.Rental;
+import model.Entities.Reservation;
 import model.Util.Log;
 
 import java.sql.Connection;
@@ -43,5 +45,37 @@ public class Database {
     }
 
 
+    /* Reservations */
 
+    public void addReservation(Reservation r) throws Exception {
+        // TODO: implement this
+        throw new Exception("Method not implemented");
+    }
+
+    public void updateReservation(Reservation r) throws Exception {
+        // TODO: implement this
+        throw new Exception("Method not implemented");
+    }
+
+    public void deleteReservation(Reservation r) throws Exception {
+        // TODO: implement this
+        throw new Exception("Method not implemented");
+    }
+
+    /* Rental */
+
+    public void addRental(Rental r) throws Exception {
+        // TODO: implement this
+        throw new Exception("Method not implemented");
+    }
+
+    public void updateRental(Rental r) throws Exception {
+        // TODO: implement this
+        throw new Exception("Method not implemented");
+    }
+
+    public void deleteRental(Rental r) throws Exception {
+        // TODO: implement this
+        throw new Exception("Method not implemented");
+    }
 }

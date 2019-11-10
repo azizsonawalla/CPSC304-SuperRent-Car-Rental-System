@@ -4,8 +4,8 @@ public class Vehicle {
     //vid (vehicle ID) must be unique
     int vid;
 
-    //vlicense is the primary key for Vehicle
-    int vlicense;
+    //License plate (vlicense) is the primary key for Vehicle
+    String vlicense;
 
     //Vehicle characteristics
     String make;
@@ -13,7 +13,7 @@ public class Vehicle {
     int year;
     String color;
     int odometer;
-    String status;
+    boolean status;
 
     //Identifies the VehicleType of a Vehicle
     String vtname;

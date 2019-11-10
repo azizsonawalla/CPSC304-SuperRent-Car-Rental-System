@@ -5,7 +5,7 @@ public class Rental {
     int rid;
 
     //identifies the Vehicle involved in the Rental
-    int vlicense;
+    String vlicense;
 
     //identifies the Customer involved in the Rental
     long dlicense;
@@ -13,11 +13,12 @@ public class Rental {
     //time period over which Rental occurs
     TimePeriod timePeriod;
 
-    int odometer;
+    //odometer reading at the start of the rental
+    int startOdometer;
 
     //Card for which rental was made
     int CardNo;
-    String CardName;
+    String cardName;
     int expDate;
 
     //If customer is renting from a reservation, identifies Reservation involved in the Rental

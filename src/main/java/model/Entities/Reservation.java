@@ -8,7 +8,7 @@ public class Reservation {
     String vtName;
 
     //identifies the Customer that is involved with a Reservation
-    long dlicense;
+    String dlicense;
 
     //TimePeriod over which Reservation occurs
     TimePeriod timePeriod;

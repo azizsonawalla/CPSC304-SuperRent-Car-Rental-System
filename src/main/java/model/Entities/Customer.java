@@ -5,7 +5,7 @@ public class Customer {
     long cellphone;
 
     //Customer drivers license, primary key for Customer
-    long dlicense;
+    String dlicense;
 
     String name;
     String address;

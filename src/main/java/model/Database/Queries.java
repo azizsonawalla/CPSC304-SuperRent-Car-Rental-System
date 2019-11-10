@@ -26,13 +26,26 @@ public class Queries {
 
     public static class Reservation {
 
-        // TODO: Add all queries to create, update and delete reservations here
+        //query to add reservations
+        public static String ADD_RESERVATION =
+                        "INSERT INTO Reservation(confNum, vtname, dlicense, fromDate, fromTime, toDate, toTime)" +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
+        //query to update reservations
+        public static String UPDATE_RESERVATION =
+                        "UPDATE Reservation" +
+                        "SET vtname = ?, dlicense = ?, fromDate = ?, fromTime = ?, toDate = ?, toTime = ?" +
+                        "WHERE confNum = ?";
+
+        //query to delete reservations
+        public static String DELETE_RESERVATION =
+                        "DELETE FROM Reservation" +
+                        "WHERE confNum = ?";
     }
 
     public static class Rental {
 
-        // TODO: Add all queries to create, update and delete rentals here
+        // TODO: Add all queries to create, update and delete customers here
 
     }
 

@@ -2,19 +2,19 @@ package model.Entities;
 
 public class VehicleType {
     //the name of the VehicleType (vtname) is the primary key
-    String vtname;
-    String features;
+    public String vtname;
+    public String features;
 
     //weekly, daily, and hourly rate for a VehicleType
-    int wrate;
-    int drate;
-    int hrate;
+    public int wrate;
+    public int drate;
+    public int hrate;
 
     //weekly, daily, and hourly insurance rate for a VehicleType
-    int wirate;
-    int dirate;
-    int hirate;
+    public int wirate;
+    public int dirate;
+    public int hirate;
 
     //km rate for a VehicleType
-    int krate;
+    public int krate;
 }

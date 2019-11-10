@@ -5,6 +5,8 @@ import model.Util.Log;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.List;
 
 /**
@@ -53,8 +55,25 @@ public class Database {
      * @throws Exception if there is an error adding the reservation, for example if the values don't meet constraints
      */
     public void addReservation(Reservation r) throws Exception {
-        // TODO: implement this
-        throw new Exception("Method not implemented");
+        PreparedStatement ps = conn.prepareStatement(Queries.Reservation.ADD_RESERVATION);
+
+        //Set values for parameters in ps
+        ps.setInt(1, r.confNum);
+        ps.setString(2, r.vtName);
+        ps.setString(3, r.dlicense);
+        ps.setDate(4, r.timePeriod.startDate);
+        ps.setTime(5, r.timePeriod.startTime);
+        ps.setDate(6, r.timePeriod.endDate);
+        ps.setTime(7, r.timePeriod.endTime);
+
+        //execute the update
+        ps.executeUpdate();
+
+        //commit changes and close prepared statement
+        conn.commit();
+        ps.close();
+
+        Log.log("Reservation with confirmation number " + Integer.toString(r.confNum) + " successfully added");
     }
 
     /**
@@ -64,8 +83,29 @@ public class Database {
      * @throws Exception if there is an error updating entry, for example if entry doesn't exist already
      */
     public void updateReservation(Reservation r) throws Exception {
-        // TODO: implement this
-        throw new Exception("Method not implemented");
+        //Get Reservation tuple with confirmation number r.confNum
+        PreparedStatement ps = conn.prepareStatement("SELECT * FROM Reservation WHERE confNum = ?");
+        ps.setInt(1, r.confNum);
+        ResultSet rs = ps.executeQuery();
+
+        //Set values for parameters in psUpdate. Update if corresponding value in Reservation r is null, otherwise, keep unchanged
+        ps = conn.prepareStatement(Queries.Reservation.UPDATE_RESERVATION);
+        ps.setString(1, r.vtName != null? r.vtName: rs.getString("vtname"));
+        ps.setString(2, r.dlicense != null? r.dlicense: rs.getString("dlicense"));
+        ps.setDate(3, r.timePeriod.startDate != null? r.timePeriod.startDate: rs.getDate("startDate"));
+        ps.setTime(4, r.timePeriod.startTime != null? r.timePeriod.startTime: rs.getTime("startTime"));
+        ps.setDate(5, r.timePeriod.endDate != null? r.timePeriod.endDate: rs.getDate("endDate"));
+        ps.setTime(6, r.timePeriod.endTime != null? r.timePeriod.endTime: rs.getTime("endTime"));
+        ps.setInt(7, r.confNum);
+
+        //execute the update
+        ps.executeUpdate();
+
+        //commit changes and close prepared statement
+        conn.commit();
+        ps.close();
+
+        Log.log("Reservation with confirmation number " + Integer.toString(r.confNum) + " successfully updated");
     }
 
     /**
@@ -74,8 +114,18 @@ public class Database {
      * @throws Exception if there is an error deleting entry, for example if entry doesn't exist already
      */
     public void deleteReservation(Reservation r) throws Exception {
-        // TODO: implement this
-        throw new Exception("Method not implemented");
+        PreparedStatement ps = conn.prepareStatement(Queries.Reservation.DELETE_RESERVATION);
+        //Set confirmation number parameter for Reservation tuple to be deleted
+        ps.setInt(1, r.confNum);
+
+        //execute the update
+        ps.executeUpdate();
+
+        //commit changes and close prepared statement
+        conn.commit();
+        ps.close();
+
+        Log.log("Reservation with confirmation number " + Integer.toString(r.confNum) + " successfully deleted");
     }
 
     /**

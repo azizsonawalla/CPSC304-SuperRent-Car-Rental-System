@@ -17,7 +17,7 @@ public class Rental {
     int startOdometer;
 
     //Card for which rental was made
-    int CardNo;
+    long CardNo;
     String cardName;
     int expDate;
 

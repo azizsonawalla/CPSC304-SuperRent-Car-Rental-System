@@ -7,7 +7,7 @@ public class Queries {
 
     public static class Create {
 
-        public static String CREATE_TABLE_RESERVATIONS = "CREATE TABLE IF NOT EXISTS Reservations" +
+        public static String CREATE_TABLE_RESERVATIONS = "CREATE TABLE IF NOT EXISTS Reservations(" +
                 "confNo INT, " +
                 "vtName CHAR(50) NOT NULL, " +
                 "dLicense INT NOT NULL, " +
@@ -17,7 +17,7 @@ public class Queries {
                 "FOREIGN KEY (vtName) REFERENCES VehicleType(vtName) ON DELETE CASCADE, " +
                 "FOREIGN KEY (dLicense) REFERENCES Customer(dLicense) ON DELETE CASCADE);";
                 
-        public static String CREATE_TABLE_RENTALS = "CREATE TABLE IF NOT EXISTS Rent" +
+        public static String CREATE_TABLE_RENTALS = "CREATE TABLE IF NOT EXISTS Rent(" +
                 "rId INT, " +
                 "vLicense CHAR(10) NOT NULL, " +
                 "dLicense INT NOT NULL, " +
@@ -33,7 +33,7 @@ public class Queries {
                 "FOREIGN KEY (confNo) REFERENCES Reservations(confNo), " +
                 "UNIQUE (confNo));";
 
-        public static String CREATE_TABLE_VEHICLES = "CREATE TABLE IF NOT EXISTS Vehicle " +
+        public static String CREATE_TABLE_VEHICLES = "CREATE TABLE IF NOT EXISTS Vehicle(" +
                 "vId INT NOT NULL, " +
                 "vLicense CHAR(10), " +
                 "make CHAR(50), " +
@@ -49,7 +49,7 @@ public class Queries {
                 "FOREIGN KEY (vtName) REFERENCES VehicleType(vtName) on DELETE CASCADE, " +
                 "UNIQUE (vId));";
 
-        public static String CREATE_TABLE_VEHICLE_TYPES = "CREATE TABLE IF NOT EXISTS VehicleType " +
+        public static String CREATE_TABLE_VEHICLE_TYPES = "CREATE TABLE IF NOT EXISTS VehicleType(" +
                 "vtName CHAR(50), " +
                 "features CHAR(255), " +
                 "wRate INT NOT NULL, " +
@@ -61,7 +61,7 @@ public class Queries {
                 "kRate INT NOT NULL, " +
                 "PRIMARY KEY (vtName));";
 
-        public static String CREATE_TABLE_CUSTOMERS = "CREATE TABLE IF NOT EXISTS Customer " +
+        public static String CREATE_TABLE_CUSTOMERS = "CREATE TABLE IF NOT EXISTS Customer(" +
                 "cellphone INT NOT NULL, " +
                 "name CHAR(255) NOT NULL, " +
                 "address CHAR(255), " +
@@ -69,7 +69,7 @@ public class Queries {
                 "PRIMARY KEY (dLicense), " +
                 "UNIQUE (cellphone));";
 
-        public static String CREATE_TABLE_RETURNS = "CREATE TABLE IF NOT EXISTS Rent" +
+        public static String CREATE_TABLE_RETURNS = "CREATE TABLE IF NOT EXISTS Rent(" +
                 "rId INT, " +
                 "vLicense CHAR(10) NOT NULL, " +
                 "dLicense INT NOT NULL, " +
@@ -85,7 +85,7 @@ public class Queries {
                 "FOREIGN KEY (confNo) REFERENCES Reservations(confNo), " +
                 "UNIQUE (confNo));";
 
-        public static String CREATE_TABLE_CREDIT_CARDS = "CREATE TABLE IF NOT EXISTS Card" +
+        public static String CREATE_TABLE_CREDIT_CARDS = "CREATE TABLE IF NOT EXISTS Card(" +
                 "cardNo INT, " +
                 "cardName CHAR(50), " +
                 "ExpDate DATE, " +

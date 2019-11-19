@@ -6,6 +6,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableView;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import model.Entities.Location;
 import model.Entities.TimePeriod;
 import model.Entities.VehicleType;
@@ -22,7 +24,7 @@ public class customerCarSearch extends Controller implements Initializable {
     private @FXML DatePicker endDate;
     private @FXML ComboBox<String> branchSelector;
     private @FXML ComboBox<String> vtSelector;
-    private @FXML TableView<String> searchResults;
+    private @FXML TextFlow searchResults;
 
     // Gets all locations from DB and puts it in branch selector
     private Task refreshBranchList = new Task() {
@@ -72,7 +74,9 @@ public class customerCarSearch extends Controller implements Initializable {
                 TimePeriod t = null;
 
                 List<VTSearchResult> result = qo.getVTSearchResultsFor(l, vt, t);
-                searchResults.getItems().add("e");
+                for (int i = 0; i < 100; i ++) {
+                    searchResults.getChildren().add(new Text("     hellooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo     \n"));
+                }
             } catch (Exception e) {
                 Log.log("Error refreshing search results in table: " + e.getMessage());
             }

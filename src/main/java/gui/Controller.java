@@ -4,17 +4,20 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
-public class Controller {
+class Controller {
 
     private Main main;
     @FXML private Button switchToClerkButton;
 
-    public Controller(Main main) {
+    Controller(Main main) {
         this.main = main;
     }
     
-    @FXML
-    private void switchToClerk(ActionEvent event) throws Exception {
-        main.setRoot("views/clerkReservationRentalSearch.fxml");
+    @FXML private void switchToClerk(ActionEvent event) throws Exception {
+        main.setRoot(GUIConfig.CLERK_RENTAL_RES_SEARCH);
+    }
+
+    @FXML private void switchToCustomer(ActionEvent event) throws Exception {
+        main.setRoot(GUIConfig.CUSTOMER_CAR_SEARCH);
     }
 }

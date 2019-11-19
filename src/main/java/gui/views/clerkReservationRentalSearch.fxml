@@ -49,7 +49,7 @@
             <TableColumn prefWidth="175.0" text="Reservation Confirmation" />
          </columns>
       </TableView>
-      <Button layoutX="36.0" layoutY="26.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="211.0" text="Switch to Customer User" />
+      <Button onAction="#switchToCustomer" layoutX="36.0" layoutY="26.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="211.0" text="Switch to Customer User" />
       <TextField layoutX="704.0" layoutY="194.0" prefHeight="25.0" prefWidth="260.0" />
       <Label contentDisplay="CENTER" layoutX="705.0" layoutY="231.0" prefHeight="22.0" prefWidth="260.0" text="Customer's driver's license number:">
          <font>

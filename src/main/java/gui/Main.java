@@ -14,7 +14,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         FXMLLoader loader = new FXMLLoader(getClass().getResource("views/customerCarSearch.fxml"));
-        loader.setController(new Controller(this));
+        loader.setController(new customerCarSearch(this));
         Pane root = loader.load();
         primaryStage.setTitle(GUIConfig.APP_TITLE);
         this.scene = new Scene(root, GUIConfig.WINDOW_WIDTH, GUIConfig.WINDOW_HEIGHT);

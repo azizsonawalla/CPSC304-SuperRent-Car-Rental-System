@@ -4,6 +4,7 @@ import model.Database.Database;
 import model.Entities.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -11,6 +12,16 @@ import java.util.List;
  * The class 'orchestrates' various SQL queries to build and return the data required by the UI
  */
 public class QueryOrchestrator {
+
+    // Some dummy results for testing. Remove later
+    Location L1 = new Location("Vancouver", "Downtown");
+    Location L2 = new Location("Calgary", "Downtown");
+    Location L3 = new Location("Vancouver", "UBC");
+    Location L4 = new Location("Toronto", "Brampton");
+    VehicleType VT1 = new VehicleType("SUV");
+    VehicleType VT2 = new VehicleType("Truck");
+    VehicleType VT3 = new VehicleType("Hatchback");
+    VehicleType VT4 = new VehicleType("Sedan");
 
     private Database db;
 
@@ -20,7 +31,15 @@ public class QueryOrchestrator {
 
     public List<VTSearchResult> getVTSearchResultsFor(Location l, VehicleType vt, TimePeriod t) throws Exception {
         // TODO: Implement this
-        throw new Exception("Not implemented");
+        // this is just placeholder code
+        ArrayList<VTSearchResult> list = new ArrayList<>();
+        list.add(new VTSearchResult(VT1, L1, 10));
+        list.add(new VTSearchResult(VT2, L1, 0));
+        list.add(new VTSearchResult(VT3, L3, 15));
+        list.add(new VTSearchResult(VT1, L4, 200));
+        list.add(new VTSearchResult(VT2, L1, 25));
+        list.add(new VTSearchResult(VT2, L4, 15));
+        return list;
     }
 
     public List<Vehicle> getVehiclesFor(VTSearchResult searchResult) throws Exception {
@@ -49,22 +68,14 @@ public class QueryOrchestrator {
     public List<Location> getAllLocationNames() throws Exception {
         // TODO: Implement this
         // this is just placeholder code
-        ArrayList<Location> list = new ArrayList<Location>();
-        list.add(new Location("Vancouver", "Downtown"));
-        list.add(new Location("Calgary", "Downtown"));
-        list.add(new Location("Vancouver", "UBC"));
-        list.add(new Location("Toronto", "Brampton"));
+        ArrayList<Location> list = new ArrayList<>(Arrays.asList(L1, L2, L3, L4));
         return list;
     }
 
     public List<VehicleType> getAllVehicleTypes() throws Exception {
         // TODO: Implement this
         // this is just placeholder code
-        ArrayList<VehicleType> list = new ArrayList<VehicleType>();
-        list.add(new VehicleType("SUV"));
-        list.add(new VehicleType("Truck"));
-        list.add(new VehicleType("Sedan"));
-        list.add(new VehicleType("Hatchback"));
+        ArrayList<VehicleType> list = new ArrayList<>(Arrays.asList(VT1, VT2, VT3, VT4));
         return list;
     }
 }

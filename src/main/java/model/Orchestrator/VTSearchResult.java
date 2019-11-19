@@ -5,7 +5,13 @@ import model.Entities.VehicleType;
 
 public class VTSearchResult {
 
-    VehicleType vt;
-    Location location;
-    Integer numAvail;
+    public VehicleType vt;
+    public Location location;
+    public Integer numAvail;
+
+    public VTSearchResult(VehicleType vt, Location location, Integer numAvail) {
+        this.vt = vt;
+        this.location = location;
+        this.numAvail = numAvail;
+    }
 }

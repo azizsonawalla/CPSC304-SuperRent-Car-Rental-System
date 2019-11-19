@@ -1,15 +1,15 @@
 package gui;
 
-import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.TableView;
 import model.Entities.Location;
 import model.Entities.TimePeriod;
 import model.Entities.VehicleType;
-import model.Orchestrator.QueryOrchestrator;
+import model.Orchestrator.VTSearchResult;
 import model.Util.Log;
 
 import java.net.URL;
@@ -18,13 +18,11 @@ import java.util.ResourceBundle;
 
 public class customerCarSearch extends Controller implements Initializable {
 
-    private TimePeriod DEFAULT_TIME_PERIOD;
-    private QueryOrchestrator qo;
-
     private @FXML DatePicker startDate;
     private @FXML DatePicker endDate;
     private @FXML ComboBox<String> branchSelector;
     private @FXML ComboBox<String> vtSelector;
+    private @FXML TableView<String> searchResults;
 
     // Gets all locations from DB and puts it in branch selector
     private Task refreshBranchList = new Task() {
@@ -36,8 +34,8 @@ public class customerCarSearch extends Controller implements Initializable {
                     String locationName = String.format("%s, %s", l.location, l.city);
                     branchSelector.getItems().add(locationName);
                 }
-                branchSelector.getItems().add("All Branches");
-                branchSelector.setValue("All Branches");
+                branchSelector.getItems().add(ALL_BRANCHES);
+                branchSelector.setValue(ALL_BRANCHES);
             } catch (Exception e) {
                 Log.log("Error refreshing branch list on customer car search screen: " + e.getMessage());
             }
@@ -54,8 +52,8 @@ public class customerCarSearch extends Controller implements Initializable {
                 for (VehicleType vt : vehicleTypes) {
                     vtSelector.getItems().add(vt.vtname);
                 }
-                vtSelector.getItems().add("All Types");
-                vtSelector.setValue("All Types");
+                vtSelector.getItems().add(ALL_VT);
+                vtSelector.setValue(ALL_VT);
             } catch (Exception e) {
                 Log.log("Error refreshing vt list on customer car search screen: " + e.getMessage());
             }
@@ -63,9 +61,40 @@ public class customerCarSearch extends Controller implements Initializable {
         }
     };
 
+    // Gets all vt search results and put it in table
+    private Task refreshVehicleTypeSearchResultTable = new Task() {
+        @Override
+        protected Object call() throws Exception {
+            try {
+                // TODO: complete task
+                Location l = null;
+                VehicleType vt = null;
+                TimePeriod t = null;
+
+                List<VTSearchResult> result = qo.getVTSearchResultsFor(l, vt, t);
+                searchResults.getItems().add("e");
+            } catch (Exception e) {
+                Log.log("Error refreshing search results in table: " + e.getMessage());
+            }
+            return null;
+        }
+    };
+
+    // Gets all vt search results and put it in table
+    private Task showVehicleDetails = new Task() {
+        @Override
+        protected Object call() throws Exception {
+            try {
+                // TODO: complete task
+            } catch (Exception e) {
+                Log.log("Error refreshing search results in table: " + e.getMessage());
+            }
+            return null;
+        }
+    };
+
     public customerCarSearch(Main main) {
         super(main);
-        qo = new QueryOrchestrator();
     }
 
     public void initialize(URL location, ResourceBundle resources) {
@@ -74,9 +103,10 @@ public class customerCarSearch extends Controller implements Initializable {
 
     public void refreshAll() {
         // Get all branch values and put them as options in Select Branch
-        Platform.runLater(refreshBranchList);
+        this.main.pool.execute(refreshBranchList);
         // Get all vehicle types and put them as options in Select Vehicle Type
-        Platform.runLater(refreshVehicleTypeList);
-        // TODO
+        this.main.pool.execute(refreshVehicleTypeList);
+        // Update VT Search Result table with selection
+        this.main.pool.execute(refreshVehicleTypeSearchResultTable);
     }
 }

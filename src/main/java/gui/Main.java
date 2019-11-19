@@ -64,6 +64,12 @@ public class Main extends Application {
         return loader.load();
     }
 
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        pool.shutdownNow();
+        // TODO: Close all db connections
+    }
 
     public static void main(String[] args) {
         launch(args);

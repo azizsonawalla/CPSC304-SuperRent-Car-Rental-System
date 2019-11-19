@@ -20,11 +20,15 @@ import java.util.ResourceBundle;
 
 public class customerCarSearch extends Controller implements Initializable {
 
+    private List<VTSearchResult> currentResults;
+
     private @FXML DatePicker startDate;
     private @FXML DatePicker endDate;
     private @FXML ComboBox<String> branchSelector;
     private @FXML ComboBox<String> vtSelector;
     private @FXML TextFlow searchResults;
+    private @FXML ComboBox<Integer> startResWithOption;
+    private @FXML ComboBox<Integer> seeDetailsForOption;
 
     // Gets all locations from DB and puts it in branch selector
     private Task refreshBranchList = new Task() {
@@ -68,15 +72,23 @@ public class customerCarSearch extends Controller implements Initializable {
         @Override
         protected Object call() throws Exception {
             try {
-                // TODO: complete task
+                // TODO: Capture input
                 Location l = null;
                 VehicleType vt = null;
                 TimePeriod t = null;
-
-                List<VTSearchResult> result = qo.getVTSearchResultsFor(l, vt, t);
-                for (int i = 0; i < 100; i ++) {
-                    searchResults.getChildren().add(new Text("     hellooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo     \n"));
+                currentResults = qo.getVTSearchResultsFor(l, vt, t);
+                // TODO: Handle no result case
+                int count = 1;
+                for (VTSearchResult r: currentResults) {
+                    searchResults.getChildren().add(new Text(String.format("  Option %d:   Vehicle Type = %s,     Location = %s, %s     Number Available = %d\n", count, r.vt.vtname, r.location.location, r.location.city, r.numAvail)));
+                    count++;
                 }
+                for (int i = 1; i <= currentResults.size(); i++) {
+                    seeDetailsForOption.getItems().add(i);
+                    startResWithOption.getItems().add(i);
+                }
+                seeDetailsForOption.setValue(1);
+                startResWithOption.setValue(1);
             } catch (Exception e) {
                 Log.log("Error refreshing search results in table: " + e.getMessage());
             }

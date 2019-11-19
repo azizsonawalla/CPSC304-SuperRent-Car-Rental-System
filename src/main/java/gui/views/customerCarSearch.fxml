@@ -35,38 +35,38 @@
             <Font name="HelveticaLTStd-Roman" size="24.0" />
          </font>
       </Label>
-      <Label contentDisplay="CENTER" layoutX="705.0" layoutY="171.0" prefHeight="22.0" prefWidth="260.0" text="Select Branch">
+      <Label contentDisplay="CENTER" layoutX="705.0" layoutY="167.0" prefHeight="22.0" prefWidth="260.0" text="Select Branch">
          <font>
             <Font name="HelveticaLTStd-Roman" size="14.0" />
          </font>
       </Label>
-       <ComboBox fx:id="vtSelector" layoutX="705.0" layoutY="294.0" prefHeight="25.0" prefWidth="260.0" />
-      <Label contentDisplay="CENTER" layoutX="705.0" layoutY="258.0" prefHeight="22.0" prefWidth="260.0" text="Select Vehicle Type">
+       <ComboBox fx:id="vtSelector" layoutX="705.0" layoutY="268.0" prefHeight="25.0" prefWidth="260.0" />
+      <Label contentDisplay="CENTER" layoutX="705.0" layoutY="237.0" prefHeight="22.0" prefWidth="260.0" text="Select Vehicle Type">
          <font>
             <Font name="HelveticaLTStd-Roman" size="14.0" />
          </font>
       </Label>
-      <Label contentDisplay="CENTER" layoutX="705.0" layoutY="344.0" prefHeight="22.0" prefWidth="260.0" text="Select Reservation Start Date">
+      <Label contentDisplay="CENTER" layoutX="706.0" layoutY="311.0" prefHeight="22.0" prefWidth="260.0" text="Select Reservation Start Date">
          <font>
             <Font name="HelveticaLTStd-Roman" size="14.0" />
          </font>
       </Label>
-      <Label contentDisplay="CENTER" layoutX="705.0" layoutY="425.0" prefHeight="22.0" prefWidth="260.0" text="Select Reservation End Date">
+      <Label contentDisplay="CENTER" layoutX="706.0" layoutY="392.0" prefHeight="22.0" prefWidth="260.0" text="Select Reservation End Date">
          <font>
             <Font name="HelveticaLTStd-Roman" size="14.0" />
          </font>
       </Label>
-      <Label contentDisplay="CENTER" layoutX="703.0" layoutY="512.0" prefHeight="22.0" prefWidth="260.0" text="Select Reservation Start Time">
+      <Label contentDisplay="CENTER" layoutX="704.0" layoutY="476.0" prefHeight="22.0" prefWidth="260.0" text="Select Reservation Start Time">
          <font>
             <Font name="HelveticaLTStd-Roman" size="14.0" />
          </font>
       </Label>
-      <Label contentDisplay="CENTER" layoutX="703.0" layoutY="552.0" prefHeight="22.0" prefWidth="25.0" text="HH:">
+      <Label contentDisplay="CENTER" layoutX="704.0" layoutY="507.0" prefHeight="22.0" prefWidth="25.0" text="HH:">
          <font>
             <Font name="HelveticaLTStd-Roman" size="12.0" />
          </font>
       </Label>
-      <MenuButton layoutX="728.0" layoutY="551.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="50.0" text="HH">
+      <MenuButton layoutX="729.0" layoutY="506.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="50.0" text="HH">
          <items>
              <MenuItem mnemonicParsing="false" text="00" />
              <MenuItem mnemonicParsing="false" text="01" />
@@ -83,12 +83,12 @@
              <MenuItem mnemonicParsing="false" text="12" />
          </items>
       </MenuButton>
-      <Label contentDisplay="CENTER" layoutX="788.0" layoutY="553.0" prefHeight="22.0" prefWidth="31.0" text="MM:">
+      <Label contentDisplay="CENTER" layoutX="789.0" layoutY="508.0" prefHeight="22.0" prefWidth="31.0" text="MM:">
          <font>
             <Font name="HelveticaLTStd-Roman" size="12.0" />
          </font>
       </Label>
-      <MenuButton layoutX="820.0" layoutY="552.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="MM">
+      <MenuButton layoutX="821.0" layoutY="507.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="MM">
          <items>
             <MenuItem mnemonicParsing="false" text="00" />
             <MenuItem mnemonicParsing="false" text="05" />
@@ -104,23 +104,23 @@
             <MenuItem mnemonicParsing="false" text="55" />
          </items>
       </MenuButton>
-      <MenuButton layoutX="898.0" layoutY="551.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="AM">
+      <MenuButton layoutX="899.0" layoutY="506.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="AM">
          <items>
             <MenuItem mnemonicParsing="false" text="AM" />
             <MenuItem mnemonicParsing="false" text="PM" />
          </items>
       </MenuButton>
-       <Label contentDisplay="CENTER" layoutX="703.0" layoutY="603.0" prefHeight="22.0" prefWidth="260.0" text="Select Reservation End Time">
+       <Label contentDisplay="CENTER" layoutX="704.0" layoutY="548.0" prefHeight="22.0" prefWidth="260.0" text="Select Reservation End Time">
            <font>
                <Font name="HelveticaLTStd-Roman" size="14.0" />
            </font>
        </Label>
-       <Label contentDisplay="CENTER" layoutX="703.0" layoutY="643.0" prefHeight="22.0" prefWidth="25.0" text="HH:">
+       <Label contentDisplay="CENTER" layoutX="704.0" layoutY="579.0" prefHeight="22.0" prefWidth="25.0" text="HH:">
            <font>
                <Font name="HelveticaLTStd-Roman" size="12.0" />
            </font>
        </Label>
-       <MenuButton layoutX="728.0" layoutY="642.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="50.0" text="HH">
+       <MenuButton layoutX="729.0" layoutY="578.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="50.0" text="HH">
            <items>
                <MenuItem mnemonicParsing="false" text="00" />
                <MenuItem mnemonicParsing="false" text="01" />
@@ -137,12 +137,12 @@
                <MenuItem mnemonicParsing="false" text="12" />
            </items>
        </MenuButton>
-       <Label contentDisplay="CENTER" layoutX="788.0" layoutY="645.0" prefHeight="22.0" prefWidth="31.0" text="MM:">
+       <Label contentDisplay="CENTER" layoutX="789.0" layoutY="581.0" prefHeight="22.0" prefWidth="31.0" text="MM:">
            <font>
                <Font name="HelveticaLTStd-Roman" size="12.0" />
            </font>
        </Label>
-       <MenuButton layoutX="820.0" layoutY="644.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="MM">
+       <MenuButton layoutX="821.0" layoutY="580.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="MM">
            <items>
                <MenuItem mnemonicParsing="false" text="00" />
                <MenuItem mnemonicParsing="false" text="05" />
@@ -158,13 +158,13 @@
                <MenuItem mnemonicParsing="false" text="55" />
            </items>
        </MenuButton>
-       <MenuButton layoutX="898.0" layoutY="644.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="AM">
+       <MenuButton layoutX="899.0" layoutY="580.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="AM">
            <items>
                <MenuItem mnemonicParsing="false" text="AM" />
                <MenuItem mnemonicParsing="false" text="PM" />
            </items>
        </MenuButton>
-      <Button layoutX="703.0" layoutY="730.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="260.0" text="Search" />
+      <Button layoutX="703.0" layoutY="631.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="260.0" text="Search" />
       <TableView layoutX="33.0" layoutY="516.0" prefHeight="250.0" prefWidth="634.0">
          <columns>
             <TableColumn prefWidth="122.0" text="Make" />
@@ -175,18 +175,18 @@
              <TableColumn prefWidth="140.0" text="Branch" />
          </columns>
       </TableView>
-      <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="33.0" layoutY="462.0" prefHeight="31.0" prefWidth="428.0" text="Select vehicle type above to see details:" textAlignment="RIGHT">
+      <Label contentDisplay="RIGHT" layoutX="33.0" layoutY="462.0" prefHeight="31.0" prefWidth="428.0" text="Select option from above to see details:" textAlignment="RIGHT">
          <font>
             <Font name="HelveticaLTStd-Roman" size="24.0" />
          </font>
       </Label>
-      <ComboBox fx:id="branchSelector" layoutX="703.0" layoutY="206.0" prefHeight="25.0" prefWidth="260.0" />
-      <Label contentDisplay="CENTER" layoutX="703.0" layoutY="467.0" prefHeight="22.0" prefWidth="25.0" text="DD:">
+      <ComboBox fx:id="branchSelector" layoutX="703.0" layoutY="194.0" prefHeight="25.0" prefWidth="260.0" />
+      <Label contentDisplay="CENTER" layoutX="704.0" layoutY="429.0" prefHeight="22.0" prefWidth="25.0" text="DD:">
          <font>
             <Font name="HelveticaLTStd-Roman" size="12.0" />
          </font>
       </Label>
-      <MenuButton layoutX="728.0" layoutY="466.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="49.0" text="DD">
+      <MenuButton layoutX="729.0" layoutY="428.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="49.0" text="DD">
          <items>
             <MenuItem mnemonicParsing="false" text="00" />
             <MenuItem mnemonicParsing="false" text="01" />
@@ -222,12 +222,12 @@
              <MenuItem mnemonicParsing="false" text="31" />
          </items>
       </MenuButton>
-      <Label contentDisplay="CENTER" layoutX="788.0" layoutY="467.0" prefHeight="22.0" prefWidth="25.0" text="MM:">
+      <Label contentDisplay="CENTER" layoutX="789.0" layoutY="429.0" prefHeight="22.0" prefWidth="25.0" text="MM:">
          <font>
             <Font name="HelveticaLTStd-Roman" size="12.0" />
          </font>
       </Label>
-      <MenuButton layoutX="820.0" layoutY="466.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="MM">
+      <MenuButton layoutX="821.0" layoutY="428.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="MM">
          <items>
             <MenuItem mnemonicParsing="false" text="01" />
              <MenuItem mnemonicParsing="false" text="02" />
@@ -243,7 +243,7 @@
              <MenuItem mnemonicParsing="false" text="12" />
          </items>
       </MenuButton>
-      <MenuButton layoutX="898.0" layoutY="466.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="YYYY">
+      <MenuButton layoutX="899.0" layoutY="428.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="YYYY">
          <items>
              <MenuItem mnemonicParsing="false" text="2019" />
              <MenuItem mnemonicParsing="false" text="2020" />
@@ -252,12 +252,12 @@
              <MenuItem mnemonicParsing="false" text="2023" />
          </items>
       </MenuButton>
-      <Label contentDisplay="CENTER" layoutX="703.0" layoutY="378.0" prefHeight="22.0" prefWidth="25.0" text="DD:">
+      <Label contentDisplay="CENTER" layoutX="704.0" layoutY="345.0" prefHeight="22.0" prefWidth="25.0" text="DD:">
          <font>
             <Font name="HelveticaLTStd-Roman" size="12.0" />
          </font>
       </Label>
-      <MenuButton layoutX="729.0" layoutY="377.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="49.0" text="DD">
+      <MenuButton layoutX="730.0" layoutY="344.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="49.0" text="DD">
          <items>
             <MenuItem mnemonicParsing="false" text="00" />
             <MenuItem mnemonicParsing="false" text="01" />
@@ -293,12 +293,12 @@
             <MenuItem mnemonicParsing="false" text="31" />
          </items>
       </MenuButton>
-      <Label contentDisplay="CENTER" layoutX="788.0" layoutY="378.0" prefHeight="22.0" prefWidth="25.0" text="MM:">
+      <Label contentDisplay="CENTER" layoutX="789.0" layoutY="345.0" prefHeight="22.0" prefWidth="25.0" text="MM:">
          <font>
             <Font name="HelveticaLTStd-Roman" size="12.0" />
          </font>
       </Label>
-      <MenuButton layoutX="820.0" layoutY="377.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="MM">
+      <MenuButton layoutX="821.0" layoutY="344.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="MM">
          <items>
             <MenuItem mnemonicParsing="false" text="01" />
             <MenuItem mnemonicParsing="false" text="02" />
@@ -314,7 +314,7 @@
             <MenuItem mnemonicParsing="false" text="12" />
          </items>
       </MenuButton>
-      <MenuButton layoutX="898.0" layoutY="377.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="YYYY">
+      <MenuButton layoutX="899.0" layoutY="344.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="YYYY">
          <items>
             <MenuItem mnemonicParsing="false" text="2019" />
             <MenuItem mnemonicParsing="false" text="2020" />
@@ -327,5 +327,13 @@
          <content>
             <TextFlow fx:id="searchResults" prefHeight="244.0" prefWidth="612.0" />
          </content></ScrollPane>
+      <ComboBox fx:id="startResWithOption" layoutX="704.0" layoutY="728.0" prefHeight="38.0" prefWidth="59.0" />
+      <Button layoutX="779.0" layoutY="728.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="187.0" text="Start Reservation &gt;" />
+      <Label contentDisplay="CENTER" layoutX="704.0" layoutY="695.0" prefHeight="22.0" prefWidth="260.0" text="Choose option from results to continue:">
+         <font>
+            <Font name="HelveticaLTStd-Roman" size="14.0" />
+         </font>
+      </Label>
+      <ComboBox fx:id="seeDetailsForOption" layoutX="471.0" layoutY="459.0" prefHeight="38.0" prefWidth="59.0" />
    </children>
 </AnchorPane>

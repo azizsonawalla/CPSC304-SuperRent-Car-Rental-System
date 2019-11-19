@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -82,7 +83,7 @@ public class Database {
      */
     public void updateReservation(Reservation r) throws Exception {
         //Get Reservation tuple with confirmation number r.confNum
-        PreparedStatement ps = conn.prepareStatement("SELECT * FROM Reservation WHERE confNum = ?");
+        PreparedStatement ps = conn.prepareStatement("SELECT * FROM Reservations WHERE confNum = ?");
         ps.setInt(1, r.confNum);
         ResultSet rs = ps.executeQuery();
 
@@ -133,15 +134,17 @@ public class Database {
     public List<Reservation> getReservationsWith(TimePeriod t, VehicleType vt, Location l) throws Exception {
         //Empty string to build query
         String query;
-        //
+        //marker to indicate if a condition has been added to the WHERE clause (and if AND needs to be used)
         boolean marker = false;
+
         if (t == null && vt == null && l == null){
-            query = "SELECT * FROM Reservation";
+            //If no filters are provided, return all the results
+            query = "SELECT * FROM Reservations";
         } else {
-            query = "SELECT * FROM Reservation R WHERE ";
+            query = "SELECT * FROM Reservations R WHERE ";
             if (t != null) {
-                //Given start time is after R.fromDateTime AND is before R.toDateTime
-                //Given end time is before R.toDateTime AND is after R.fromDateTime
+                //Given start time (from t) is after R.fromDateTime AND is before R.toDateTime
+                //Given end time (from t) is before R.toDateTime AND is after R.fromDateTime
                 query += "(R.fromDateTime < ? AND R.toDateTime > ?) OR " +
                         "(R.toDateTime > ? AND R.toDateTime < ?) ";
                 marker = true;
@@ -156,14 +159,38 @@ public class Database {
         }
 
         PreparedStatement ps = conn.prepareStatement(query);
+        //Insert Timestamp values to prepared statement
         if (t != null){
-            ps.setTimestamp(1, );
-            ps.setTimestamp(2, );
-            ps.setTimestamp(3, );
-            ps.setTimestamp(4, );
+            ps.setTimestamp(1, t.fromDateTime);
+            ps.setTimestamp(2, t.fromDateTime);
+            ps.setTimestamp(3, t.toDateTime);
+            ps.setTimestamp(4, t.toDateTime);
         }
         ResultSet rs = ps.executeQuery();
-        throw new Exception("yeet");
+
+        List<Reservation> r = new ArrayList<Reservation>();
+        while (rs.next()){
+            //Make a reservation object corresponding to a tuple queried from the database
+            Reservation res = new Reservation();
+            res.confNum = rs.getInt(1);
+            res.vtName = rs.getString(2);
+            res.dlicense = rs.getString(3);
+
+            TimePeriod tm = new TimePeriod();
+            tm.fromDateTime = rs.getTimestamp(4);
+            tm.toDateTime = rs.getTimestamp(5);
+            res.timePeriod = tm;
+
+            Location loc = new Location();
+            loc.city = rs.getString(6);
+            loc.location = rs.getString(7);
+            res.location = loc;
+
+            //Add the reservation object to r
+            r.add(res);
+        }
+        ps.close();
+        return r;
     }
 
     /**
@@ -173,7 +200,28 @@ public class Database {
      */
     public Reservation getReservationMatching(Reservation r) throws Exception {
         // TODO: implement this
-        throw new Exception("Method not implemented");
+        PreparedStatement ps = conn.prepareStatement("SELECT * FROM Reservations WHERE confNo = " + Integer.toString(r.confNum));
+        ResultSet rs = ps.executeQuery();
+
+        if (!rs.next()) return null;
+
+        Reservation res = new Reservation();
+        res.confNum = rs.getInt(1);
+        res.vtName = rs.getString(2);
+        res.dlicense = rs.getString(3);
+
+        TimePeriod tm = new TimePeriod();
+        tm.fromDateTime = rs.getTimestamp(4);
+        tm.toDateTime = rs.getTimestamp(5);
+        res.timePeriod = tm;
+
+        Location loc = new Location();
+        loc.city = rs.getString(6);
+        loc.location = rs.getString(7);
+        res.location = loc;
+
+        ps.close();
+        return res;
     }
 
     /* Rental */

@@ -13,8 +13,11 @@ public class Queries {
                 "dLicense INT NOT NULL, " +
                 "fromDateTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
                 "toDateTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
+                "city CHAR(50) NOT NULL, " +
+                "location CHAR(50) NOT NULL, " +
                 "PRIMARY KEY (confNo), " +
                 "FOREIGN KEY (vtName) REFERENCES VehicleType(vtName) ON DELETE CASCADE, " +
+                "FOREIGN KEY (city, location) REFERENCES Location(city, location) ON DELETE CASCADE, " +
                 "FOREIGN KEY (dLicense) REFERENCES Customer(dLicense) ON DELETE CASCADE);";
                 
         public static String CREATE_TABLE_RENT = "CREATE TABLE IF NOT EXISTS Rent(" +

@@ -61,10 +61,8 @@ public class Database {
         ps.setInt(1, r.confNum);
         ps.setString(2, r.vtName);
         ps.setString(3, r.dlicense);
-        ps.setDate(4, r.timePeriod.startDate);
-        ps.setTime(5, r.timePeriod.startTime);
-        ps.setDate(6, r.timePeriod.endDate);
-        ps.setTime(7, r.timePeriod.endTime);
+        ps.setTimestamp(4, r.timePeriod.fromDateTime);
+        ps.setTimestamp(5, r.timePeriod.toDateTime);
 
         //execute the update
         ps.executeUpdate();
@@ -92,11 +90,9 @@ public class Database {
         ps = conn.prepareStatement(Queries.Reservation.UPDATE_RESERVATION);
         ps.setString(1, r.vtName != null? r.vtName: rs.getString("vtname"));
         ps.setString(2, r.dlicense != null? r.dlicense: rs.getString("dlicense"));
-        ps.setDate(3, r.timePeriod.startDate != null? r.timePeriod.startDate: rs.getDate("startDate"));
-        ps.setTime(4, r.timePeriod.startTime != null? r.timePeriod.startTime: rs.getTime("startTime"));
-        ps.setDate(5, r.timePeriod.endDate != null? r.timePeriod.endDate: rs.getDate("endDate"));
-        ps.setTime(6, r.timePeriod.endTime != null? r.timePeriod.endTime: rs.getTime("endTime"));
-        ps.setInt(7, r.confNum);
+        ps.setTimestamp(3, r.timePeriod.fromDateTime != null? r.timePeriod.fromDateTime: rs.getTimestamp("fromDateTime"));
+        ps.setTimestamp(4, r.timePeriod.toDateTime != null? r.timePeriod.toDateTime: rs.getTimestamp("toDateTime"));
+        ps.setInt(5, r.confNum);
 
         //execute the update
         ps.executeUpdate();
@@ -135,9 +131,39 @@ public class Database {
      * @throws Exception if there is any error getting results
      */
     public List<Reservation> getReservationsWith(TimePeriod t, VehicleType vt, Location l) throws Exception {
-        // TODO: implement this
-        // NOTE: Make sure to do null checks on params!
-        throw new Exception("Method not implemented");
+        //Empty string to build query
+        String query;
+        //
+        boolean marker = false;
+        if (t == null && vt == null && l == null){
+            query = "SELECT * FROM Reservation";
+        } else {
+            query = "SELECT * FROM Reservation R WHERE ";
+            if (t != null) {
+                //Given start time is after R.fromDateTime AND is before R.toDateTime
+                //Given end time is before R.toDateTime AND is after R.fromDateTime
+                query += "(R.fromDateTime < ? AND R.toDateTime > ?) OR " +
+                        "(R.toDateTime > ? AND R.toDateTime < ?) ";
+                marker = true;
+            } if (vt != null) {
+                query += marker? "R.vtname = " + vt.vtname + " " :
+                        "AND R.vtname = " + vt.vtname + " ";
+                marker = true;
+            } if (l != null) {
+                query += marker? "R.location = " + l.location + " " + "R.city = " + l.city:
+                        "AND R.location = " + l.location + " " + "R.city = " + l.city;
+            }
+        }
+
+        PreparedStatement ps = conn.prepareStatement(query);
+        if (t != null){
+            ps.setTimestamp(1, );
+            ps.setTimestamp(2, );
+            ps.setTimestamp(3, );
+            ps.setTimestamp(4, );
+        }
+        ResultSet rs = ps.executeQuery();
+        throw new Exception("yeet");
     }
 
     /**

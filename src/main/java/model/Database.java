@@ -1,4 +1,4 @@
-package model.Database;
+package model;
 
 import model.Entities.*;
 import model.Util.Log;

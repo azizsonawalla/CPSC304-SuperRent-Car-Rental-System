@@ -1,4 +1,4 @@
-package model.Database;
+package model;
 
 /**
  * A static class to store all database queries for SuperRent system

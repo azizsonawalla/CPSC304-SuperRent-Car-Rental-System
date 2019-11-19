@@ -3,6 +3,7 @@ package model.Orchestrator;
 import model.Database.Database;
 import model.Entities.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,5 +44,27 @@ public class QueryOrchestrator {
     public Reservation makeReservation(Reservation r) throws Exception {
         // TODO: Implement this
         throw new Exception("Not implemented");
+    }
+
+    public List<Location> getAllLocationNames() throws Exception {
+        // TODO: Implement this
+        // this is just placeholder code
+        ArrayList<Location> list = new ArrayList<Location>();
+        list.add(new Location("Vancouver", "Downtown"));
+        list.add(new Location("Calgary", "Downtown"));
+        list.add(new Location("Vancouver", "UBC"));
+        list.add(new Location("Toronto", "Brampton"));
+        return list;
+    }
+
+    public List<VehicleType> getAllVehicleTypes() throws Exception {
+        // TODO: Implement this
+        // this is just placeholder code
+        ArrayList<VehicleType> list = new ArrayList<VehicleType>();
+        list.add(new VehicleType("SUV"));
+        list.add(new VehicleType("Truck"));
+        list.add(new VehicleType("Sedan"));
+        list.add(new VehicleType("Hatchback"));
+        return list;
     }
 }

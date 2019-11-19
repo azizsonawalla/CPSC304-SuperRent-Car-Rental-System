@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuButton?>
@@ -10,9 +11,10 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.control.ComboBox?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Button fx:id="switchToClerkButton" onAction="#switchToClerk" layoutX="33.0" layoutY="26.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="165.0" text="Switch to Clerk User" />
+      <Button fx:id="switchToClerkButton" layoutX="33.0" layoutY="26.0" mnemonicParsing="false" onAction="#switchToClerk" prefHeight="61.0" prefWidth="165.0" text="Switch to Clerk User" />
       <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="401.0" layoutY="26.0" prefHeight="61.0" prefWidth="367.0" text="SuperRent" textAlignment="RIGHT">
          <font>
             <Font name="HelveticaLTStd-Bold" size="43.0" />
@@ -42,23 +44,12 @@
             <Font name="HelveticaLTStd-Roman" size="24.0" />
          </font>
       </Label>
-      <MenuButton layoutX="705.0" layoutY="207.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="260.0" text="No Branch Selected">
-        <items>
-          <MenuItem mnemonicParsing="false" text="Action 1" />
-          <MenuItem mnemonicParsing="false" text="Action 2" />
-        </items>
-      </MenuButton>
       <Label contentDisplay="CENTER" layoutX="705.0" layoutY="171.0" prefHeight="22.0" prefWidth="260.0" text="Select Branch">
          <font>
             <Font name="HelveticaLTStd-Roman" size="14.0" />
          </font>
       </Label>
-      <MenuButton layoutX="705.0" layoutY="294.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="260.0" text="No Vehicle Type Selected">
-         <items>
-            <MenuItem mnemonicParsing="false" text="Action 1" />
-            <MenuItem mnemonicParsing="false" text="Action 2" />
-         </items>
-      </MenuButton>
+       <ComboBox fx:id="vtSelector" layoutX="705.0" layoutY="294.0" prefHeight="25.0" prefWidth="260.0" />
       <Label contentDisplay="CENTER" layoutX="705.0" layoutY="258.0" prefHeight="22.0" prefWidth="260.0" text="Select Vehicle Type">
          <font>
             <Font name="HelveticaLTStd-Roman" size="14.0" />
@@ -69,13 +60,13 @@
             <Font name="HelveticaLTStd-Roman" size="14.0" />
          </font>
       </Label>
-      <DatePicker layoutX="705.0" layoutY="382.0" prefHeight="25.0" prefWidth="260.0" />
+      <DatePicker fx:id="startDate" layoutX="705.0" layoutY="382.0" prefHeight="25.0" prefWidth="260.0" />
       <Label contentDisplay="CENTER" layoutX="705.0" layoutY="425.0" prefHeight="22.0" prefWidth="260.0" text="Select Reservation End Date">
          <font>
             <Font name="HelveticaLTStd-Roman" size="14.0" />
          </font>
       </Label>
-      <DatePicker layoutX="705.0" layoutY="462.0" prefHeight="25.0" prefWidth="260.0" />
+      <DatePicker fx:id="endDate" layoutX="705.0" layoutY="462.0" prefHeight="25.0" prefWidth="260.0" />
       <Label contentDisplay="CENTER" layoutX="703.0" layoutY="512.0" prefHeight="22.0" prefWidth="260.0" text="Select Reservation Start Time">
          <font>
             <Font name="HelveticaLTStd-Roman" size="14.0" />
@@ -200,5 +191,6 @@
             <Font name="HelveticaLTStd-Roman" size="24.0" />
          </font>
       </Label>
+      <ComboBox fx:id="branchSelector" layoutX="703.0" layoutY="206.0" prefHeight="25.0" prefWidth="260.0" />
    </children>
 </AnchorPane>

@@ -104,56 +104,53 @@ public class Queries {
 
         // TODO: Add all queries to create, update and delete rentals here
 
-        String insertQueryStatement = "INSERT INTO Rent " +
-                "VALUES (?,?,?,?,?,?,?,?)";
-        String deleteQueryStatement = "DELETE FROM Rent " +
-                "WHERE rId = (?)";
+        //query to add rent
+        public static String ADD_RENT =
+                "INSERT INTO Reservation(rId, vLicense, dLicense, fromDateTime, toDateTime, odometer, cardNo, confNo)" +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
+        //query to update reservations
+        public static String UPDATE_RENT =
+                "UPDATE RENT" +
+                        "SET vLicense = ?, dLicense = ?, fromDateTime = ?, toDateTime = ?, odometer = ?" +
+                        ", cardNo = ?, confNo = ?" +
+                        "WHERE rId = ?";
+
+        //query to delete reservations
+        public static String DELETE_RESERVATION =
+                "DELETE FROM RENT" +
+                        "WHERE rId = ?";
     }
+
 
     public static class Customer {
 
         // TODO: Add all queries to create, update and delete rentals here
-        String insertQueryStatement = "INSERT INTO Customer " +
-                "VALUES (?,?,?,?)";
-        String deleteQueryStatement = "DELETE FROM Customer " +
-                "WHERE dLicense = (?)";
+
     }
 
     public static class Vehicle {
 
         // TODO: Add all queries to create, update and delete rentals here
-        String insertQueryStatement = "INSERT INTO Vehicle " +
-                "VALUES (?,?,?,?,?,?,?,?,?,?,?)";
-        String deleteQueryStatement = "DELETE FROM Vehicle " +
-                "WHERE vLicense = (?)";
+
     }
 
     public static class VehicleType {
 
         // TODO: Add all queries to create, update and delete vehicle types here
-        String insertQueryStatement = "INSERT INTO VehicleType " +
-                "VALUES (?,?,?,?,?,?,?,?,?)";
-        String deleteQueryStatement = "DELETE FROM VehicleType " +
-                "WHERE vtName = (?)";
+
     }
 
     public static class Returns {
 
         // TODO: Add all queries to create, update and delete rentals here
-        String insertQueryStatement = "INSERT INTO Returns " +
-                "VALUES (?,?,?,?,?)";
-        String deleteQueryStatement = "DELETE FROM Returns " +
-                "WHERE rId = (?)";
+
     }
 
     public static class Card {
 
         // TODO: Add all queries to create, update and delete rentals here
-        private static String insertQueryStatement = "INSERT INTO Card " +
-                "VALUES (?,?,?)";
-        private static String deleteQueryStatement = "DELETE FROM Card " +
-                "WHERE cardNo = (?)";
+
 
     }
 

@@ -1,10 +1,98 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.TextFlow?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label layoutX="445.0" layoutY="392.0" text="Clerk Reservation Rental Search" />
+      <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="484.0" layoutY="26.0" prefHeight="61.0" prefWidth="367.0" text="SuperRent" textAlignment="RIGHT">
+         <font>
+            <Font name="HelveticaLTStd-Bold" size="43.0" />
+         </font>
+      </Label>
+      <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="863.0" layoutY="26.0" prefHeight="61.0" prefWidth="102.0" text="Clerk" textAlignment="RIGHT">
+         <font>
+            <Font name="HelveticaLTStd-Roman" size="43.0" />
+         </font>
+      </Label>
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="705.0" layoutY="117.0" prefHeight="31.0" prefWidth="260.0" text="Active Reservations" textAlignment="CENTER">
+         <font>
+            <Font name="HelveticaLTStd-Roman" size="24.0" />
+         </font>
+      </Label>
+      <Label contentDisplay="CENTER" layoutX="705.0" layoutY="163.0" prefHeight="22.0" prefWidth="260.0" text="Confirmation number:">
+         <font>
+            <Font name="HelveticaLTStd-Roman" size="14.0" />
+         </font>
+      </Label>
+      <Button fx:id="searchRentalsButton" layoutX="703.0" layoutY="650.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="260.0" text="Search Ongoing Rentals" />
+      <Button layoutX="36.0" layoutY="26.0" mnemonicParsing="false" onAction="#switchToCustomer" prefHeight="61.0" prefWidth="211.0" text="Switch to Customer User" />
+      <TextField fx:id="confNumField" layoutX="704.0" layoutY="194.0" prefHeight="25.0" prefWidth="260.0" />
+      <Label contentDisplay="CENTER" layoutX="705.0" layoutY="231.0" prefHeight="22.0" prefWidth="260.0" text="Customer's driver's license number:">
+         <font>
+            <Font name="HelveticaLTStd-Roman" size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="dlField" layoutX="704.0" layoutY="260.0" prefHeight="25.0" prefWidth="260.0" />
+      <Button fx:id="searchReservationsButton" layoutX="705.0" layoutY="308.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="260.0" text="Search Active Reservations" />
+      <Button fx:id="rentalWithoutReservationButton" layoutX="703.0" layoutY="366.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="260.0" text="Start Rental Without Reservation &gt;" />
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="703.0" layoutY="461.0" prefHeight="31.0" prefWidth="260.0" text="Ongoing Rentals" textAlignment="CENTER">
+         <font>
+            <Font name="HelveticaLTStd-Roman" size="24.0" />
+         </font>
+      </Label>
+      <Label contentDisplay="CENTER" layoutX="705.0" layoutY="508.0" prefHeight="22.0" prefWidth="260.0" text="Rental ID:">
+         <font>
+            <Font name="HelveticaLTStd-Roman" size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="rentalIdField" layoutX="704.0" layoutY="537.0" prefHeight="25.0" prefWidth="260.0" />
+      <Label contentDisplay="CENTER" layoutX="705.0" layoutY="574.0" prefHeight="22.0" prefWidth="260.0" text="Customer's driver's license number:">
+         <font>
+            <Font name="HelveticaLTStd-Roman" size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="dlFieldRental" layoutX="705.0" layoutY="602.0" prefHeight="25.0" prefWidth="260.0" />
+      <Button fx:id="dailyReportsButton" layoutX="703.0" layoutY="711.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="260.0" text="View Daily Reports &gt;" />
+      <ScrollPane layoutX="36.0" layoutY="121.0" prefHeight="222.0" prefWidth="634.0">
+      <content>
+         <TextFlow fx:id="searchResults" prefHeight="213.0" prefWidth="612.0" />
+      </content>
+   </ScrollPane>
+      <ScrollPane layoutX="36.0" layoutY="465.0" prefHeight="222.0" prefWidth="634.0">
+         <content>
+            <TextFlow fx:id="searchResults" prefHeight="211.0" prefWidth="612.0" />
+         </content>
+      </ScrollPane>
+      <ComboBox layoutX="229.0" layoutY="366.0" prefHeight="55.0" prefWidth="165.0" />
+      <Button fx:id="rentalWithReservationButton" layoutX="408.0" layoutY="366.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="260.0" text="Start Rental For This Reservation &gt;" />
+      <Label contentDisplay="CENTER" layoutX="36.0" layoutY="366.0" prefHeight="31.0" prefWidth="195.0" text="Choose a reservation" textAlignment="CENTER">
+         <font>
+            <Font name="HelveticaLTStd-Roman" size="18.0" />
+         </font>
+      </Label>
+      <Label contentDisplay="CENTER" layoutX="36.0" layoutY="390.0" prefHeight="31.0" prefWidth="193.0" text="confirmation number:" textAlignment="CENTER">
+         <font>
+            <Font name="HelveticaLTStd-Roman" size="18.0" />
+         </font>
+      </Label>
+      <Button fx:id="startReturnButton" layoutX="410.0" layoutY="711.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="260.0" text="Start Return For This Rental &gt;" />
+      <ComboBox layoutX="229.0" layoutY="711.0" prefHeight="55.0" prefWidth="165.0" />
+      <Label contentDisplay="CENTER" layoutX="36.0" layoutY="735.0" prefHeight="31.0" prefWidth="193.0" text="number:" textAlignment="CENTER">
+         <font>
+            <Font name="HelveticaLTStd-Roman" size="18.0" />
+         </font>
+      </Label>
+      <Label contentDisplay="CENTER" layoutX="36.0" layoutY="711.0" prefHeight="31.0" prefWidth="195.0" text="Choose a rental" textAlignment="CENTER">
+         <font>
+            <Font name="HelveticaLTStd-Roman" size="18.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

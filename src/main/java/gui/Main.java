@@ -1,12 +1,16 @@
 package gui;
 
+import gui.controllers.Controller;
+import gui.controllers.clerkReservationRental;
+import gui.controllers.customerCarSearch;
+import gui.controllers.customerMakeReservation;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Pair;
-import model.Orchestrator.VTSearchResult;
+import model.Entities.Reservation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +24,7 @@ public class Main extends Application {
     public ExecutorService pool;
 
     // Inter-scene data
-    VTSearchResult customerStartRes; // TODO: set this to null once reservation is complete
+    public Reservation customerResInProgress; // TODO: set this to null once reservation is complete
 
     public Main() {
         super();

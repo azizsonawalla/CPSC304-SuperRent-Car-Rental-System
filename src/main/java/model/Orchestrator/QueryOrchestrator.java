@@ -53,7 +53,8 @@ public class QueryOrchestrator {
      */
     public Customer getCustomer(String dlNumber) throws Exception {
         // TODO: Implement this
-        throw new Exception("Not implemented");
+        if (dlNumber.equals("DL12345")) return new Customer(12345, "DL12345", "John Smith", "Some address");
+        return null;
     }
 
     public void addCustomer(Customer c) throws Exception {

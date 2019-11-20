@@ -2,11 +2,18 @@ package model.Entities;
 
 public class Customer {
     //Customer cellphone must be unique
-    long cellphone;
+    public long cellphone;
 
     //Customer drivers license, primary key for Customer
-    String dlicense;
+    public String dlicense;
 
-    String name;
-    String address;
+    public String name;
+    public String address;
+
+    public Customer(long cellphone, String dlicense, String name, String address) {
+        this.cellphone = cellphone;
+        this.dlicense = dlicense;
+        this.name = name;
+        this.address = address;
+    }
 }

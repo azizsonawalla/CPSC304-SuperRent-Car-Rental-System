@@ -1,14 +1,14 @@
-package gui;
+package gui.controllers;
 
+import gui.GUIConfig;
+import gui.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import model.Entities.TimePeriod;
 import model.Orchestrator.QueryOrchestrator;
 
-abstract class Controller {
+public abstract class Controller {
 
     public Main main;
-    TimePeriod DEFAULT_TIME_PERIOD;
     String ALL_BRANCHES = "All Branches";
     String ALL_VT = "All Types";
     QueryOrchestrator qo;
@@ -21,7 +21,7 @@ abstract class Controller {
     public abstract void refreshAll();
     
     @FXML private void switchToClerk(ActionEvent event) throws Exception {
-        main.customerStartRes = null;
+        main.customerResInProgress = null;
         main.setRoot(GUIConfig.CLERK_RENTAL_RES_SEARCH);
     }
 

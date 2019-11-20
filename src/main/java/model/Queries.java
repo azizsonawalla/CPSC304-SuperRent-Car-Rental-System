@@ -37,7 +37,7 @@ public class Queries {
 
         public static String CREATE_TABLE_VEHICLE = "CREATE TABLE IF NOT EXISTS Vehicle(" +
                 "vId INT NOT NULL, " +
-                "vLicense CHAR(10) NOT NULL, " +
+                "vLicense CHAR(10), " +
                 "make CHAR(50) NOT NULL, " +
                 "model CHAR(50) NOT NULL, " +
                 "year YEAR NOT NULL, " +
@@ -66,8 +66,8 @@ public class Queries {
         public static String CREATE_TABLE_CUSTOMER = "CREATE TABLE IF NOT EXISTS Customer(" +
                 "cellphone BIGINT NOT NULL, " +
                 "name CHAR(255) NOT NULL, " +
-                "address CHAR(255), " +
-                "dLicense CHAR(50), " +
+                "address CHAR(255) NOT NULL, " +
+                "dLicense CHAR(50) NOT NULL, " +
                 "PRIMARY KEY (dLicense), " +
                 "UNIQUE (cellphone));";
 

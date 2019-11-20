@@ -17,7 +17,6 @@ public class Queries {
                 "location CHAR(50) NOT NULL, " +
                 "PRIMARY KEY (confNo), " +
                 "FOREIGN KEY (vtName) REFERENCES VehicleType(vtName) ON DELETE CASCADE, " +
-                "FOREIGN KEY (city, location) REFERENCES Location(city, location) ON DELETE CASCADE, " +
                 "FOREIGN KEY (dLicense) REFERENCES Customer(dLicense) ON DELETE CASCADE);";
                 
         public static String CREATE_TABLE_RENT = "CREATE TABLE IF NOT EXISTS Rent(" +
@@ -94,10 +93,10 @@ public class Queries {
                 "ExpDate INT, " +
                 "PRIMARY KEY (cardNo));";
 
-        public static String CREATE_TABLE_LOCATION = "CREATE TABLE IF NOT EXISTS Location(" +
-                "city CHAR(50), " +
-                "location CHAR(50), " +
-                "PRIMARY KEY (city, location));";
+//        public static String CREATE_TABLE_LOCATION = "CREATE TABLE IF NOT EXISTS Location(" +
+//                "city CHAR(50), " +
+//                "location CHAR(50), " +
+//                "PRIMARY KEY (city, location));";
 
         public static String CHECK_TABLE_EXISTS = "SHOW TABLES LIKE '%?%';";
     }
@@ -112,6 +111,8 @@ public class Queries {
         public static String DROP_TABLE_CUSTOMER = "DROP TABLE Customer";
         public static String DROP_TABLE_RETURNS = "DROP TABLE Returns";
         public static String DROP_TABLE_CARD = "DROP TABLE Card";
+
+        //public static String DROP_TABLE_LOCATION = "DROP TABLE Location";
     }
 
     public static class Reservation {
@@ -125,12 +126,12 @@ public class Queries {
         public static String UPDATE_RESERVATION =
                 "UPDATE Reservations " +
                         "SET vtname = ?, dlicense = ?, fromDateTime = ?, toDatetime = ?, city = ?, location = ?" +
-                        "WHERE confNum = ?";
+                        "WHERE confNo = ?";
 
         //query to delete reservations
         public static String DELETE_RESERVATION =
                 "DELETE FROM Reservations " +
-                        "WHERE confNum = ?";
+                        "WHERE confNo = ?";
 
     }
 
@@ -201,6 +202,11 @@ public class Queries {
                 "WHERE cardNo = (?)";
 
     }
+
+//    public static class Location {
+//        public static String ADD_LOCATION = "INSERT INTO Location(city, location) " +
+//                "VALUES(?, ?)";
+//    }
 
     public static class CustomerTransactions {
         //TODO: Find the number of vehicles for any combination of: car type, location, and time interval

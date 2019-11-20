@@ -41,7 +41,7 @@ public class Database {
         //Creates all the tables
         conn.prepareStatement(Queries.Create.CREATE_TABLE_CUSTOMER).executeUpdate();
         conn.prepareStatement(Queries.Create.CREATE_TABLE_VEHICLE_TYPE).executeUpdate();
-        conn.prepareStatement(Queries.Create.CREATE_TABLE_LOCATION).executeUpdate();
+        //conn.prepareStatement(Queries.Create.CREATE_TABLE_LOCATION).executeUpdate();
         conn.prepareStatement(Queries.Create.CREATE_TABLE_RESERVATIONS).executeUpdate();
         conn.prepareStatement(Queries.Create.CREATE_TABLE_VEHICLE).executeUpdate();
         conn.prepareStatement(Queries.Create.CREATE_TABLE_CARD).executeUpdate();
@@ -62,6 +62,7 @@ public class Database {
         conn.prepareStatement(Queries.Drop.DROP_TABLE_CUSTOMER).executeUpdate();
         conn.prepareStatement(Queries.Drop.DROP_TABLE_RETURNS).executeUpdate();
         conn.prepareStatement(Queries.Drop.DROP_TABLE_CARD).executeUpdate();
+        //conn.prepareStatement(Queries.Drop.DROP_TABLE_LOCATION).executeUpdate();
         conn.prepareStatement(Queries.Drop.FOREIGN_KEY_CHECKS_ON).execute();
     }
 
@@ -87,8 +88,7 @@ public class Database {
         //execute the update
         ps.executeUpdate();
 
-        //commit changes and close prepared statement
-        conn.commit();
+        //commit changes (automatic) and close prepared statement
         ps.close();
 
         Log.log("Reservation with confirmation number " + Integer.toString(r.confNum) + " successfully added");
@@ -102,23 +102,25 @@ public class Database {
      */
     public void updateReservation(Reservation r) throws Exception {
         //Get Reservation tuple with confirmation number r.confNum
-        PreparedStatement ps = conn.prepareStatement("SELECT * FROM Reservations WHERE confNum = ?");
+        PreparedStatement ps = conn.prepareStatement("SELECT * FROM Reservations WHERE confNo = ?");
         ps.setInt(1, r.confNum);
         ResultSet rs = ps.executeQuery();
+        rs.next();
 
         //Set values for parameters in psUpdate. Update if corresponding value in Reservation r is null, otherwise, keep unchanged
         ps = conn.prepareStatement(Queries.Reservation.UPDATE_RESERVATION);
         ps.setString(1, r.vtName != null? r.vtName: rs.getString("vtname"));
-        ps.setString(2, r.dlicense != null? r.dlicense: rs.getString("dlicense"));
-        ps.setTimestamp(3, r.timePeriod.fromDateTime != null? r.timePeriod.fromDateTime: rs.getTimestamp("fromDateTime"));
-        ps.setTimestamp(4, r.timePeriod.toDateTime != null? r.timePeriod.toDateTime: rs.getTimestamp("toDateTime"));
-        ps.setInt(5, r.confNum);
+        ps.setString(2, r.dlicense != null? r.dlicense: rs.getString("dLicense"));
+        ps.setTimestamp(3, r.timePeriod != null? r.timePeriod.fromDateTime: rs.getTimestamp("fromDateTime"));
+        ps.setTimestamp(4, r.timePeriod != null? r.timePeriod.toDateTime: rs.getTimestamp("toDateTime"));
+        ps.setString(5, r.location != null? r.location.city: rs.getString("city"));
+        ps.setString(6, r.location != null? r.location.location: rs.getString("location"));
+        ps.setInt(7, r.confNum);
 
         //execute the update
         ps.executeUpdate();
 
-        //commit changes and close prepared statement
-        conn.commit();
+        //commit changes (automatic) and close prepared statement
         ps.close();
 
         Log.log("Reservation with confirmation number " + Integer.toString(r.confNum) + " successfully updated");
@@ -137,8 +139,7 @@ public class Database {
         //execute the update
         ps.executeUpdate();
 
-        //commit changes and close prepared statement
-        conn.commit();
+        //commit changes (automatic) and close prepared statement
         ps.close();
 
         Log.log("Reservation with confirmation number " + Integer.toString(r.confNum) + " successfully deleted");
@@ -162,21 +163,20 @@ public class Database {
         } else {
             query = "SELECT * FROM Reservations R WHERE ";
             if (t != null) {
-                //Given start time (from t) is after R.fromDateTime AND is before R.toDateTime
-                //Given end time (from t) is before R.toDateTime AND is after R.fromDateTime
-                query += "(R.fromDateTime < ? AND R.toDateTime > ?) OR " +
-                        "(R.toDateTime > ? AND R.toDateTime < ?) ";
+                //Given start time (from t) is at the same time or after R.fromDateTime AND is before R.toDateTime
+                //Given end time (from t) is at the same time before R.toDateTime AND is after R.fromDateTime
+                query += "((R.fromDateTime <= ? AND R.toDateTime > ?) OR " +
+                        "(R.toDateTime >= ? AND R.toDateTime < ?)) ";
                 marker = true;
             } if (vt != null) {
-                query += marker? "R.vtname = " + vt.vtname + " " :
-                        "AND R.vtname = " + vt.vtname + " ";
+                query += marker? "AND R.vtname = '" + vt.vtname + "' " :
+                        "R.vtname = '" + vt.vtname + "' ";
                 marker = true;
             } if (l != null) {
-                query += marker? "R.location = " + l.location + " " + "R.city = " + l.city:
-                        "AND R.location = " + l.location + " " + "R.city = " + l.city;
+                query += marker? "AND R.location = '" + l.location + "' " + "AND R.city = '" + l.city + "'":
+                        "R.location = '" + l.location + "' " + "AND R.city = '" + l.city + "'";
             }
         }
-
         PreparedStatement ps = conn.prepareStatement(query);
         //Insert Timestamp values to prepared statement
         if (t != null){
@@ -188,6 +188,7 @@ public class Database {
         ResultSet rs = ps.executeQuery();
 
         List<Reservation> r = new ArrayList<Reservation>();
+
         while (rs.next()){
             //Make a reservation object corresponding to a tuple queried from the database
             Reservation res = new Reservation();
@@ -222,7 +223,11 @@ public class Database {
         PreparedStatement ps = conn.prepareStatement("SELECT * FROM Reservations WHERE confNo = " + Integer.toString(r.confNum));
         ResultSet rs = ps.executeQuery();
 
-        if (!rs.next()) return null;
+        if (!rs.next()) {
+            System.out.println("NOTE: Reservation " + r.confNum + " does not exist");
+            ps.close();
+            return null;
+        }
 
         Reservation res = new Reservation();
         res.confNum = rs.getInt(1);
@@ -538,4 +543,12 @@ public class Database {
         // TODO: implement this
         throw new Exception("Method not implemented");
     }
+
+//    public void generateLocationCardData() throws Exception {
+//        PreparedStatement ps = conn.prepareStatement(Queries.Location.ADD_LOCATION);
+//
+//        //Set values for parameters in ps
+//        ps.setString(1, "Vancouver");
+//        ps.setString(2, "");
+//    }
 }

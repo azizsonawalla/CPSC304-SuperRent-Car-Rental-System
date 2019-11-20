@@ -10,7 +10,7 @@ public class Queries {
         public static String CREATE_TABLE_RESERVATIONS = "CREATE TABLE IF NOT EXISTS Reservations(" +
                 "confNo INT, " +
                 "vtName CHAR(50) NOT NULL, " +
-                "dLicense INT NOT NULL, " +
+                "dLicense CHAR(50) NOT NULL, " +
                 "fromDateTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
                 "toDateTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
                 "city CHAR(50) NOT NULL, " +
@@ -23,11 +23,11 @@ public class Queries {
         public static String CREATE_TABLE_RENT = "CREATE TABLE IF NOT EXISTS Rent(" +
                 "rId INT, " +
                 "vLicense CHAR(10) NOT NULL, " +
-                "dLicense INT NOT NULL, " +
+                "dLicense CHAR(50) NOT NULL, " +
                 "fromDateTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
                 "toDateTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
                 "odometer INT NOT NULL, " +
-                "cardNo INT NOT NULL, " +
+                "cardNo BIGINT NOT NULL, " +
                 "confNo INT NOT NULL, " +
                 "PRIMARY KEY (rId), " +
                 "FOREIGN KEY (vLicense) REFERENCES Vehicle(vLicense), " +
@@ -68,14 +68,14 @@ public class Queries {
                 "cellphone INT NOT NULL, " +
                 "name CHAR(255) NOT NULL, " +
                 "address CHAR(255), " +
-                "dLicense INT, " +
+                "dLicense CHAR(50), " +
                 "PRIMARY KEY (dLicense), " +
                 "UNIQUE (cellphone));";
 
-        public static String CREATE_TABLE_RETURNS = "CREATE TABLE IF NOT EXISTS Rent(" +
+        public static String CREATE_TABLE_RETURNS = "CREATE TABLE IF NOT EXISTS Returns(" +
                 "rId INT, " +
                 "vLicense CHAR(10) NOT NULL, " +
-                "dLicense INT NOT NULL, " +
+                "dLicense CHAR(50) NOT NULL, " +
                 "fromDateTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
                 "toDateTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
                 "odometer INT NOT NULL, " +
@@ -94,26 +94,44 @@ public class Queries {
                 "ExpDate INT, " +
                 "PRIMARY KEY (cardNo));";
 
+        public static String CREATE_TABLE_LOCATION = "CREATE TABLE IF NOT EXISTS Location(" +
+                "city CHAR(50), " +
+                "location CHAR(50), " +
+                "PRIMARY KEY (city, location));";
+
         public static String CHECK_TABLE_EXISTS = "SHOW TABLES LIKE '%?%';";
+    }
+
+    public static class Drop {
+        public static String FOREIGN_KEY_CHECKS_OFF = "SET FOREIGN_KEY_CHECKS = 0";
+        public static String FOREIGN_KEY_CHECKS_ON = "SET FOREIGN_KEY_CHECKS = 1";
+        public static String DROP_TABLE_RESERVATION = "DROP TABLE Reservations";
+        public static String DROP_TABLE_RENT = "DROP TABLE Rent";
+        public static String DROP_TABLE_VEHICLE = "DROP TABLE Vehicle";
+        public static String DROP_TABLE_VEHICLE_TYPE = "DROP TABLE VehicleType";
+        public static String DROP_TABLE_CUSTOMER = "DROP TABLE Customer";
+        public static String DROP_TABLE_RETURNS = "DROP TABLE Returns";
+        public static String DROP_TABLE_CARD = "DROP TABLE Card";
     }
 
     public static class Reservation {
 
         //query to add reservations
         public static String ADD_RESERVATION =
-                "INSERT INTO Reservation(confNum, vtname, dlicense, fromDateTime, toDatetime)" +
-                        "VALUES (?, ?, ?, ?, ?)";
+                "INSERT INTO Reservations(confNo, vtname, dLicense, fromDateTime, toDateTime, city, location) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         //query to update reservations
         public static String UPDATE_RESERVATION =
-                "UPDATE Reservation" +
-                        "SET vtname = ?, dlicense = ?, fromDateTime = ?, toDatetime = ?" +
+                "UPDATE Reservations " +
+                        "SET vtname = ?, dlicense = ?, fromDateTime = ?, toDatetime = ?, city = ?, location = ?" +
                         "WHERE confNum = ?";
 
         //query to delete reservations
         public static String DELETE_RESERVATION =
-                "DELETE FROM Reservation" +
+                "DELETE FROM Reservations " +
                         "WHERE confNum = ?";
+
     }
 
     public static class Rent {
@@ -134,6 +152,7 @@ public class Queries {
                 "VALUES (?,?,?,?)";
         String deleteQueryStatement = "DELETE FROM Customer " +
                 "WHERE dLicense = (?)";
+
     }
 
     public static class Vehicle {
@@ -143,15 +162,20 @@ public class Queries {
                 "VALUES (?,?,?,?,?,?,?,?,?,?,?)";
         String deleteQueryStatement = "DELETE FROM Vehicle " +
                 "WHERE vLicense = (?)";
+
     }
 
     public static class VehicleType {
 
-        // TODO: Add all queries to create, update and delete vehicle types here
-        String insertQueryStatement = "INSERT INTO VehicleType " +
-                "VALUES (?,?,?,?,?,?,?,?,?)";
-        String deleteQueryStatement = "DELETE FROM VehicleType " +
-                "WHERE vtName = (?)";
+        public static String ADD_VEHICLE_TYPE = "INSERT INTO VehicleType(vtname, features, wRate, dRate, hRate, wInsRate, dInsRate, hInsRate, kRate)" +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        public static String UPDATE_VEHICLE_TYPE = "UPDATE VehicleType " +
+                "SET vtname = ?, features = ?, wRate = ?, dRate = ?, hRate = ?, wInsRate = ?, dInsRate = ?, hInsRate = ?, kRate = ?" +
+                "WHERE vtname = ?";
+
+        public static String DELETE_VEHICLE_TYPE = "DELETE FROM VehicleType " +
+                "WHERE vtname = ?";
     }
 
     public static class Returns {
@@ -173,5 +197,21 @@ public class Queries {
 
     }
 
+    public static class CustomerTransactions {
+        //TODO: Find the number of vehicles for any combination of: car type, location, and time interval
+
+        //TODO: Decide on/generate confirmation number
+
+    }
+
+    public static class ClerkTransactions {
+        //TODO: Generate daily rentals report
+
+        //TODO: Generate daily rentals report for branch
+
+        //TODO: Generate daily returns report
+
+        //TODO: Generate daily returns report for branch
+    }
 }
 

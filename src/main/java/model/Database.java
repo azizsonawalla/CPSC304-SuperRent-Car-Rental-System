@@ -41,12 +41,32 @@ public class Database {
      * @throws Exception if there was an error creating any of the tables
      */
     public void createTables() throws Exception {
-        // TODO: implement this
-        // NOTE: Use the queries set in the static Queries class, for example:
-        String query = Queries.Create.CREATE_TABLE_RESERVATIONS;
-        throw new Exception("Method createTables() is not implemented");
+        //Creates all the tables
+        conn.prepareStatement(Queries.Create.CREATE_TABLE_CUSTOMER).executeUpdate();
+        conn.prepareStatement(Queries.Create.CREATE_TABLE_VEHICLE_TYPE).executeUpdate();
+        conn.prepareStatement(Queries.Create.CREATE_TABLE_LOCATION).executeUpdate();
+        conn.prepareStatement(Queries.Create.CREATE_TABLE_RESERVATIONS).executeUpdate();
+        conn.prepareStatement(Queries.Create.CREATE_TABLE_VEHICLE).executeUpdate();
+        conn.prepareStatement(Queries.Create.CREATE_TABLE_CARD).executeUpdate();
+        conn.prepareStatement(Queries.Create.CREATE_TABLE_RETURNS).executeUpdate();
+        conn.prepareStatement(Queries.Create.CREATE_TABLE_RENT).executeUpdate();
     }
 
+    /**
+     * Drops all the tables that have been created
+     * @throws Exception
+     */
+    public void dropTables() throws Exception {
+        conn.prepareStatement(Queries.Drop.FOREIGN_KEY_CHECKS_OFF).execute();
+        conn.prepareStatement(Queries.Drop.DROP_TABLE_RESERVATION).executeUpdate();
+        conn.prepareStatement(Queries.Drop.DROP_TABLE_RENT).executeUpdate();
+        conn.prepareStatement(Queries.Drop.DROP_TABLE_VEHICLE).executeUpdate();
+        conn.prepareStatement(Queries.Drop.DROP_TABLE_VEHICLE_TYPE).executeUpdate();
+        conn.prepareStatement(Queries.Drop.DROP_TABLE_CUSTOMER).executeUpdate();
+        conn.prepareStatement(Queries.Drop.DROP_TABLE_RETURNS).executeUpdate();
+        conn.prepareStatement(Queries.Drop.DROP_TABLE_CARD).executeUpdate();
+        conn.prepareStatement(Queries.Drop.FOREIGN_KEY_CHECKS_ON).execute();
+    }
 
     /* Reservations */
 
@@ -64,6 +84,8 @@ public class Database {
         ps.setString(3, r.dlicense);
         ps.setTimestamp(4, r.timePeriod.fromDateTime);
         ps.setTimestamp(5, r.timePeriod.toDateTime);
+        ps.setString(6, r.location.city);
+        ps.setString(7, r.location.location);
 
         //execute the update
         ps.executeUpdate();
@@ -314,7 +336,26 @@ public class Database {
      */
     public void addVehicleType(VehicleType vt) throws Exception {
         // TODO: implement this
-        throw new Exception("Method not implemented");
+        PreparedStatement ps = conn.prepareStatement(Queries.VehicleType.ADD_VEHICLE_TYPE);
+
+        //Set values for parameters in ps
+        ps.setString(1, vt.vtname);
+        ps.setString(2, vt.features);
+        ps.setInt(3, vt.wrate);
+        ps.setInt(4, vt.drate);
+        ps.setInt(5, vt.hrate);
+        ps.setInt(6, vt.wirate);
+        ps.setInt(7, vt.dirate);
+        ps.setInt(8, vt.hirate);
+        ps.setInt(9, vt.krate);
+
+        //execute the update
+        ps.executeUpdate();
+
+        //commit changes and close prepared statement
+        ps.close();
+
+        Log.log("VehicleType with vtname " + vt.vtname + " successfully added");
     }
 
     /**
@@ -325,6 +366,7 @@ public class Database {
      */
     public void updateVehicleType(VehicleType vt) throws Exception {
         // TODO: implement this
+
         throw new Exception("Method not implemented");
     }
 
@@ -340,7 +382,17 @@ public class Database {
 
     public VehicleType getVehicleTypeMatching(VehicleType vt) throws Exception {
         // TODO: implement this
-        throw new Exception("Method not implemented");
+
+        PreparedStatement ps = conn.prepareStatement("SELECT * FROM VehicleType WHERE vtName = '" + vt.vtname + "'");
+        ResultSet rs = ps.executeQuery();
+
+        if (!rs.next()) return null;
+        VehicleType res = new VehicleType(rs.getString(1), rs.getString(2), rs.getInt(3),
+                rs.getInt(4), rs.getInt(5), rs.getInt(6), rs.getInt(7),
+                rs.getInt(8), rs.getInt(9));
+        System.out.println("VehicleType with vtname " + vt.vtname + " successfully retrieved");
+        ps.close();
+        return res;
     }
 
     /* Vehicle */

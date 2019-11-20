@@ -17,9 +17,7 @@ public class Rental {
     public int startOdometer;
 
     //Card for which rental was made
-    public long CardNo;
-    public String cardName;
-    public int expDate;
+    public Card card;
 
     //If customer is renting from a reservation, identifies Reservation involved in the Rental
     public int confNo;

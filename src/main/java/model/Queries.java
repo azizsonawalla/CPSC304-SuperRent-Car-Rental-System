@@ -65,7 +65,7 @@ public class Queries {
                 "PRIMARY KEY (vtName));";
 
         public static String CREATE_TABLE_CUSTOMER = "CREATE TABLE IF NOT EXISTS Customer(" +
-                "cellphone INT NOT NULL, " +
+                "cellphone BIGINT NOT NULL, " +
                 "name CHAR(255) NOT NULL, " +
                 "address CHAR(255), " +
                 "dLicense CHAR(50), " +
@@ -147,17 +147,21 @@ public class Queries {
 
     public static class Customer {
 
-        // TODO: Add all queries to create, update and delete rentals here
-        String insertQueryStatement = "INSERT INTO Customer " +
+        public static String ADD_CUSTOMER = "INSERT INTO Customer(cellphone, name, address, dLicense) " +
                 "VALUES (?,?,?,?)";
-        String deleteQueryStatement = "DELETE FROM Customer " +
-                "WHERE dLicense = (?)";
+
+        public static String UPDATE_CUSTOMER =
+                "UPDATE Customer " +
+                        "SET cellphone = ?, name = ?, address = ? " +
+                        "WHERE dLicense = ?";
+
+        public static String DELETE_CUSTOMER = "DELETE FROM Customer " +
+                "WHERE dLicense = ?";
 
     }
 
     public static class Vehicle {
 
-        // TODO: Add all queries to create, update and delete rentals here
         String insertQueryStatement = "INSERT INTO Vehicle " +
                 "VALUES (?,?,?,?,?,?,?,?,?,?,?)";
         String deleteQueryStatement = "DELETE FROM Vehicle " +

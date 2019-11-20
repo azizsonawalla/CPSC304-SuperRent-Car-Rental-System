@@ -1,15 +1,12 @@
 package model;
 
-import model.Entities.Location;
-import model.Entities.Reservation;
-import model.Entities.TimePeriod;
+import model.Entities.Customer;
 import model.Entities.VehicleType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
-import java.sql.Timestamp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -43,33 +40,29 @@ class DatabaseTest {
 
     @Test
     void addReservation() {
-        try {
-            TimePeriod t = new TimePeriod();
-            t.toDateTime = new Timestamp(1000000000);
-            t.fromDateTime = new Timestamp(28801000);
-
-            Location l = new Location();
-            l.city = "Vancouver";
-            l.location = "123 Burrard Street";
-
-            Reservation add = new Reservation(123456, "Sedan", t, l, "123abc");
-            db.addReservation(add);
-
-            Reservation result = db.getReservationMatching(add);
-            assertEquals(add, result);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            TimePeriod t = new TimePeriod();
+//            t.toDateTime = new Timestamp(1000000000);
+//            t.fromDateTime = new Timestamp(28801000);
+//
+//            Location l = new Location();
+//            l.city = "Vancouver";
+//            l.location = "123 Burrard Street";
+//
+//            Reservation add = new Reservation(123456, "Sedan", t, l, "123abc");
+//            db.addReservation(add);
+//
+//            Reservation result = db.getReservationMatching(add);
+//            assertEquals(add, result);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Test
     void updateReservation() {
-        TimePeriod t = new TimePeriod();
-        t.toDateTime = new Timestamp(900);
-        t.fromDateTime = new Timestamp(800);
 
-        Location l;
     }
 
     @Test
@@ -106,18 +99,81 @@ class DatabaseTest {
 
     @Test
     void addCustomer() {
+        try {
+            Customer add = new Customer(6048888888L, "Billy", "6363 Agronomy Road", "1234abcd");
+            db.addCustomer(add);
+            Customer result = db.getCustomerMatching(add);
+            assertEquals(add.cellphone, result.cellphone);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    void updateCustomer() {
+    void updateCustomerNoNulls() {
+        try {
+            Customer add = new Customer(6048888888L, "Billy", "6363 Agronomy Road", "1234abcd");
+            db.addCustomer(add);
+            Customer update = new Customer(6044206969L, "Bobby", "1234 University Boulevard", "1234abcd");
+            db.updateCustomer(update);
+            Customer result = db.getCustomerMatching(add);
+            assertEquals(result.cellphone, update.cellphone);
+            assertEquals(result.dlicense, update.dlicense);
+            assertEquals(result.name, update.name);
+            assertEquals(result.address, update.address);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void updateCustomerWithNulls() {
+        try {
+            Customer add = new Customer(6048888888L, "Billy", "6363 Agronomy Road", "1234abcd");
+            db.addCustomer(add);
+            Customer update = new Customer(-1, "Bobby", null, "1234abcd");
+            db.updateCustomer(update);
+            Customer result = db.getCustomerMatching(add);
+            assertEquals(result.cellphone, add.cellphone);
+            assertEquals(result.dlicense, update.dlicense);
+            assertEquals(result.name, update.name);
+            assertEquals(result.address, add.address);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void updateCustomerNotExists() {
+        try {
+            Customer NotExists = new Customer(6048888888L, "Billy", "6363 Agronomy Road", "1234abcd");
+            db.updateCustomer(NotExists);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     void deleteCustomer() {
+        try {
+            Customer add = new Customer(6048888888L, "Billy", "6363 Agronomy Road", "1234abcd");
+            db.addCustomer(add);
+            db.getCustomerMatching(add);
+            db.deleteCustomer(add);
+            db.getCustomerMatching(add);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    void getCustomerMatching() {
+    void deleteCustomerNotExists() {
+        try {
+            Customer notExists = new Customer(6048888888L, "Billy", "6363 Agronomy Road", "1234abcd");
+            db.deleteCustomer(notExists);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -216,11 +272,8 @@ class DatabaseTest {
     }
 
     @Test
-    void getVehicleTypeMatching() {
-    }
-
-    @Test
     void addVehicle() {
+
     }
 
     @Test

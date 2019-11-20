@@ -294,8 +294,21 @@ public class Database {
      * @throws Exception if there is an error adding the Customer, for example if the values don't meet constraints
      */
     public void addCustomer(Customer c) throws Exception {
-        // TODO: implement this
-        throw new Exception("Method not implemented");
+        PreparedStatement ps = conn.prepareStatement(Queries.Customer.ADD_CUSTOMER);
+
+        //Set values for parameters in ps
+        ps.setLong(1, c.cellphone);
+        ps.setString(2, c.name);
+        ps.setString(3, c.address);
+        ps.setString(4, c.dlicense);
+
+        //execute the update
+        ps.executeUpdate();
+
+        //commit changes and close prepared statement
+        ps.close();
+
+        Log.log("Customer with dlicense " + c.dlicense + " successfully added");
     }
 
     /**
@@ -305,8 +318,30 @@ public class Database {
      * @throws Exception if there is an error updating entry, for example if entry doesn't exist already
      */
     public void updateCustomer(Customer c) throws Exception {
-        // TODO: implement this
-        throw new Exception("Method not implemented");
+        PreparedStatement ps = conn.prepareStatement("SELECT * FROM Customer WHERE dLicense = ?");
+        ps.setString(1, c.dlicense);
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+
+        //Set values for parameters in psUpdate. Update if corresponding value in Reservation r is null, otherwise, keep unchanged
+        ps = conn.prepareStatement(Queries.Customer.UPDATE_CUSTOMER);
+        ps.setLong(1, c.cellphone != -1? c.cellphone: rs.getLong("cellphone"));
+        ps.setString(2, c.name != null? c.name: rs.getString("name"));
+        ps.setString(3, c.address != null? c.address: rs.getString("address"));
+        ps.setString(4, c.dlicense);
+
+        //execute the update
+        int rowCount = ps.executeUpdate();
+        if (rowCount == 0) {
+            System.out.println("NOTE: Customer " + c.dlicense + " does not exist");
+            ps.close();
+            return;
+        }
+
+        //commit changes and close prepared statement
+        ps.close();
+
+        Log.log("Customer with dlicense " + c.dlicense + " successfully updated");
     }
 
     /**
@@ -315,13 +350,39 @@ public class Database {
      * @throws Exception if there is an error deleting entry, for example if entry doesn't exist already
      */
     public void deleteCustomer(Customer c) throws Exception {
-        // TODO: implement this
-        throw new Exception("Method not implemented");
+        PreparedStatement ps = conn.prepareStatement(Queries.Customer.DELETE_CUSTOMER);
+        //Set confirmation number parameter for Reservation tuple to be deleted
+        ps.setString(1, c.dlicense);
+
+        //execute the update
+        int rowCount = ps.executeUpdate();
+        if (rowCount == 0) {
+            System.out.println("NOTE: Customer " + c.dlicense + " does not exist");
+            ps.close();
+            return;
+        }
+
+        //commit changes and close prepared statement
+        ps.close();
+
+        Log.log("Customer with dlicense " + c.dlicense + " successfully deleted");
     }
 
     public Customer getCustomerMatching(Customer c) throws Exception {
-        // TODO: implement this
-        throw new Exception("Method not implemented");
+        PreparedStatement ps = conn.prepareStatement("SELECT * FROM Customer WHERE dLicense = '" + c.dlicense + "'");
+        ResultSet rs = ps.executeQuery();
+
+        if (!rs.next()) {
+            System.out.println("NOTE: Customer " + c.dlicense + " does not exist");
+            ps.close();
+            return null;
+        }
+
+        Customer res = new Customer(rs.getLong(1), rs.getString(2), rs.getString(3),
+                rs.getString(4));
+        System.out.println("Customer with dLicense " + c.dlicense + " successfully retrieved");
+        ps.close();
+        return res;
     }
 
     /* Vehicle Type */
@@ -332,7 +393,6 @@ public class Database {
      * @throws Exception if there is an error adding the VehicleType, for example if the values don't meet constraints
      */
     public void addVehicleType(VehicleType vt) throws SQLException {
-        // TODO: implement this
         PreparedStatement ps = conn.prepareStatement(Queries.VehicleType.ADD_VEHICLE_TYPE);
 
         //Set values for parameters in ps
@@ -446,7 +506,7 @@ public class Database {
      */
     public void addVehicle(Vehicle v) throws Exception {
         // TODO: implement this
-        throw new Exception("Method not implemented");
+
     }
 
     /**

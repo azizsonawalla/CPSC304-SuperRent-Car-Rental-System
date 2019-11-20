@@ -22,6 +22,7 @@ public class QueryOrchestrator {
     VehicleType VT2 = new VehicleType("Truck");
     VehicleType VT3 = new VehicleType("Hatchback");
     VehicleType VT4 = new VehicleType("Sedan");
+    Vehicle V1 = new Vehicle(1, "license", "Tesla", "Model S", 2018, "black", 0, true, "sedan", L1);
 
     private Database db;
 
@@ -44,7 +45,7 @@ public class QueryOrchestrator {
 
     public List<Vehicle> getVehiclesFor(VTSearchResult searchResult) throws Exception {
         // TODO: Implement this
-        throw new Exception("Not implemented");
+        return Arrays.asList(V1);
     }
 
     /**

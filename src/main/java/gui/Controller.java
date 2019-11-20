@@ -21,6 +21,7 @@ abstract class Controller {
     public abstract void refreshAll();
     
     @FXML private void switchToClerk(ActionEvent event) throws Exception {
+        main.customerStartRes = null;
         main.setRoot(GUIConfig.CLERK_RENTAL_RES_SEARCH);
     }
 

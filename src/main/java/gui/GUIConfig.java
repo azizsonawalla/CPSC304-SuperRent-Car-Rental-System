@@ -11,6 +11,7 @@ public class GUIConfig {
     private static String FXML_PATH_TEMPLATE = "views/%s.fxml";
     // Customer
     public static String CUSTOMER_CAR_SEARCH = String.format(FXML_PATH_TEMPLATE, "customerCarSearch");
+    public static String CUSTOMER_MAKE_RES = String.format(FXML_PATH_TEMPLATE, "customerMakeReservation");
     // Clerk
     public static String CLERK_RENTAL_RES_SEARCH = String.format(FXML_PATH_TEMPLATE, "clerkReservationRentalSearch");
 }

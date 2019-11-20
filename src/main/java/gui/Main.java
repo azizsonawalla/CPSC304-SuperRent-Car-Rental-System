@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import model.Orchestrator.VTSearchResult;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,8 +16,11 @@ import java.util.concurrent.Executors;
 public class Main extends Application {
 
     private Scene scene;
-    private Map<String, Pair<Pane, Controller>> scenePanes;
+    public Map<String, Pair<Pane, Controller>> scenePanes;
     public ExecutorService pool;
+
+    // Inter-scene data
+    VTSearchResult customerStartRes; // TODO: set this to null once reservation is complete
 
     public Main() {
         super();
@@ -54,6 +58,10 @@ public class Main extends Application {
 
         fxml = GUIConfig.CLERK_RENTAL_RES_SEARCH;
         c = new clerkReservationRental(this);
+        scenePanes.put(fxml, new Pair<Pane, Controller>(getPane(fxml, c), c));
+
+        fxml = GUIConfig.CUSTOMER_MAKE_RES;
+        c = new customerMakeReservation(this);
         scenePanes.put(fxml, new Pair<Pane, Controller>(getPane(fxml, c), c));
         // TODO: add others
     }

@@ -14,6 +14,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import model.Entities.Location;
 import model.Entities.TimePeriod;
+import model.Entities.Vehicle;
 import model.Entities.VehicleType;
 import model.Orchestrator.VTSearchResult;
 import model.Util.Log;
@@ -27,12 +28,15 @@ import java.util.concurrent.locks.ReentrantLock;
 public class customerCarSearch extends Controller implements Initializable {
 
     private String SEARCH_RESULT_TEMPLATE = "  Option %d:   Vehicle Type = %s,     Location = %s, %s     Number Available = %d\n";
+    private String RESULT_DETAILS_TEMPLATE = "  Make = %s,   Model = %s,  Year = %d,  Colour = %s,  License plate = %s";
     private List<VTSearchResult> currentResults;
     private Lock lock = new ReentrantLock();
 
+    private @FXML TextFlow searchResults;
+    private @FXML TextFlow searchResultDetails;
+
     private @FXML ComboBox<String> branchSelector;
     private @FXML ComboBox<String> vtSelector;
-    private @FXML TextFlow searchResults;
     private @FXML ComboBox<Integer> startResWithOption;
     private @FXML ComboBox<Integer> seeDetailsForOption;
 
@@ -50,106 +54,98 @@ public class customerCarSearch extends Controller implements Initializable {
     private @FXML ComboBox<String> endAM;
 
     private @FXML Button searchButton;
+    private @FXML Button startReservationButton;
 
     // Gets all locations from DB and puts it in branch selector
-    private Task refreshBranchList = new Task() {
-        @Override
-        protected Object call() throws Exception {
-            try {
-                lock.lock();
-                List<Location> branches = qo.getAllLocationNames();
-                for (Location l : branches) {
-                    String locationName = String.format("%s, %s", l.location, l.city);
-                    branchSelector.getItems().add(locationName);
-                }
-                branchSelector.getItems().add(ALL_BRANCHES);
-                branchSelector.setValue(ALL_BRANCHES);
-                lock.unlock();
-            } catch (Exception e) {
-                Log.log("Error refreshing branch list on customer car search screen: " + e.getMessage());
+    private Runnable refreshBranchList = () -> {
+        try {
+            lock.lock();
+            List<Location> branches = qo.getAllLocationNames();
+            for (Location l : branches) {
+                String locationName = String.format("%s, %s", l.location, l.city);
+                branchSelector.getItems().add(locationName);
             }
-            return null;
+            branchSelector.getItems().add(ALL_BRANCHES);
+            branchSelector.setValue(ALL_BRANCHES);
+        } catch (Exception e) {
+            Log.log("Error refreshing branch list on customer car search screen: " + e.getMessage());
+        } finally {
+            lock.unlock();
         }
     };
 
     // Gets all vehicle types from DB and puts it in vt selector
-    private Task refreshVehicleTypeList = new Task() {
-        @Override
-        protected Object call() throws Exception {
-            try {
-                lock.lock();
-                List<VehicleType> vehicleTypes = qo.getAllVehicleTypes();
-                for (VehicleType vt : vehicleTypes) {
-                    vtSelector.getItems().add(vt.vtname);
-                }
-                vtSelector.getItems().add(ALL_VT);
-                vtSelector.setValue(ALL_VT);
-                lock.unlock();
-            } catch (Exception e) {
-                Log.log("Error refreshing vt list on customer car search screen: " + e.getMessage());
+    private Runnable refreshVehicleTypeList = () -> {
+        try {
+            lock.lock();
+            List<VehicleType> vehicleTypes = qo.getAllVehicleTypes();
+            for (VehicleType vt : vehicleTypes) {
+                vtSelector.getItems().add(vt.vtname);
             }
-            return null;
+            vtSelector.getItems().add(ALL_VT);
+            vtSelector.setValue(ALL_VT);
+        } catch (Exception e) {
+            Log.log("Error refreshing vt list on customer car search screen: " + e.getMessage());
+        } finally {
+            lock.unlock();
         }
     };
 
     // Sets default time period values
-    private Task resetTimePeriod = new Task() {
-        @Override
-        protected Object call() throws Exception {
-            try {
-                lock.lock();
-                List<Integer> DATES = new ArrayList<>();
-                for (int i = 1; i <= 31; i++) DATES.add(i);
-                List<Integer> MONTHS = new ArrayList<>();
-                for (int i = 1; i <= 12; i++) MONTHS.add(i);
-                List<Integer> YEARS = new ArrayList<>();
-                for (int i = 2019; i <= 2025; i++) YEARS.add(i);
-                List<Integer> HOURS = new ArrayList<>();
-                for (int i = 1; i <= 12; i++) HOURS.add(i);
-                List<Integer> MINUTES = new ArrayList<>();
-                for (int i = 0; i <= 55; i++) MINUTES.add(i);
-                List<String> AMPM = Arrays.asList("AM", "PM");
+    private Runnable resetTimePeriod = () -> {
+        try {
+            lock.lock();
+            List<Integer> DATES = new ArrayList<>();
+            for (int i = 1; i <= 31; i++) DATES.add(i);
+            List<Integer> MONTHS = new ArrayList<>();
+            for (int i = 1; i <= 12; i++) MONTHS.add(i);
+            List<Integer> YEARS = new ArrayList<>();
+            for (int i = 2019; i <= 2025; i++) YEARS.add(i);
+            List<Integer> HOURS = new ArrayList<>();
+            for (int i = 1; i <= 12; i++) HOURS.add(i);
+            List<Integer> MINUTES = new ArrayList<>();
+            for (int i = 0; i <= 55; i++) MINUTES.add(i);
+            List<String> AMPM = Arrays.asList("AM", "PM");
 
-                startDate.getItems().addAll(DATES);
-                startDate.setValue(startDate.getItems().get(0));
+            startDate.getItems().addAll(DATES);
+            startDate.setValue(startDate.getItems().get(0));
 
-                endDate.getItems().addAll(DATES);
-                endDate.setValue(endDate.getItems().get(0));
+            endDate.getItems().addAll(DATES);
+            endDate.setValue(endDate.getItems().get(0));
 
-                startMonth.getItems().addAll(MONTHS);
-                startMonth.setValue(startMonth.getItems().get(0));
+            startMonth.getItems().addAll(MONTHS);
+            startMonth.setValue(startMonth.getItems().get(0));
 
-                endMonth.getItems().addAll(MONTHS);
-                endMonth.setValue(endMonth.getItems().get(0));
+            endMonth.getItems().addAll(MONTHS);
+            endMonth.setValue(endMonth.getItems().get(0));
 
-                startYear.getItems().addAll(YEARS);
-                startYear.setValue(startYear.getItems().get(0));
+            startYear.getItems().addAll(YEARS);
+            startYear.setValue(startYear.getItems().get(0));
 
-                endYear.getItems().addAll(YEARS);
-                endYear.setValue(endYear.getItems().get(0));
+            endYear.getItems().addAll(YEARS);
+            endYear.setValue(endYear.getItems().get(0));
 
-                startHour.getItems().addAll(HOURS);
-                startHour.setValue(startHour.getItems().get(0));
+            startHour.getItems().addAll(HOURS);
+            startHour.setValue(startHour.getItems().get(0));
 
-                startMinute.getItems().addAll(MINUTES);
-                startMinute.setValue(startMinute.getItems().get(0));
+            startMinute.getItems().addAll(MINUTES);
+            startMinute.setValue(startMinute.getItems().get(0));
 
-                startAM.getItems().addAll(AMPM);
-                startAM.setValue(startAM.getItems().get(0));
+            startAM.getItems().addAll(AMPM);
+            startAM.setValue(startAM.getItems().get(0));
 
-                endHour.getItems().addAll(HOURS);
-                endHour.setValue(endHour.getItems().get(0));
+            endHour.getItems().addAll(HOURS);
+            endHour.setValue(endHour.getItems().get(0));
 
-                endMinute.getItems().addAll(MINUTES);
-                endMinute.setValue(endMinute.getItems().get(0));
+            endMinute.getItems().addAll(MINUTES);
+            endMinute.setValue(endMinute.getItems().get(0));
 
-                endAM.getItems().addAll(AMPM);
-                endAM.setValue(endAM.getItems().get(0));
-                lock.unlock();
-            } catch (Exception e) {
-                Log.log("Error resetting time period: " + e.getMessage());
-            }
-            return null;
+            endAM.getItems().addAll(AMPM);
+            endAM.setValue(endAM.getItems().get(0));
+        } catch (Exception e) {
+            Log.log("Error resetting time period: " + e.getMessage());
+        } finally {
+            lock.unlock();
         }
     };
 
@@ -158,7 +154,6 @@ public class customerCarSearch extends Controller implements Initializable {
         @Override
         public void run() {
             try {
-                Log.log("Refreshing search results");
                 lock.lock();
                 Location l = getCurrentLocationSelection();
                 VehicleType vt = getCurrentVTSelection();
@@ -183,23 +178,48 @@ public class customerCarSearch extends Controller implements Initializable {
                 } else {
                     searchResults.getChildren().add(new Text("No results matched your search..."));
                 }
-                lock.unlock();
             } catch (Exception e) {
                 Log.log("Error refreshing search results in table: " + e.getMessage());
+            } finally {
+                lock.unlock();
             }
         }
     };
 
     // Gets all vt search results and put it in table
-    private Task showVehicleDetails = new Task() {
-        @Override
-        protected Object call() throws Exception {
-            try {
-                // TODO: complete task
-            } catch (Exception e) {
-                Log.log("Error refreshing search results in table: " + e.getMessage());
+    private Runnable showVehicleDetails = () -> {
+        try {
+            lock.lock();
+            int optionSelected = seeDetailsForOption.getValue();
+            VTSearchResult correspondingOption = currentResults.get(optionSelected);
+            List<Vehicle> vehicles = qo.getVehiclesFor(correspondingOption);
+            searchResultDetails.getChildren().clear();
+            if (vehicles.size() > 0) {
+                for (Vehicle v : vehicles) {
+                    String str = String.format(RESULT_DETAILS_TEMPLATE, v.make, v.model, v.year, v.color, v.vlicense);
+                    Text text = new Text(str);
+                    searchResultDetails.getChildren().add(text);
+                }
+            } else {
+                searchResultDetails.getChildren().add(new Text("No vehicles in this category"));
             }
-            return null;
+        } catch (Exception e) {
+            Log.log("Error showing vehicle details: " + e.getMessage());
+        } finally {
+            lock.unlock();
+        }
+    };
+
+    private Runnable startReservation = () -> {
+        try {
+            lock.lock();
+            int optionSelected = seeDetailsForOption.getValue();
+            this.main.customerStartRes = currentResults.get(optionSelected);
+            this.main.setRoot(GUIConfig.CUSTOMER_MAKE_RES);
+        } catch (Exception e) {
+            Log.log("Error starting reservation: " + e.getMessage());
+        } finally {
+            lock.unlock();
         }
     };
 
@@ -210,6 +230,8 @@ public class customerCarSearch extends Controller implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         refreshAll();
         searchButton.setOnAction(event -> Platform.runLater(refreshVehicleTypeSearchResultTable));
+        seeDetailsForOption.setOnAction(event -> Platform.runLater(showVehicleDetails));
+        startReservationButton.setOnAction(event -> Platform.runLater(startReservation));
     }
 
     public void refreshAll() {
@@ -220,7 +242,7 @@ public class customerCarSearch extends Controller implements Initializable {
         // Get all vehicle types and put them as options in Select Vehicle Type
         this.main.pool.execute(refreshVehicleTypeList);
         // Update VT Search Result table with selection
-        this.main.pool.execute(refreshVehicleTypeSearchResultTable);
+        Platform.runLater(refreshVehicleTypeSearchResultTable);
     }
 
     private Location getCurrentLocationSelection() {

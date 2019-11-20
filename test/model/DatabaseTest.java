@@ -51,8 +51,8 @@ class DatabaseTest {
 
             //Create Reservation object to add
             TimePeriod t = new TimePeriod();
-            t.toDateTime = new Timestamp(1000000000);
-            t.fromDateTime = new Timestamp(28801000);
+            t.endDateAndTime = new Timestamp(1000000000);
+            t.startDateAndTime = new Timestamp(28801000);
 
             Location l = new Location();
             l.city = "Vancouver";
@@ -64,8 +64,8 @@ class DatabaseTest {
             Reservation result = db.getReservationMatching(add);
             assertEquals(add.confNum, result.confNum);
             assertEquals(add.vtName, result.vtName);
-            assertEquals(add.timePeriod.toDateTime, result.timePeriod.toDateTime);
-            assertEquals(add.timePeriod.fromDateTime, result.timePeriod.fromDateTime);
+            assertEquals(add.timePeriod.endDateAndTime, result.timePeriod.endDateAndTime);
+            assertEquals(add.timePeriod.startDateAndTime, result.timePeriod.startDateAndTime);
             assertEquals(add.location.city, result.location.city);
             assertEquals(add.location.location, result.location.location);
             assertEquals(add.dlicense, result.dlicense);
@@ -96,11 +96,11 @@ class DatabaseTest {
 
             //Create Reservation object to add/update
             TimePeriod t1 = new TimePeriod();
-            t1.toDateTime = new Timestamp(1000000000);
-            t1.fromDateTime = new Timestamp(28801000);
+            t1.endDateAndTime = new Timestamp(1000000000);
+            t1.startDateAndTime = new Timestamp(28801000);
             TimePeriod t2 = new TimePeriod();
-            t2.toDateTime = new Timestamp(900000000);
-            t2.fromDateTime = new Timestamp(38801000);
+            t2.endDateAndTime = new Timestamp(900000000);
+            t2.startDateAndTime = new Timestamp(38801000);
 
             Location l1 = new Location();
             l1.city = "Vancouver";
@@ -118,8 +118,8 @@ class DatabaseTest {
             Reservation result = db.getReservationMatching(add);
             assertEquals(update.confNum, result.confNum);
             assertEquals(update.vtName, result.vtName);
-            assertEquals(update.timePeriod.toDateTime, result.timePeriod.toDateTime);
-            assertEquals(update.timePeriod.fromDateTime, result.timePeriod.fromDateTime);
+            assertEquals(update.timePeriod.endDateAndTime, result.timePeriod.endDateAndTime);
+            assertEquals(update.timePeriod.startDateAndTime, result.timePeriod.startDateAndTime);
             assertEquals(update.location.city, result.location.city);
             assertEquals(update.location.location, result.location.location);
             assertEquals(update.dlicense, result.dlicense);
@@ -148,8 +148,8 @@ class DatabaseTest {
 
             //Create Reservation object to add/update
             TimePeriod t1 = new TimePeriod();
-            t1.toDateTime = new Timestamp(1000000000);
-            t1.fromDateTime = new Timestamp(28801000);
+            t1.endDateAndTime = new Timestamp(1000000000);
+            t1.startDateAndTime = new Timestamp(28801000);
 
             Location l1 = new Location();
             l1.city = "Vancouver";
@@ -164,8 +164,8 @@ class DatabaseTest {
             Reservation result = db.getReservationMatching(add);
             assertEquals(add.confNum, result.confNum);
             assertEquals(add.vtName, result.vtName);
-            assertEquals(add.timePeriod.toDateTime, result.timePeriod.toDateTime);
-            assertEquals(add.timePeriod.fromDateTime, result.timePeriod.fromDateTime);
+            assertEquals(add.timePeriod.endDateAndTime, result.timePeriod.endDateAndTime);
+            assertEquals(add.timePeriod.startDateAndTime, result.timePeriod.startDateAndTime);
             assertEquals(add.location.city, result.location.city);
             assertEquals(add.location.location, result.location.location);
             assertEquals(add.dlicense, result.dlicense);
@@ -192,8 +192,8 @@ class DatabaseTest {
 
             //Create Reservation object to add/update
             TimePeriod t1 = new TimePeriod();
-            t1.toDateTime = new Timestamp(1000000000);
-            t1.fromDateTime = new Timestamp(28801000);
+            t1.endDateAndTime = new Timestamp(1000000000);
+            t1.startDateAndTime = new Timestamp(28801000);
 
             Location l1 = new Location();
             l1.city = "Vancouver";
@@ -227,11 +227,11 @@ class DatabaseTest {
 
             //Create Reservation object to add/update
             TimePeriod t1 = new TimePeriod();
-            t1.toDateTime = new Timestamp(1000000000);
-            t1.fromDateTime = new Timestamp(28801000);
+            t1.endDateAndTime = new Timestamp(1000000000);
+            t1.startDateAndTime = new Timestamp(28801000);
             TimePeriod t2 = new TimePeriod();
-            t2.toDateTime = new Timestamp(900000000);
-            t2.fromDateTime = new Timestamp(38801000);
+            t2.endDateAndTime = new Timestamp(900000000);
+            t2.startDateAndTime = new Timestamp(38801000);
 
             Location l1 = new Location();
             l1.city = "Vancouver";
@@ -250,16 +250,16 @@ class DatabaseTest {
             assertEquals(2, r.size());
             assertEquals(123456, r.get(0).confNum);
             assertEquals("Sedan", r.get(0).vtName);
-            assertEquals(t1.fromDateTime, r.get(0).timePeriod.fromDateTime);
-            assertEquals(t1.toDateTime, r.get(0).timePeriod.toDateTime);
+            assertEquals(t1.startDateAndTime, r.get(0).timePeriod.startDateAndTime);
+            assertEquals(t1.endDateAndTime, r.get(0).timePeriod.endDateAndTime);
             assertEquals(l1.city, r.get(0).location.city);
             assertEquals(l1.location, r.get(0).location.location);
             assertEquals("1234abcd", r.get(0).dlicense);
 
             assertEquals(987654, r.get(1).confNum);
             assertEquals("SUV", r.get(1).vtName);
-            assertEquals(t2.fromDateTime, r.get(1).timePeriod.fromDateTime);
-            assertEquals(t2.toDateTime, r.get(1).timePeriod.toDateTime);
+            assertEquals(t2.startDateAndTime, r.get(1).timePeriod.startDateAndTime);
+            assertEquals(t2.endDateAndTime, r.get(1).timePeriod.endDateAndTime);
             assertEquals(l2.city, r.get(1).location.city);
             assertEquals(l2.location, r.get(1).location.location);
             assertEquals("5678efgh", r.get(1).dlicense);
@@ -289,11 +289,11 @@ class DatabaseTest {
 
             //Create Reservation object to add/update
             TimePeriod t1 = new TimePeriod();
-            t1.toDateTime = new Timestamp(1000000000);
-            t1.fromDateTime = new Timestamp(28801000);
+            t1.endDateAndTime = new Timestamp(1000000000);
+            t1.startDateAndTime = new Timestamp(28801000);
             TimePeriod t2 = new TimePeriod();
-            t2.toDateTime = new Timestamp(900000000);
-            t2.fromDateTime = new Timestamp(38801000);
+            t2.endDateAndTime = new Timestamp(900000000);
+            t2.startDateAndTime = new Timestamp(38801000);
 
             Location l1 = new Location();
             l1.city = "Vancouver";
@@ -312,8 +312,8 @@ class DatabaseTest {
             assertEquals(1, r.size());
             assertEquals(123456, r.get(0).confNum);
             assertEquals("Sedan", r.get(0).vtName);
-            assertEquals(t1.fromDateTime, r.get(0).timePeriod.fromDateTime);
-            assertEquals(t1.toDateTime, r.get(0).timePeriod.toDateTime);
+            assertEquals(t1.startDateAndTime, r.get(0).timePeriod.startDateAndTime);
+            assertEquals(t1.endDateAndTime, r.get(0).timePeriod.endDateAndTime);
             assertEquals(l1.city, r.get(0).location.city);
             assertEquals(l1.location, r.get(0).location.location);
             assertEquals("1234abcd", r.get(0).dlicense);

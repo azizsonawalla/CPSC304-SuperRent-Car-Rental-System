@@ -11,4 +11,6 @@ public class TimePeriod {
         this.startDateAndTime = start;
         this.endDateAndTime = end;
     }
+
+    public TimePeriod() {}
 }

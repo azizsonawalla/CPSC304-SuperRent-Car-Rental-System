@@ -1,6 +1,6 @@
 package model.Orchestrator;
 
-import model.Database.Database;
+import model.Database;
 import model.Entities.*;
 
 import java.util.ArrayList;

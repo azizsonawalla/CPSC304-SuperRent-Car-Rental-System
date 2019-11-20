@@ -9,4 +9,6 @@ public class Location {
         this.city = city;
         this.location = location;
     }
+
+    public Location() {}
 }

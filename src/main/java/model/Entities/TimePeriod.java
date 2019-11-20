@@ -1,9 +1,9 @@
 package model.Entities;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class TimePeriod {
     //Primary key for TimePeriod is both startDateAndTime and endDateAndTime
-    Date startDateAndTime;
-    Date endDateAndTime;
+    public Timestamp fromDateTime;
+    public Timestamp toDateTime;
 }

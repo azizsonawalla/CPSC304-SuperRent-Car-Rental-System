@@ -142,6 +142,7 @@ public class customerMakeReservation extends Controller implements Initializable
             try {
                 r = qo.makeReservation(r);
                 result = String.format(result, r.confNum);
+                main.customerResInProgress = null;
             } catch (Exception e) {
                 result = "Failed to make reservation: " + e.getMessage();
             }

@@ -124,7 +124,8 @@
       <ScrollPane layoutX="33.0" layoutY="164.0" prefHeight="279.0" prefWidth="634.0">
          <content>
             <TextFlow fx:id="searchResults" prefHeight="244.0" prefWidth="612.0" />
-         </content></ScrollPane>
+         </content>
+      </ScrollPane>
       <ComboBox fx:id="startResWithOption" layoutX="704.0" layoutY="728.0" prefHeight="38.0" prefWidth="59.0" />
       <Button fx:id="startReservationButton" layoutX="779.0" layoutY="728.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="187.0" text="Start Reservation &gt;" />
       <Label contentDisplay="CENTER" layoutX="704.0" layoutY="695.0" prefHeight="22.0" prefWidth="260.0" text="Choose option from results to continue:">

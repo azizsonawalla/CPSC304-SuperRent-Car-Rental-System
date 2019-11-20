@@ -22,7 +22,7 @@ public abstract class Controller {
     
     @FXML private void switchToClerk(ActionEvent event) throws Exception {
         main.customerResInProgress = null;
-        main.setRoot(GUIConfig.CLERK_RENTAL_RES_SEARCH);
+        main.setRoot(GUIConfig.CLERK_RESERVATION_RENTAL_SEARCH);
     }
 
     @FXML private void switchToCustomer(ActionEvent event) throws Exception {

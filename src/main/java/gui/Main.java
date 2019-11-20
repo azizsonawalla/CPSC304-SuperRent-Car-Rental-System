@@ -1,9 +1,6 @@
 package gui;
 
-import gui.controllers.Controller;
-import gui.controllers.clerkReservationRental;
-import gui.controllers.customerCarSearch;
-import gui.controllers.customerMakeReservation;
+import gui.controllers.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -24,7 +21,7 @@ public class Main extends Application {
     public ExecutorService pool;
 
     // Inter-scene data
-    public Reservation customerResInProgress; // TODO: set this to null once reservation is complete
+    public Reservation customerResInProgress;
 
     public Main() {
         super();
@@ -34,7 +31,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        initializeSceneControllers();
+        initializeScenePanesMap();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("views/customerCarSearch.fxml"));
         loader.setController(new customerCarSearch(this));
         Pane root = loader.load();
@@ -52,22 +49,43 @@ public class Main extends Application {
         scene.setRoot(root);
     }
 
-    private void initializeSceneControllers() throws Exception {
+    private void initializeScenePanesMap() throws Exception {
         String fxml;
         Controller c;
 
+        // Customer
         fxml = GUIConfig.CUSTOMER_CAR_SEARCH;
         c = new customerCarSearch(this);
-        scenePanes.put(fxml, new Pair<Pane, Controller>(getPane(fxml, c), c));
-
-        fxml = GUIConfig.CLERK_RENTAL_RES_SEARCH;
-        c = new clerkReservationRental(this);
-        scenePanes.put(fxml, new Pair<Pane, Controller>(getPane(fxml, c), c));
+        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
 
         fxml = GUIConfig.CUSTOMER_MAKE_RES;
         c = new customerMakeReservation(this);
-        scenePanes.put(fxml, new Pair<Pane, Controller>(getPane(fxml, c), c));
-        // TODO: add others
+        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
+
+        // Clerk
+        fxml = GUIConfig.CLERK_RESERVATION_RENTAL_SEARCH;
+        c = new clerkReservationRentalSearch(this);
+        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
+
+        fxml = GUIConfig.CLERK_CAR_SEARCH;
+        c = new clerkCarSearch(this);
+        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
+
+        fxml = GUIConfig.CLERK_DAILY_REPORTS;
+        c = new clerkDailyReports(this);
+        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
+
+        fxml = GUIConfig.CLERK_MAKE_RESERVATION;
+        c = new clerkMakeReservation(this);
+        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
+
+        fxml = GUIConfig.CLERK_START_RENTAL;
+        c = new clerkStartRental(this);
+        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
+
+        fxml = GUIConfig.CLERK_SUBMIT_RETURN;
+        c = new clerkSubmitReturn(this);
+        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
     }
 
     private Pane getPane(String fxml, Controller c) throws Exception {

@@ -3,9 +3,7 @@ package model.Entities;
 public class Reservation {
 
     //default constructor
-    public Reservation(){
-
-    }
+    public Reservation(){}
 
     public Reservation(int confNum, String vtName, TimePeriod timePeriod, Location location, String dlicense) {
         this.confNum = confNum;

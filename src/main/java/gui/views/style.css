@@ -1,0 +1,40 @@
+AnchorPane {
+    -fx-background-color: #FFFFFF;
+}
+
+Button {
+    -fx-font-size: 14px;
+    -fx-font-family: helvetica;
+    -fx-text-fill: #707070;
+    -fx-background-color: transparent;
+    -fx-border-color: #707070;
+    -fx-border-radius: 20px;
+    -fx-cursor: hand;
+}
+
+/**
+Label {
+    -fx-font-size: 14px;
+    -fx-font-family: helvetica;
+    -fx-text-fill: #B0B0B0;
+}
+
+.h1 {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.h2 {
+    -fx-font-size: 18px;
+}
+
+.error {
+    -fx-text-fill: #FF0000;
+}
+
+CheckBox {
+    -fx-font-size: 14px;
+    -fx-font-family: helvetica;
+    -fx-text-fill: #B0B0B0;
+}
+**/

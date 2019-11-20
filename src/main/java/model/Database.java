@@ -80,8 +80,8 @@ public class Database {
         ps.setInt(1, r.confNum);
         ps.setString(2, r.vtName);
         ps.setString(3, r.dlicense);
-        ps.setTimestamp(4, r.timePeriod.fromDateTime);
-        ps.setTimestamp(5, r.timePeriod.toDateTime);
+        ps.setTimestamp(4, r.timePeriod.startDateAndTime);
+        ps.setTimestamp(5, r.timePeriod.endDateAndTime);
         ps.setString(6, r.location.city);
         ps.setString(7, r.location.location);
 
@@ -111,8 +111,8 @@ public class Database {
         ps = conn.prepareStatement(Queries.Reservation.UPDATE_RESERVATION);
         ps.setString(1, r.vtName != null? r.vtName: rs.getString("vtname"));
         ps.setString(2, r.dlicense != null? r.dlicense: rs.getString("dLicense"));
-        ps.setTimestamp(3, r.timePeriod != null? r.timePeriod.fromDateTime: rs.getTimestamp("fromDateTime"));
-        ps.setTimestamp(4, r.timePeriod != null? r.timePeriod.toDateTime: rs.getTimestamp("toDateTime"));
+        ps.setTimestamp(3, r.timePeriod != null? r.timePeriod.startDateAndTime: rs.getTimestamp("startDateAndTime"));
+        ps.setTimestamp(4, r.timePeriod != null? r.timePeriod.endDateAndTime: rs.getTimestamp("endDateAndTime"));
         ps.setString(5, r.location != null? r.location.city: rs.getString("city"));
         ps.setString(6, r.location != null? r.location.location: rs.getString("location"));
         ps.setInt(7, r.confNum);
@@ -163,10 +163,10 @@ public class Database {
         } else {
             query = "SELECT * FROM Reservations R WHERE ";
             if (t != null) {
-                //Given start time (from t) is at the same time or after R.fromDateTime AND is before R.toDateTime
-                //Given end time (from t) is at the same time before R.toDateTime AND is after R.fromDateTime
-                query += "((R.fromDateTime <= ? AND R.toDateTime > ?) OR " +
-                        "(R.toDateTime >= ? AND R.toDateTime < ?)) ";
+                //Given start time (from t) is at the same time or after R.startDateAndTime AND is before R.endDateAndTime
+                //Given end time (from t) is at the same time before R.endDateAndTime AND is after R.startDateAndTime
+                query += "((R.startDateAndTime <= ? AND R.endDateAndTime > ?) OR " +
+                        "(R.endDateAndTime >= ? AND R.endDateAndTime < ?)) ";
                 marker = true;
             } if (vt != null) {
                 query += marker? "AND R.vtname = '" + vt.vtname + "' " :
@@ -180,10 +180,10 @@ public class Database {
         PreparedStatement ps = conn.prepareStatement(query);
         //Insert Timestamp values to prepared statement
         if (t != null){
-            ps.setTimestamp(1, t.fromDateTime);
-            ps.setTimestamp(2, t.fromDateTime);
-            ps.setTimestamp(3, t.toDateTime);
-            ps.setTimestamp(4, t.toDateTime);
+            ps.setTimestamp(1, t.startDateAndTime);
+            ps.setTimestamp(2, t.startDateAndTime);
+            ps.setTimestamp(3, t.endDateAndTime);
+            ps.setTimestamp(4, t.endDateAndTime);
         }
         ResultSet rs = ps.executeQuery();
 
@@ -197,8 +197,8 @@ public class Database {
             res.dlicense = rs.getString(3);
 
             TimePeriod tm = new TimePeriod();
-            tm.fromDateTime = rs.getTimestamp(4);
-            tm.toDateTime = rs.getTimestamp(5);
+            tm.startDateAndTime = rs.getTimestamp(4);
+            tm.endDateAndTime = rs.getTimestamp(5);
             res.timePeriod = tm;
 
             Location loc = new Location();
@@ -235,8 +235,8 @@ public class Database {
         res.dlicense = rs.getString(3);
 
         TimePeriod tm = new TimePeriod();
-        tm.fromDateTime = rs.getTimestamp(4);
-        tm.toDateTime = rs.getTimestamp(5);
+        tm.startDateAndTime = rs.getTimestamp(4);
+        tm.endDateAndTime = rs.getTimestamp(5);
         res.timePeriod = tm;
 
         Location loc = new Location();

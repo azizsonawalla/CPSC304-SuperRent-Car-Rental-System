@@ -1,26 +1,24 @@
 package model.Entities;
 
 public class Rental {
-    //primary id of Rental
-    int rid;
+    //primary key, id of Rental
+    public int rid;
 
     //identifies the Vehicle involved in the Rental
-    String vlicense;
+    public String vlicense;
 
     //identifies the Customer involved in the Rental
-    long dlicense;
+    public String dlicense;
 
     //time period over which Rental occurs
-    TimePeriod timePeriod;
+    public TimePeriod timePeriod;
 
     //odometer reading at the start of the rental
-    int startOdometer;
+    public int startOdometer;
 
     //Card for which rental was made
-    long CardNo;
-    String cardName;
-    int expDate;
+    public Card card;
 
     //If customer is renting from a reservation, identifies Reservation involved in the Rental
-    int confNo;
+    public int confNo;
 }

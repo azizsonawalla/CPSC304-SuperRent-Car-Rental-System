@@ -37,16 +37,16 @@ public class Queries {
 
         public static String CREATE_TABLE_VEHICLE = "CREATE TABLE IF NOT EXISTS Vehicle(" +
                 "vId INT NOT NULL, " +
-                "vLicense CHAR(10), " +
-                "make CHAR(50), " +
-                "model CHAR(50), " +
-                "year YEAR, " +
-                "color CHAR(50), " +
-                "odometer INT, " +
-                "vtName CHAR(50), " +
-                "status CHAR(50), " +
-                "location CHAR(50), " +
-                "city CHAR(50), " +
+                "vLicense CHAR(10) NOT NULL, " +
+                "make CHAR(50) NOT NULL, " +
+                "model CHAR(50) NOT NULL, " +
+                "year YEAR NOT NULL, " +
+                "color CHAR(50) NOT NULL, " +
+                "odometer INT NOT NULL, " +
+                "vtName CHAR(50) NOT NULL, " +
+                "status CHAR(50) NOT NULL, " +
+                "location CHAR(50) NOT NULL, " +
+                "city CHAR(50) NOT NULL, " +
                 "PRIMARY KEY (vLicense), " +
                 "FOREIGN KEY (vtName) REFERENCES VehicleType(vtName) on DELETE CASCADE, " +
                 "UNIQUE (vId));";
@@ -125,7 +125,7 @@ public class Queries {
         //query to update reservations
         public static String UPDATE_RESERVATION =
                 "UPDATE Reservations " +
-                        "SET vtname = ?, dlicense = ?, fromDateTime = ?, toDatetime = ?, city = ?, location = ?" +
+                        "SET vtname = ?, dlicense = ?, fromDateTime = ?, toDatetime = ?, city = ?, location = ? " +
                         "WHERE confNo = ?";
 
         //query to delete reservations
@@ -133,16 +133,25 @@ public class Queries {
                 "DELETE FROM Reservations " +
                         "WHERE confNo = ?";
 
+        //get reservations matching
+        public static String GET_RESERVATIONS_MATCHING =
+                "";
+
     }
 
     public static class Rent {
 
-        // TODO: Add all queries to create, update and delete rentals here
-
-        String insertQueryStatement = "INSERT INTO Rent " +
+        public static String ADD_RENT = "INSERT INTO Rent(rId, vLicense, dLicense, fromDateTime, toDateTime, odometer, " +
+                "cardNo, confNo) " +
                 "VALUES (?,?,?,?,?,?,?,?)";
-        String deleteQueryStatement = "DELETE FROM Rent " +
-                "WHERE rId = (?)";
+
+        public static String UPDATE_RENT =
+                "UPDATE Rent " +
+                        "SET vLicense = ?, dlicense = ?, fromDateTime = ?, toDatetime = ?, odometer = ?, cardNo = ?, confNo = ? " +
+                        "WHERE rId = ?";
+
+        public static String DELETE_RENT = "DELETE FROM Rent " +
+                "WHERE rId = ?";
 
     }
 
@@ -163,9 +172,13 @@ public class Queries {
 
     public static class Vehicle {
 
-        String insertQueryStatement = "INSERT INTO Vehicle " +
+        public static String ADD_VEHICLE = "INSERT INTO Vehicle(vId, vLicense, make, model, year, color, odometer, " +
+                "vtName, status, location, city) " +
                 "VALUES (?,?,?,?,?,?,?,?,?,?,?)";
-        String deleteQueryStatement = "DELETE FROM Vehicle " +
+
+
+
+        public static String DELETE_VEHICLE = "DELETE FROM Vehicle " +
                 "WHERE vLicense = (?)";
 
     }

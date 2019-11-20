@@ -328,6 +328,7 @@ class DatabaseTest {
 
     @Test
     void addRental() {
+        //TODO: Write add rental test (maybe need to implement Card table
     }
 
     @Test

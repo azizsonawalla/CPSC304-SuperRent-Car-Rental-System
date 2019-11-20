@@ -256,8 +256,25 @@ public class Database {
      * @throws Exception if there is an error adding the rental, for example if the values don't meet constraints
      */
     public void addRental(Rental r) throws Exception {
-        // TODO: implement this
-        throw new Exception("Method not implemented");
+        PreparedStatement ps = conn.prepareStatement(Queries.Rent.ADD_RENT);
+
+        //Set values for parameters in ps
+        ps.setInt(1, r.rid);
+        ps.setString(2, r.vlicense);
+        ps.setString(3, r.dlicense);
+        ps.setTimestamp(4, r.timePeriod.fromDateTime);
+        ps.setTimestamp(5, r.timePeriod.toDateTime);
+        ps.setInt(6, r.startOdometer);
+        ps.setLong(7, r.card.CardNo);
+        ps.setInt(8, r.confNo);
+
+        //execute the update
+        ps.executeUpdate();
+
+        //commit changes (automatic) and close prepared statement
+        ps.close();
+
+        Log.log("Rental with confirmation number " + Integer.toString(r.rid) + " successfully added");
     }
 
     /**

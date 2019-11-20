@@ -3,10 +3,7 @@ package model;
 import model.Entities.*;
 import model.Util.Log;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -334,7 +331,7 @@ public class Database {
      * @param vt VehicleType object to add
      * @throws Exception if there is an error adding the VehicleType, for example if the values don't meet constraints
      */
-    public void addVehicleType(VehicleType vt) throws Exception {
+    public void addVehicleType(VehicleType vt) throws SQLException {
         // TODO: implement this
         PreparedStatement ps = conn.prepareStatement(Queries.VehicleType.ADD_VEHICLE_TYPE);
 
@@ -364,10 +361,36 @@ public class Database {
      * @param vt updated values for VehicleType entry
      * @throws Exception if there is an error updating entry, for example if entry doesn't exist already
      */
-    public void updateVehicleType(VehicleType vt) throws Exception {
-        // TODO: implement this
+    public void updateVehicleType(VehicleType vt) throws SQLException {
+        PreparedStatement ps = conn.prepareStatement("SELECT * FROM VehicleType WHERE vtName = ?");
+        ps.setString(1, vt.vtname);
+        ResultSet rs = ps.executeQuery();
+        rs.next();
 
-        throw new Exception("Method not implemented");
+        //Set values for parameters in psUpdate. Update if corresponding value in Reservation r is null, otherwise, keep unchanged
+        ps = conn.prepareStatement(Queries.VehicleType.UPDATE_VEHICLE_TYPE);
+        ps.setString(1, vt.features != null? vt.features: rs.getString("features"));
+        ps.setInt(2, vt.wrate != -1? vt.wrate: rs.getInt("wRate"));
+        ps.setInt(3, vt.drate != -1? vt.drate: rs.getInt("dRate"));
+        ps.setInt(4, vt.hrate != -1? vt.hrate: rs.getInt("hRate"));
+        ps.setInt(5, vt.wirate != -1? vt.wirate: rs.getInt("wInsRate"));
+        ps.setInt(6, vt.dirate != -1? vt.dirate: rs.getInt("dInsRate"));
+        ps.setInt(7, vt.hirate != -1? vt.hirate: rs.getInt("hInsRate"));
+        ps.setInt(8, vt.krate != -1? vt.krate: rs.getInt("kRate"));
+        ps.setString(9, vt.vtname);
+
+        //execute the update
+        int rowCount = ps.executeUpdate();
+        if (rowCount == 0) {
+            System.out.println("NOTE: VehicleType " + vt.vtname + " does not exist");
+            ps.close();
+            return;
+        }
+
+        //commit changes and close prepared statement
+        ps.close();
+
+        Log.log("VehicleType with vtname " + vt.vtname + " successfully updated");
     }
 
     /**
@@ -376,17 +399,36 @@ public class Database {
      * @throws Exception if there is an error deleting entry, for example if entry doesn't exist already
      */
     public void deleteVehicleType(VehicleType vt) throws Exception {
-        // TODO: implement this
-        throw new Exception("Method not implemented");
+        PreparedStatement ps = conn.prepareStatement(Queries.VehicleType.DELETE_VEHICLE_TYPE);
+        //Set confirmation number parameter for Reservation tuple to be deleted
+        ps.setString(1, vt.vtname);
+
+        //execute the update
+        int rowCount = ps.executeUpdate();
+        if (rowCount == 0) {
+            System.out.println("NOTE: VehicleType " + vt.vtname + " does not exist");
+            ps.close();
+            return;
+        }
+
+        //commit changes and close prepared statement
+        ps.close();
+
+        Log.log("VehicleType with vtname " + vt.vtname + " successfully deleted");
     }
 
-    public VehicleType getVehicleTypeMatching(VehicleType vt) throws Exception {
+    public VehicleType getVehicleTypeMatching(VehicleType vt) throws SQLException {
         // TODO: implement this
 
         PreparedStatement ps = conn.prepareStatement("SELECT * FROM VehicleType WHERE vtName = '" + vt.vtname + "'");
         ResultSet rs = ps.executeQuery();
 
-        if (!rs.next()) return null;
+        if (!rs.next()) {
+            System.out.println("NOTE: VehicleType " + vt.vtname + " does not exist");
+            ps.close();
+            return null;
+        }
+
         VehicleType res = new VehicleType(rs.getString(1), rs.getString(2), rs.getInt(3),
                 rs.getInt(4), rs.getInt(5), rs.getInt(6), rs.getInt(7),
                 rs.getInt(8), rs.getInt(9));
@@ -415,7 +457,6 @@ public class Database {
      */
     public void updateVehicle(Vehicle v) throws Exception {
         // TODO: implement this
-        throw new Exception("Method not implemented");
     }
 
     /**

@@ -167,15 +167,16 @@ public class Queries {
 
     public static class VehicleType {
 
-        public static String ADD_VEHICLE_TYPE = "INSERT INTO VehicleType(vtname, features, wRate, dRate, hRate, wInsRate, dInsRate, hInsRate, kRate)" +
+        public static String ADD_VEHICLE_TYPE = "INSERT INTO VehicleType(vtName, features, wRate, dRate, hRate, wInsRate, dInsRate, hInsRate, kRate)" +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         public static String UPDATE_VEHICLE_TYPE = "UPDATE VehicleType " +
-                "SET vtname = ?, features = ?, wRate = ?, dRate = ?, hRate = ?, wInsRate = ?, dInsRate = ?, hInsRate = ?, kRate = ?" +
-                "WHERE vtname = ?";
+                "SET features = ?, wRate = ?, dRate = ?, " +
+                "hRate = ?, wInsRate = ?, dInsRate = ?, hInsRate = ?, kRate = ? " +
+                "WHERE vtName = ?";
 
         public static String DELETE_VEHICLE_TYPE = "DELETE FROM VehicleType " +
-                "WHERE vtname = ?";
+                "WHERE vtName = ?";
     }
 
     public static class Returns {

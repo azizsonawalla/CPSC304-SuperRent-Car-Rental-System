@@ -8,6 +8,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -133,12 +134,85 @@ class DatabaseTest {
     }
 
     @Test
-    void updateVehicleType() {
+    void updateVehicleTypeNoNulls() {
+        try {
+            VehicleType add = new VehicleType("Sedan", "four doors, 5 seats", 300,
+                    70, 7, 100, 20, 2, 1);
+            db.addVehicleType(add);
+            VehicleType update = new VehicleType("Sedan", "four doors, 5 seats, 1 sunroof", 370,
+                    80, 8, 170, 27, 3 ,2);
+            db.updateVehicleType(update);
+            VehicleType result = db.getVehicleTypeMatching(add);
+            assertEquals(result.features, update.features);
+            assertEquals(result.wrate, update.wrate);
+            assertEquals(result.drate, update.drate);
+            assertEquals(result.hrate, update.hrate);
+            assertEquals(result.wirate, update.wirate);
+            assertEquals(result.dirate, update.dirate);
+            assertEquals(result.hirate, update.hirate);
+            assertEquals(result.krate, update.krate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    @Test
+    void updateVehicleTypeWithNulls() {
+        try {
+            VehicleType add = new VehicleType("Sedan", "four doors, 5 seats", 300,
+                    70, 7, 100, 20, 2, 1);
+            db.addVehicleType(add);
+            VehicleType update = new VehicleType("Sedan", null, -1,
+                    -1, -1, 170, 27, 3 ,-1);
+            db.updateVehicleType(update);
+            VehicleType result = db.getVehicleTypeMatching(add);
+            assertEquals(result.features, add.features);
+            assertEquals(result.wrate, add.wrate);
+            assertEquals(result.drate, add.drate);
+            assertEquals(result.hrate, add.hrate);
+            assertEquals(result.wirate, update.wirate);
+            assertEquals(result.dirate, update.dirate);
+            assertEquals(result.hirate, update.hirate);
+            assertEquals(result.krate, add.krate);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void updateVehicleTypeNotExists() {
+        try {
+            VehicleType notExists = new VehicleType("Sedan", "four doors, 5 seats", 300,
+                    70, 7, 100, 20, 2, 1);
+            db.updateVehicleType(notExists);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     void deleteVehicleType() {
+        try {
+            VehicleType add = new VehicleType("Sedan", "four doors, 5 seats", 300,
+                    70, 7, 100, 20, 2, 1);
+            db.addVehicleType(add);
+            db.getVehicleTypeMatching(add);
+            db.deleteVehicleType(add);
+            db.getVehicleTypeMatching(add);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void deleteVehicleTypeNotExists() {
+        try {
+            VehicleType notExists = new VehicleType("Sedan", "four doors, 5 seats", 300,
+                    70, 7, 100, 20, 2, 1);
+            db.deleteVehicleType(notExists);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Test

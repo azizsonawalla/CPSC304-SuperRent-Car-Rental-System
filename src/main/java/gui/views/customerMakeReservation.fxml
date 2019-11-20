@@ -79,7 +79,7 @@
             <Font name="HelveticaLTStd-Roman" size="14.0" />
          </font>
       </Label>
-      <TextField fx:id="cellField" layoutX="494.0" layoutY="460.0" prefHeight="25.0" prefWidth="244.0" promptText="eg. 778000325" />
+      <TextField fx:id="cellField" layoutX="494.0" layoutY="460.0" prefHeight="25.0" prefWidth="244.0" promptText="eg. 7780003250" />
       <Label contentDisplay="CENTER" layoutX="494.0" layoutY="509.0" prefHeight="22.0" prefWidth="462.0" text="Your address:">
          <font>
             <Font name="HelveticaLTStd-Roman" size="14.0" />

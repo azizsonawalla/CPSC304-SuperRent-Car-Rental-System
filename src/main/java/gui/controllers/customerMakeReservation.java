@@ -22,6 +22,8 @@ public class customerMakeReservation extends Controller implements Initializable
     String LOCATION_INFO_TEMPLATE = "%s, %s";
     String TIME_INFO_TEMPLATE = "On %02d/%02d/%02d at %02d:%02d";
 
+    private String currentDLInput = "";
+
     @FXML private Button backToSearchButton, makeResButton;
     @FXML private Label existingCustomer, resultLine, invalidDL, vtlabel, locationlabel, startlabel, endlabel;
     @FXML private TextField dlField, nameField, cellField, addField;
@@ -96,6 +98,9 @@ public class customerMakeReservation extends Controller implements Initializable
     };
 
     private Runnable fillCustomerInfoIfAvailable = () -> {
+        if(currentDLInput.equals(dlField.getText().trim())) return;
+        currentDLInput = dlField.getText().trim();
+
         existingCustomer.setVisible(false);
         invalidDL.setVisible(false);
         if (!validateDL()) {

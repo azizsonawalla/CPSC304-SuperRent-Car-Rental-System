@@ -219,6 +219,8 @@ public class customerCarSearch extends Controller implements Initializable {
                         searchResults.getChildren().add(text);
                         count++;
                     }
+                    seeDetailsForOption.getItems().clear();
+                    startResWithOption.getItems().clear();
                     for (int i = 1; i <= currentResults.size(); i++) {
                         seeDetailsForOption.getItems().add(i);
                         startResWithOption.getItems().add(i);

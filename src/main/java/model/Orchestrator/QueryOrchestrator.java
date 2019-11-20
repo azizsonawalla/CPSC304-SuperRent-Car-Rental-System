@@ -80,4 +80,11 @@ public class QueryOrchestrator {
         ArrayList<VehicleType> list = new ArrayList<>(Arrays.asList(VT1, VT2, VT3, VT4));
         return list;
     }
+
+    public List<Reservation> getReservationWith(int confNum, String customerDL) {
+        // TODO: Implement this
+        // if confNum == -1, then don't filter by confNum
+        // if customerDL == "", then don't filer by customerDL
+        return Arrays.asList(new Reservation(1, "dummyvt", new TimePeriod(), new Location(), "dummyDL" ));
+    }
 }

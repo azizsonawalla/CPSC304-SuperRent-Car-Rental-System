@@ -10,12 +10,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.Entities.Customer;
 import model.Entities.Reservation;
-import sun.misc.Regexp;
 
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ResourceBundle;
-import java.util.regex.Pattern;
 
 public class customerMakeReservation extends Controller implements Initializable {
 
@@ -68,7 +66,7 @@ public class customerMakeReservation extends Controller implements Initializable
 
     private Runnable backToCustomerCarSearch = () -> {
         main.customerResInProgress = null;
-        main.setRoot(GUIConfig.CUSTOMER_CAR_SEARCH);
+        main.switchScene(GUIConfig.CUSTOMER_CAR_SEARCH);
     };
 
     private Runnable clearAllFields = () -> {

@@ -43,7 +43,7 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    public void setRoot(String fxml) {
+    public void switchScene(String fxml) {
         Pane root = scenePanes.get(fxml).getKey();
         scenePanes.get(fxml).getValue().refreshAll();
         scene.setRoot(root);

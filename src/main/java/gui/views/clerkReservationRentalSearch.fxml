@@ -31,17 +31,17 @@
             <Font name="HelveticaLTStd-Roman" size="14.0" />
          </font>
       </Label>
-      <Button layoutX="703.0" layoutY="650.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="260.0" text="Search Ongoing Rentals" />
+      <Button fx:id="searchRentalsButton" layoutX="703.0" layoutY="650.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="260.0" text="Search Ongoing Rentals" />
       <Button layoutX="36.0" layoutY="26.0" mnemonicParsing="false" onAction="#switchToCustomer" prefHeight="61.0" prefWidth="211.0" text="Switch to Customer User" />
-      <TextField layoutX="704.0" layoutY="194.0" prefHeight="25.0" prefWidth="260.0" />
+      <TextField fx:id="confNumField" layoutX="704.0" layoutY="194.0" prefHeight="25.0" prefWidth="260.0" />
       <Label contentDisplay="CENTER" layoutX="705.0" layoutY="231.0" prefHeight="22.0" prefWidth="260.0" text="Customer's driver's license number:">
          <font>
             <Font name="HelveticaLTStd-Roman" size="14.0" />
          </font>
       </Label>
-      <TextField layoutX="704.0" layoutY="260.0" prefHeight="25.0" prefWidth="260.0" />
-      <Button layoutX="705.0" layoutY="308.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="260.0" text="Search Active Reservations" />
-      <Button layoutX="703.0" layoutY="366.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="260.0" text="Start Rental Without Reservation &gt;" />
+      <TextField fx:id="dlField" layoutX="704.0" layoutY="260.0" prefHeight="25.0" prefWidth="260.0" />
+      <Button fx:id="searchReservationsButton" layoutX="705.0" layoutY="308.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="260.0" text="Search Active Reservations" />
+      <Button fx:id="rentalWithoutReservationButton" layoutX="703.0" layoutY="366.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="260.0" text="Start Rental Without Reservation &gt;" />
       <Label alignment="CENTER" contentDisplay="CENTER" layoutX="703.0" layoutY="461.0" prefHeight="31.0" prefWidth="260.0" text="Ongoing Rentals" textAlignment="CENTER">
          <font>
             <Font name="HelveticaLTStd-Roman" size="24.0" />
@@ -52,13 +52,13 @@
             <Font name="HelveticaLTStd-Roman" size="14.0" />
          </font>
       </Label>
-      <TextField layoutX="704.0" layoutY="537.0" prefHeight="25.0" prefWidth="260.0" />
+      <TextField fx:id="rentalIdField" layoutX="704.0" layoutY="537.0" prefHeight="25.0" prefWidth="260.0" />
       <Label contentDisplay="CENTER" layoutX="705.0" layoutY="574.0" prefHeight="22.0" prefWidth="260.0" text="Customer's driver's license number:">
          <font>
             <Font name="HelveticaLTStd-Roman" size="14.0" />
          </font>
       </Label>
-      <TextField layoutX="705.0" layoutY="602.0" prefHeight="25.0" prefWidth="260.0" />
+      <TextField fx:id="dlFieldRental" layoutX="705.0" layoutY="602.0" prefHeight="25.0" prefWidth="260.0" />
       <Button fx:id="dailyReportsButton" layoutX="703.0" layoutY="711.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="260.0" text="View Daily Reports &gt;" />
       <ScrollPane layoutX="36.0" layoutY="121.0" prefHeight="222.0" prefWidth="634.0">
       <content>
@@ -71,7 +71,7 @@
          </content>
       </ScrollPane>
       <ComboBox layoutX="229.0" layoutY="366.0" prefHeight="55.0" prefWidth="165.0" />
-      <Button layoutX="408.0" layoutY="366.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="260.0" text="Start Rental For This Reservation &gt;" />
+      <Button fx:id="rentalWithReservationButton" layoutX="408.0" layoutY="366.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="260.0" text="Start Rental For This Reservation &gt;" />
       <Label contentDisplay="CENTER" layoutX="36.0" layoutY="366.0" prefHeight="31.0" prefWidth="195.0" text="Choose a reservation" textAlignment="CENTER">
          <font>
             <Font name="HelveticaLTStd-Roman" size="18.0" />
@@ -82,7 +82,7 @@
             <Font name="HelveticaLTStd-Roman" size="18.0" />
          </font>
       </Label>
-      <Button layoutX="410.0" layoutY="711.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="260.0" text="Start Return For This Rental &gt;" />
+      <Button fx:id="startReturnButton" layoutX="410.0" layoutY="711.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="260.0" text="Start Return For This Rental &gt;" />
       <ComboBox layoutX="229.0" layoutY="711.0" prefHeight="55.0" prefWidth="165.0" />
       <Label contentDisplay="CENTER" layoutX="36.0" layoutY="735.0" prefHeight="31.0" prefWidth="193.0" text="number:" textAlignment="CENTER">
          <font>

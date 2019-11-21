@@ -266,7 +266,7 @@ public class Database {
         ps.setTimestamp(4, r.timePeriod.startDateAndTime);
         ps.setTimestamp(5, r.timePeriod.endDateAndTime);
         ps.setInt(6, r.startOdometer);
-        ps.setLong(7, r.card.CardNo);
+        ps.setLong(7, r.card.cardNo);
         ps.setLong(8, r.confNo);
 
         //execute the update
@@ -675,6 +675,40 @@ public class Database {
      * @throws Exception if there is an error deleting entry, for example if entry doesn't exist already
      */
     public void deleteCard(Card c) throws Exception {
+        // TODO: implement this
+        throw new Exception("Method not implemented");
+    }
+
+
+    /* Location */
+
+    /**
+     * Add the given Location object to the Location table in the database
+     * @param l Location object to add
+     * @throws Exception if there is an error adding the Card, for example if the values don't meet constraints
+     */
+    public void addLocation(Location l) throws Exception {
+        // TODO: implement this
+
+    }
+
+
+    /**
+     * Update the values of the Location entry in the Location table that has the same primary key as the given
+     * Location object. New values of Location entry are values in l.
+     * @param l updated values for Location entry
+     * @throws Exception if there is an error updating entry, for example if entry doesn't exist already
+     */
+    public void updateLocation(Location l) throws Exception {
+        // TODO: implement this
+    }
+
+    /**
+     * Delete entry from table corresponding table that matches the primary key of the given object
+     * @param l object with same primary key as entry to delete from table
+     * @throws Exception if there is an error deleting entry, for example if entry doesn't exist already
+     */
+    public void deleteLocation(Location l) throws Exception {
         // TODO: implement this
         throw new Exception("Method not implemented");
     }

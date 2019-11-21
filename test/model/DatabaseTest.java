@@ -328,7 +328,7 @@ class DatabaseTest {
 
     @Test
     void addRental() {
-<<<<<<< HEAD
+
         try {
             //populate VehicleType, Card, Reservation and Customer table with data so that foreign key constraints can
             // be enforced
@@ -353,29 +353,39 @@ class DatabaseTest {
             Card card = new Card(60115564485789458L,"Discover", 1923);
             db.addCard(card);
 
-//            Rental add = new Rental(1, )
-//
-//
-//            Rental result = db.getRentalMatching(add);
-//            assertEquals(add.confNum, result.confNum);
-//            assertEquals(add.vtName, result.vtName);
-//            assertEquals(add.timePeriod.endDateAndTime, result.timePeriod.endDateAndTime);
-//            assertEquals(add.timePeriod.startDateAndTime, result.timePeriod.startDateAndTime);
-//            assertEquals(add.location.city, result.location.city);
-//            assertEquals(add.location.location, result.location.location);
-//            assertEquals(add.dlicense, result.dlicense);
+            Vehicle v = new Vehicle(12345, "123abc", "Toyota", "Corolla", 2018, "silver",
+                    529348, "Sedan", true, l);
+
+
+            Rental add = new Rental(1, "123abc", "123abc", t, 1000000, card,123456);
+
+
+            Rental result = db.getRentalMatching(add);
+            assertEquals(add.rid, result.rid);
+            assertEquals(add.vlicense, result.vlicense);
+            assertEquals(add.dlicense, result.dlicense);
+            assertEquals(add.timePeriod.endDateAndTime, result.timePeriod.endDateAndTime);
+            assertEquals(add.timePeriod.startDateAndTime, result.timePeriod.startDateAndTime);
+            assertEquals(add.startOdometer, result.startOdometer);
+            assertEquals(add.card.cardNo, result.card.cardNo);
+            assertEquals(add.card.cardName, result.card.cardName);
+            assertEquals(add.card.expDate, result.card.expDate);
+            assertEquals(add.confNo, result.confNo);
+
 
             //empty out sample data in VehicleType and Customer tables
             db.deleteVehicleType(vt);
             db.deleteCustomer(c);
+            db.deleteCard(card);
+            db.deleteLocation(l);
+            db.deleteVehicle(v);
+
 //            db.deleteReservation(add);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-=======
-        //TODO: Write add rental test (maybe need to implement Card table
->>>>>>> origin/george
+
     }
 
     @Test

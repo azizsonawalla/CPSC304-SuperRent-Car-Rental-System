@@ -26,7 +26,7 @@ public class Main extends Application {
     public Main() {
         super();
         pool = Executors.newFixedThreadPool(2*Runtime.getRuntime().availableProcessors()+1);
-        scenePanes = new HashMap<>();
+        scenePanes = new HashMap<String, Pair<Pane, Controller>>();
     }
 
     @Override
@@ -56,36 +56,36 @@ public class Main extends Application {
         // Customer
         fxml = GUIConfig.CUSTOMER_CAR_SEARCH;
         c = new customerCarSearch(this);
-        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
+        scenePanes.put(fxml, new Pair<Pane, Controller>(getPane(fxml, c), c));
 
         fxml = GUIConfig.CUSTOMER_MAKE_RES;
         c = new customerMakeReservation(this);
-        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
+        scenePanes.put(fxml, new Pair<Pane, Controller>(getPane(fxml, c), c));
 
         // Clerk
         fxml = GUIConfig.CLERK_RESERVATION_RENTAL_SEARCH;
         c = new clerkReservationRentalSearch(this);
-        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
+        scenePanes.put(fxml, new Pair<Pane, Controller>(getPane(fxml, c), c));
 
         fxml = GUIConfig.CLERK_CAR_SEARCH;
         c = new clerkCarSearch(this);
-        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
+        scenePanes.put(fxml, new Pair<Pane, Controller>(getPane(fxml, c), c));
 
         fxml = GUIConfig.CLERK_DAILY_REPORTS;
         c = new clerkDailyReports(this);
-        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
+        scenePanes.put(fxml, new Pair<Pane, Controller>(getPane(fxml, c), c));
 
         fxml = GUIConfig.CLERK_MAKE_RESERVATION;
         c = new clerkMakeReservation(this);
-        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
+        scenePanes.put(fxml, new Pair<Pane, Controller>(getPane(fxml, c), c));
 
         fxml = GUIConfig.CLERK_START_RENTAL;
         c = new clerkStartRental(this);
-        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
+        scenePanes.put(fxml, new Pair<Pane, Controller>(getPane(fxml, c), c));
 
         fxml = GUIConfig.CLERK_SUBMIT_RETURN;
         c = new clerkSubmitReturn(this);
-        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
+        scenePanes.put(fxml, new Pair<Pane, Controller>(getPane(fxml, c), c));
     }
 
     private Pane getPane(String fxml, Controller c) throws Exception {

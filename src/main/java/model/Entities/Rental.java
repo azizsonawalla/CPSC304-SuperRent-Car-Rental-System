@@ -1,6 +1,7 @@
 package model.Entities;
 
 public class Rental {
+
     //primary key, id of Rental
     public int rid;
 
@@ -34,4 +35,5 @@ public class Rental {
         this.card = card;
         this.confNo = confNo;
     }
+
 }

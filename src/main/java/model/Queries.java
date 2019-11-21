@@ -121,7 +121,7 @@ public class Queries {
         //query to update reservations
         public static String UPDATE_RESERVATION =
                 "UPDATE Reservations " +
-                        "SET vtname = ?, dlicense = ?, fromDateTime = ?, toDatetime = ?, city = ?, location = ?" +
+                        "SET vtname = ?, dlicense = ?, fromDateTime = ?, toDatetime = ?, city = ?, location = ? " +
                         "WHERE confNo = ?";
 
         //query to delete reservations
@@ -129,9 +129,14 @@ public class Queries {
                 "DELETE FROM Reservations " +
                         "WHERE confNo = ?";
 
-    }
+        //get reservations matching
+        public static String GET_RESERVATIONS_MATCHING =
+                "";
 
+    }
+    //the diving bell and the butterfly
     public static class Rent {
+
 
         public static String ADD_RENTAL =
                 "INSERT INTO Rent(rId, vLicense, dLicense, fromDateTime, toDateTime, odometer, cardNo, confNo)" +
@@ -147,8 +152,7 @@ public class Queries {
                 "DELETE FROM Rent " +
                         "WHERE rId = ?";
 
-
-    }
+        }
 
     public static class Customer {
 
@@ -168,19 +172,17 @@ public class Queries {
 
     public static class Vehicle {
 
-        public static String ADD_VEHICLE =
-                "INSERT INTO Vehicle(vId, vLicense, make, model, year, color, odometer, vtName, status, location, city)" +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        public static String ADD_VEHICLE = "INSERT INTO Vehicle(vId, vLicense, make, model, year, color, odometer, " +
+                "vtName, status, location, city) " +
+                "VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 
-        public static String UPDATE_VEHICLE =
-                "UPDATE VehicleType " +
-                        "SET vLicense = ?, make = ?, model = ?, year = ?, color = ?, odometer = ?, " +
-                        "vtName = ?, status = ?, location = ?, city = ? " +
-                        "WHERE vtName = ?";
+        public static String UPDATE_VEHICLE = "UPDATE Vehicle " +
+                "SET vId = ?, make = ?, model = ?, year = ?, color = ?, odometer = ?, vtName = ?, " +
+                "status = ?, location = ?, city = ? " +
+                "WHERE vLicense = ?";
 
-        public static String DELETE_VEHICLE =
-                "DELETE FROM VehicleType " +
-                        "WHERE vtName = ?";
+        public static String DELETE_VEHICLE = "DELETE FROM Vehicle " +
+                "WHERE vLicense = (?)";
 
     }
 

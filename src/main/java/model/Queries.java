@@ -80,8 +80,8 @@ public class Queries {
                 "odometer INT NOT NULL, " +
                 "fullTank BOOL NOT NULL DEFAULT “0” n" +
                 "value INT NOT NULL NOT NULL," +
-                "PRIMARY KEY (rId));" +
-                "FOREIGN KEY (rId) REFERENCES Rent(rId) on DELETE CASCADE,";
+                "PRIMARY KEY (rId)," +
+                "FOREIGN KEY (rId) REFERENCES Rent(rId) on DELETE CASCADE);";
 
         public static String CREATE_TABLE_CARD = "CREATE TABLE IF NOT EXISTS Card(" +
                 "cardNo BIGINT, " +

@@ -22,6 +22,10 @@ public class TimePeriod {
         return null;
     }
 
+    public static Timestamp getNow() {
+        return new Timestamp(System.currentTimeMillis());
+    }
+
     public String getStartAsTimeDateString() {
         Timestamp start = this.startDateAndTime;
         Integer sDate = start.getDate(), sMonth = start.getMonth(), sYear = start.getYear(), sHour = start.getHours(), sMin = start.getMinutes();

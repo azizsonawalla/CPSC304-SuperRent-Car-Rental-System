@@ -10,13 +10,12 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import model.Entities.Rental;
-import model.Entities.Reservation;
-import model.Entities.TimePeriod;
-import model.Entities.Vehicle;
+import javafx.util.Pair;
+import model.Entities.*;
 import model.Util.Log;
 
 import java.net.URL;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -64,7 +63,6 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
     };
 
     private Runnable refreshActiveReservations = () -> {
-        // TODO: Implement this
         Log.log("Refreshing active reservations");
         reservationResults.getChildren().clear();
         reservationOptions.getItems().clear();
@@ -132,7 +130,7 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
 
     private Runnable startRentalWithoutReservation = () -> {
         Log.log("Starting rental without reservation");
-        this.main.switchScene(GUIConfig.CLERK_MAKE_RESERVATION);
+        this.main.switchScene(GUIConfig.CLERK_CAR_SEARCH);
     };
 
     private Runnable startRentalFromReservation = () -> {
@@ -140,14 +138,16 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
         Reservation selectedRes = currReservationSearchRes.get(reservationOptions.getValue() -1);
         Vehicle autoselectedVehicle = qo.getAutoSelectedVehicle(selectedRes);  // TODO: Handle null case (no vehicle avail)
         TimePeriod nowUntilEndOfRes = TimePeriod.getNowTo(selectedRes.timePeriod);
-        this.main.clerkRentalInProgress = new Rental(-1, autoselectedVehicle.vlicense, selectedRes.dlicense, nowUntilEndOfRes,
-                                                    autoselectedVehicle.odometer, null, selectedRes.confNum);
+        Rental rentalInProgress = new Rental(-1, autoselectedVehicle.vlicense, selectedRes.dlicense, nowUntilEndOfRes,
+                                            autoselectedVehicle.odometer, null, selectedRes.confNum);
+        this.main.clerkRentalInProgress = new Pair<>(selectedRes, rentalInProgress);
         this.main.switchScene(GUIConfig.CLERK_START_RENTAL);
     };
 
     private Runnable startReturnForRental = () -> {
         Log.log("starting return for rental");
-        // TODO: Save selected rental in Main
+        Rental selectedRental = currRentalSearchRes.get(rentalOptions.getValue() - 1);
+        this.main.clerkReturnInProgress = new Return(selectedRental.rid, TimePeriod.getNow(), -1, false, -1);
         this.main.switchScene(GUIConfig.CLERK_SUBMIT_RETURN);
     };
 }

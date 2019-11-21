@@ -23,7 +23,7 @@ public class Main extends Application {
 
     // Inter-scene data
     public Reservation customerResInProgress;
-    public Rental clerkRentalInProgress;
+    public Pair<Reservation, Rental> clerkRentalInProgress;
     public Return clerkReturnInProgress;
 
     public Main() {

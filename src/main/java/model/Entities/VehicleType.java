@@ -14,8 +14,10 @@ public class VehicleType {
         this.krate = krate;
     }
 
-    public VehicleType(){
+    public VehicleType(){}
 
+    public VehicleType(String vtname) {
+        this.vtname = vtname;
     }
 
     //the name of the VehicleType (vtname) is the primary key

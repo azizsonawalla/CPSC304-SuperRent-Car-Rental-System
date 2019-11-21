@@ -3,6 +3,8 @@ package model.Orchestrator;
 import model.Database;
 import model.Entities.*;
 
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +25,8 @@ public class QueryOrchestrator {
     VehicleType VT3 = new VehicleType("Hatchback");
     VehicleType VT4 = new VehicleType("Sedan");
     Vehicle V1 = new Vehicle(1, "license", "Tesla", "Model S", 2018, "black", 0, true, "sedan", L1);
+    Timestamp ts = new Timestamp(2020, 1, 1, 1, 1, 1, 1);
+    TimePeriod t = new TimePeriod(ts, ts);
 
     private Database db;
 
@@ -85,13 +89,24 @@ public class QueryOrchestrator {
         // TODO: Implement this
         // if confNum == -1, then don't filter by confNum
         // if customerDL == "", then don't filer by customerDL
-        return Arrays.asList(new Reservation(1, "dummyvt", new TimePeriod(), new Location(), "dummyDL" ));
+        return Arrays.asList(new Reservation(1, "dummyvt", t, L1, "dummyDL" ));
     }
 
     public List<Rental> getRentalsWith(int rentalId, String customerDL) {
         // TODO: Implement this
         // if rentalId == -1, then don't filter by confNum
         // if customerDL == "", then don't filer by customerDL
-        return Arrays.asList(new Rental());
+        return Arrays.asList(new Rental(1, "dummyplates", "dummyDL", t, 0, null, 1));
+    }
+
+    /**
+     * Given a reservation, select a vehicle from the database that is available now,
+     * of the requested type, at the reservation location. If no such vehicle is available, return null.
+     * @param selectedRes
+     * @return
+     */
+    public Vehicle getAutoSelectedVehicle(Reservation selectedRes) {
+        // TODO: Implement this;
+        return new Vehicle(1, "license", "make", "model", 2020, "black", 0, true, "SUV", L1);
     }
 }

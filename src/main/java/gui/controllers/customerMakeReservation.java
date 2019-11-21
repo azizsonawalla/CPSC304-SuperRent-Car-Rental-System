@@ -86,7 +86,7 @@ public class customerMakeReservation extends Controller implements Initializable
         Reservation r = main.customerResInProgress;
         if (r == null) return;
         vtlabel.setText(r.vtName);
-        locationlabel.setText(String.format(LOCATION_INFO_TEMPLATE, r.location.location, r.location.city));
+        locationlabel.setText(r.location.toString());
         startlabel.setText(r.timePeriod.getStartAsTimeDateString());
         endlabel.setText(r.timePeriod.getEndAsTimeDateString());
     };

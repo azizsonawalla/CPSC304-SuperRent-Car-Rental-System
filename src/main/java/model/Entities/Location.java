@@ -11,4 +11,13 @@ public class Location {
     }
 
     public Location() {}
+
+    public String toString() {
+        return String.format("%s, %s", location.trim(), city.trim());
+    }
+
+    public static Location fromString(String input) throws Exception {
+        String[] parts = input.trim().split(",");
+        return new Location(parts[1], parts[0]);
+    }
 }

@@ -61,12 +61,10 @@ public class customerCarSearch extends Controller implements Initializable {
         Platform.runLater(refreshVehicleTypeSearchResultTable);
     }
 
-    private Location getCurrentLocationSelection() {
+    private Location getCurrentLocationSelection() throws Exception {
         String value = branchSelector.getValue();
         if (value.equals(ALL_BRANCHES)) return null;
-        String city = value.trim().split(",")[1];
-        String location = value.trim().split(",")[0];
-        return new Location(city, location);
+        return Location.fromString(value);
     }
 
     private VehicleType getCurrentVTSelection() {
@@ -102,10 +100,10 @@ public class customerCarSearch extends Controller implements Initializable {
     private Runnable refreshBranchList = () -> {
         try {
             lock.lock();
+            branchSelector.getItems().clear();
             List<Location> branches = qo.getAllLocationNames();
             for (Location l : branches) {
-                String locationName = String.format("%s, %s", l.location, l.city);
-                branchSelector.getItems().add(locationName);
+                branchSelector.getItems().add(l.toString());
             }
             branchSelector.getItems().add(ALL_BRANCHES);
             branchSelector.setValue(ALL_BRANCHES);
@@ -120,6 +118,7 @@ public class customerCarSearch extends Controller implements Initializable {
     private Runnable refreshVehicleTypeList = () -> {
         try {
             lock.lock();
+            vtSelector.getItems().clear();
             List<VehicleType> vehicleTypes = qo.getAllVehicleTypes();
             for (VehicleType vt : vehicleTypes) {
                 vtSelector.getItems().add(vt.vtname);

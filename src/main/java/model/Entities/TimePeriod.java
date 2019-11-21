@@ -17,6 +17,11 @@ public class TimePeriod {
 
     public TimePeriod() {}
 
+    public static TimePeriod getNowTo(TimePeriod timePeriod) {
+        // TODO: Returns new time period that starts now and ends when timePeriod ends
+        return null;
+    }
+
     public String getStartAsTimeDateString() {
         Timestamp start = this.startDateAndTime;
         Integer sDate = start.getDate(), sMonth = start.getMonth(), sYear = start.getYear(), sHour = start.getHours(), sMin = start.getMinutes();

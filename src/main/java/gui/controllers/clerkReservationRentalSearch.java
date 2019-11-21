@@ -6,11 +6,14 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import model.Entities.Rental;
 import model.Entities.Reservation;
+import model.Entities.TimePeriod;
+import model.Entities.Vehicle;
 import model.Util.Log;
 
 import java.net.URL;
@@ -19,14 +22,20 @@ import java.util.ResourceBundle;
 
 public class clerkReservationRentalSearch extends Controller implements Initializable {
 
+    // TODO: Align search result strings
+
     private Text NO_RESULTS_FOUND = new Text("No results found for your search");
     private String RESERVATION_RESULT_TEMPLATE = "Confirmation No = %d, Customer DL = %s, Vehicle Type = %s, Start = %s, End = %s, Pickup = %s";
     private String RENTAL_RESULT_TEMPLATE = "Rental ID = %d, Vehicle License = %s, Customer DL = %s, Start = %s, End = %s";
+
+    private List<Reservation> currReservationSearchRes;
+    private List<Rental> currRentalSearchRes;
 
     @FXML private Button dailyReportsButton, rentalWithoutReservationButton, rentalWithReservationButton,
                             searchReservationsButton, searchRentalsButton, startReturnButton;
     @FXML private TextField confNumField, dlField, dlFieldRental, rentalIdField;
     @FXML private TextFlow reservationResults, rentalResults;
+    @FXML private ComboBox<Integer> reservationOptions, rentalOptions;
 
     public clerkReservationRentalSearch(Main main) {
         super(main);
@@ -58,7 +67,8 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
         // TODO: Implement this
         Log.log("Refreshing active reservations");
         reservationResults.getChildren().clear();
-        // TODO: clear options combobox
+        reservationOptions.getItems().clear();
+        // TODO: Disable start rental button
         String confNumString = confNumField.getText().trim();
         int confNum;
         String dl = dlField.getText().trim();
@@ -72,21 +82,26 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
             }
         }
         if (dl.equals("")) dl = null;
-        List<Reservation> result = qo.getReservationsWith(confNum, dl);
-        if (result.size() == 0) {
+        this.currReservationSearchRes = qo.getReservationsWith(confNum, dl);
+        if (currReservationSearchRes.size() == 0) {
             reservationResults.getChildren().add(NO_RESULTS_FOUND);
         } else {
-            reservationResults.getChildren().add(new Text(RESERVATION_RESULT_TEMPLATE));
-            // TODO: Fill combobox
-            // TODO: Dummy value won't work due to null values
+            for (Reservation r: currReservationSearchRes) {
+                String resultString = String.format(RESERVATION_RESULT_TEMPLATE, r.confNum, r.dlicense, r.vtName,
+                                                    r.timePeriod.getStartAsTimeDateString(), r.timePeriod.getEndAsTimeDateString(), r.location.toString());
+                reservationResults.getChildren().add(new Text(resultString));
+            }
+            for (int i=1; i <= currReservationSearchRes.size(); i++) reservationOptions.getItems().add(i);
+            reservationOptions.setValue(reservationOptions.getItems().get(0));
+            // TODO: Enable start rental button
         }
     };
 
     private Runnable refreshOngoingRentals = () -> {
-        // TODO: Implement this
         Log.log("Refreshing active rentals");
         rentalResults.getChildren().clear();
-        // TODO: clear options combobox
+        rentalOptions.getItems().clear();
+        // TODO: Disable start return button
         String rentalIdString = rentalIdField.getText().trim();
         int rentalId;
         String dl = dlFieldRental.getText().trim();
@@ -100,13 +115,18 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
             }
         }
         if (dl.equals("")) dl = null;
-        List<Rental> result = qo.getRentalsWith(rentalId, dl);
-        if (result.size() == 0) {
+        currRentalSearchRes = qo.getRentalsWith(rentalId, dl);
+        if (currRentalSearchRes.size() == 0) {
             rentalResults.getChildren().add(NO_RESULTS_FOUND);
         } else {
-            rentalResults.getChildren().add(new Text(RENTAL_RESULT_TEMPLATE));
-            // TODO: Fill combobox
-            // TODO: Dummy value won't work due to null values
+            for (Rental r: currRentalSearchRes) {
+                String resultString = String.format(RENTAL_RESULT_TEMPLATE, r.rid, r.vlicense, r.dlicense,
+                                                    r.timePeriod.getStartAsTimeDateString(), r.timePeriod.getEndAsTimeDateString());
+                rentalResults.getChildren().add(new Text(resultString));
+            }
+            for (int i=1; i <= currRentalSearchRes.size(); i++) rentalOptions.getItems().add(i);
+            rentalOptions.setValue(rentalOptions.getItems().get(0));
+            // TODO: Enable start return button
         }
     };
 
@@ -117,7 +137,11 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
 
     private Runnable startRentalFromReservation = () -> {
         Log.log("Starting rental from reservation");
-        // TODO: Save selected reservation in Main
+        Reservation selectedRes = currReservationSearchRes.get(reservationOptions.getValue() -1);
+        Vehicle autoselectedVehicle = qo.getAutoSelectedVehicle(selectedRes);  // TODO: Handle null case (no vehicle avail)
+        TimePeriod nowUntilEndOfRes = TimePeriod.getNowTo(selectedRes.timePeriod);
+        this.main.clerkRentalInProgress = new Rental(-1, autoselectedVehicle.vlicense, selectedRes.dlicense, nowUntilEndOfRes,
+                                                    autoselectedVehicle.odometer, null, selectedRes.confNum);
         this.main.switchScene(GUIConfig.CLERK_START_RENTAL);
     };
 

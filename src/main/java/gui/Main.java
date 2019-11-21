@@ -7,25 +7,27 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import model.Entities.Rental;
 import model.Entities.Reservation;
+import model.Entities.Return;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class Main extends Application {
 
+    // TODO: Attach fonts
+
     private Scene scene;
     public Map<String, Pair<Pane, Controller>> scenePanes;
-    public ExecutorService pool;
 
     // Inter-scene data
     public Reservation customerResInProgress;
+    public Rental clerkRentalInProgress;
+    public Return clerkReturnInProgress;
 
     public Main() {
         super();
-        pool = Executors.newFixedThreadPool(2*Runtime.getRuntime().availableProcessors()+1);
         scenePanes = new HashMap<>();
     }
 
@@ -97,7 +99,6 @@ public class Main extends Application {
     @Override
     public void stop() throws Exception {
         super.stop();
-        pool.shutdownNow();
         // TODO: Close all db connections
     }
 

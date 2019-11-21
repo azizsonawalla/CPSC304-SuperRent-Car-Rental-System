@@ -21,4 +21,14 @@ public class Rental {
 
     //If customer is renting from a reservation, identifies Reservation involved in the Rental
     public int confNo;
+
+    public Rental(int rid, String vlicense, String dlicense, TimePeriod timePeriod, int startOdometer, Card card, int confNo) {
+        this.rid = rid;
+        this.vlicense = vlicense;
+        this.dlicense = dlicense;
+        this.timePeriod = timePeriod;
+        this.startOdometer = startOdometer;
+        this.card = card;
+        this.confNo = confNo;
+    }
 }

@@ -133,17 +133,17 @@ public class Queries {
 
     public static class Rent {
 
-        public static String ADD_RENT =
+        public static String ADD_RENTAL =
                 "INSERT INTO Rent(rId, vLicense, dLicense, fromDateTime, toDateTime, odometer, cardNo, confNo)" +
                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-        public static String UPDATE_RENT =
+        public static String UPDATE_RENTAL =
                 "UPDATE Rent" +
                         "SET vLicense = ?, dLicense = ?, fromDateTime = ?, toDateTime = ?, odometer = ?" +
                         ", cardNo = ?, confNo = ?" +
                         "WHERE rId = ?";
 
-        public static String DELETE_RENT =
+        public static String DELETE_RENTAL =
                 "DELETE FROM Rent " +
                         "WHERE rId = ?";
 

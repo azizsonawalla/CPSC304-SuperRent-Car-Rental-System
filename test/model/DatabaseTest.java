@@ -328,6 +328,50 @@ class DatabaseTest {
 
     @Test
     void addRental() {
+        try {
+            //populate VehicleType, Card, Reservation and Customer table with data so that foreign key constraints can
+            // be enforced
+            VehicleType vt = new VehicleType("Sedan", "four doors, 5 seats", 300,
+                    70, 7, 100, 20, 2, 1);
+            db.addVehicleType(vt);
+            Customer c = new Customer(6048888888L, "Billy", "6363 Agronomy Road", "1234abcd");
+            db.addCustomer(c);
+
+            //Create Reservation object to add
+            TimePeriod t = new TimePeriod();
+            t.endDateAndTime = new Timestamp(1000000000);
+            t.startDateAndTime = new Timestamp(28801000);
+
+            Location l = new Location();
+            l.city = "Vancouver";
+            l.location = "123 Burrard Street";
+
+            Reservation r = new Reservation(123456, "Sedan", t, l, "1234abcd");
+            db.addReservation(r);
+
+            Card card = new Card(60115564485789458L,"Discover", 1923);
+            db.addCard(card);
+
+//            Rental add = new Rental(1, )
+//
+//
+//            Rental result = db.getRentalMatching(add);
+//            assertEquals(add.confNum, result.confNum);
+//            assertEquals(add.vtName, result.vtName);
+//            assertEquals(add.timePeriod.endDateAndTime, result.timePeriod.endDateAndTime);
+//            assertEquals(add.timePeriod.startDateAndTime, result.timePeriod.startDateAndTime);
+//            assertEquals(add.location.city, result.location.city);
+//            assertEquals(add.location.location, result.location.location);
+//            assertEquals(add.dlicense, result.dlicense);
+
+            //empty out sample data in VehicleType and Customer tables
+            db.deleteVehicleType(vt);
+            db.deleteCustomer(c);
+//            db.deleteReservation(add);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Test

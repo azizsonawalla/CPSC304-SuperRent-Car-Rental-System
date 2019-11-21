@@ -41,7 +41,7 @@ public class Database {
         //Creates all the tables
         conn.prepareStatement(Queries.Create.CREATE_TABLE_CUSTOMER).executeUpdate();
         conn.prepareStatement(Queries.Create.CREATE_TABLE_VEHICLE_TYPE).executeUpdate();
-        //conn.prepareStatement(Queries.Create.CREATE_TABLE_LOCATION).executeUpdate();
+        conn.prepareStatement(Queries.Create.CREATE_TABLE_BRANCH).executeUpdate();
         conn.prepareStatement(Queries.Create.CREATE_TABLE_RESERVATIONS).executeUpdate();
         conn.prepareStatement(Queries.Create.CREATE_TABLE_VEHICLE).executeUpdate();
         conn.prepareStatement(Queries.Create.CREATE_TABLE_CARD).executeUpdate();
@@ -62,7 +62,7 @@ public class Database {
         conn.prepareStatement(Queries.Drop.DROP_TABLE_CUSTOMER).executeUpdate();
         conn.prepareStatement(Queries.Drop.DROP_TABLE_RETURNS).executeUpdate();
         conn.prepareStatement(Queries.Drop.DROP_TABLE_CARD).executeUpdate();
-        //conn.prepareStatement(Queries.Drop.DROP_TABLE_LOCATION).executeUpdate();
+        conn.prepareStatement(Queries.Drop.DROP_TABLE_Branch).executeUpdate();
         conn.prepareStatement(Queries.Drop.FOREIGN_KEY_CHECKS_ON).execute();
     }
 
@@ -256,8 +256,27 @@ public class Database {
      * @throws Exception if there is an error adding the rental, for example if the values don't meet constraints
      */
     public void addRental(Rental r) throws Exception {
-        // TODO: implement this
-        throw new Exception("Method not implemented");
+
+
+        PreparedStatement ps = conn.prepareStatement(Queries.Rent.ADD_RENTAL);
+
+        //Set values for parameters in ps
+        ps.setInt(1, r.rid);
+        ps.setString(2, r.vlicense);
+        ps.setString(3, r.dlicense);
+        ps.setTimestamp(4, r.timePeriod.startDateAndTime);
+        ps.setTimestamp(5, r.timePeriod.endDateAndTime);
+        ps.setInt(6, r.startOdometer);
+        ps.setLong(7, r.card.CardNo);
+        ps.setLong(8, r.confNo);
+
+        //execute the update
+        ps.executeUpdate();
+
+        //commit changes (automatic) and close prepared statement
+        ps.close();
+
+        Log.log("Rental with rent id " + Integer.toString(r.rid) + " successfully added");
     }
 
     /**
@@ -543,6 +562,39 @@ public class Database {
         // TODO: implement this
         throw new Exception("Method not implemented");
     }
+
+    /* Card */
+
+    /**
+     * Add the given Card object to the Card table in the database
+     * @param c Card object to add
+     * @throws Exception if there is an error adding the Card, for example if the values don't meet constraints
+     */
+    public void addCard(Card c) throws Exception {
+        // TODO: implement this
+
+    }
+
+    /**
+     * Update the values of the Card entry in the Card table that has the same primary key as the given
+     * Card object. New values of Card entry are values in c.
+     * @param c updated values for Card entry
+     * @throws Exception if there is an error updating entry, for example if entry doesn't exist already
+     */
+    public void updateCard(Card c) throws Exception {
+        // TODO: implement this
+    }
+
+    /**
+     * Delete entry from table corresponding table that matches the primary key of the given object
+     * @param c object with same primary key as entry to delete from table
+     * @throws Exception if there is an error deleting entry, for example if entry doesn't exist already
+     */
+    public void deleteCard(Card c) throws Exception {
+        // TODO: implement this
+        throw new Exception("Method not implemented");
+    }
+
 
 //    public void generateLocationCardData() throws Exception {
 //        PreparedStatement ps = conn.prepareStatement(Queries.Location.ADD_LOCATION);

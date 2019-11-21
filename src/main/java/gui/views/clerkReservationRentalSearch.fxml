@@ -62,12 +62,12 @@
       <Button fx:id="dailyReportsButton" layoutX="703.0" layoutY="711.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="260.0" text="View Daily Reports &gt;" />
       <ScrollPane layoutX="36.0" layoutY="121.0" prefHeight="222.0" prefWidth="634.0">
       <content>
-         <TextFlow fx:id="searchResults" prefHeight="213.0" prefWidth="612.0" />
+         <TextFlow fx:id="reservationResults" prefHeight="213.0" prefWidth="612.0" />
       </content>
    </ScrollPane>
       <ScrollPane layoutX="36.0" layoutY="465.0" prefHeight="222.0" prefWidth="634.0">
          <content>
-            <TextFlow fx:id="searchResults" prefHeight="211.0" prefWidth="612.0" />
+            <TextFlow fx:id="rentalResults" prefHeight="211.0" prefWidth="612.0" />
          </content>
       </ScrollPane>
       <ComboBox layoutX="229.0" layoutY="366.0" prefHeight="55.0" prefWidth="165.0" />

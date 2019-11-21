@@ -7,6 +7,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
+import model.Entities.Rental;
 import model.Entities.Reservation;
 import model.Util.Log;
 
@@ -16,9 +19,14 @@ import java.util.ResourceBundle;
 
 public class clerkReservationRentalSearch extends Controller implements Initializable {
 
+    private Text NO_RESULTS_FOUND = new Text("No results found for your search");
+    private String RESERVATION_RESULT_TEMPLATE = "Confirmation No = %d, Customer DL = %s, Vehicle Type = %s, Start = %s, End = %s, Pickup = %s";
+    private String RENTAL_RESULT_TEMPLATE = "Rental ID = %d, Vehicle License = %s, Customer DL = %s, Start = %s, End = %s";
+
     @FXML private Button dailyReportsButton, rentalWithoutReservationButton, rentalWithReservationButton,
                             searchReservationsButton, searchRentalsButton, startReturnButton;
     @FXML private TextField confNumField, dlField, dlFieldRental, rentalIdField;
+    @FXML private TextFlow reservationResults, rentalResults;
 
     public clerkReservationRentalSearch(Main main) {
         super(main);
@@ -49,7 +57,8 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
     private Runnable refreshActiveReservations = () -> {
         // TODO: Implement this
         Log.log("Refreshing active reservations");
-        // TODO: clear text flow
+        reservationResults.getChildren().clear();
+        // TODO: clear options combobox
         String confNumString = confNumField.getText().trim();
         int confNum;
         String dl = dlField.getText().trim();
@@ -63,37 +72,42 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
             }
         }
         if (dl.equals("")) dl = null;
-        List<Reservation> result = qo.getReservationWith(confNum, dl);
+        List<Reservation> result = qo.getReservationsWith(confNum, dl);
         if (result.size() == 0) {
-            // TODO: put "no results" in text flow
+            reservationResults.getChildren().add(NO_RESULTS_FOUND);
         } else {
-            // TODO: put results in text flow
+            reservationResults.getChildren().add(new Text(RESERVATION_RESULT_TEMPLATE));
+            // TODO: Fill combobox
+            // TODO: Dummy value won't work due to null values
         }
     };
 
     private Runnable refreshOngoingRentals = () -> {
-//        // TODO: Implement this
-//        Log.log("Refreshing active rentals");
-//        // TODO: clear text flow
-//        String rentalIdString = rentalIdField.getText().trim();
-//        int rentalId;
-//        String dl = dlFieldRental.getText().trim();
-//        if (rentalIdString.equals("")) {
-//            rentalId = -1;
-//        } else {
-//            try {
-//                rentalId = Integer.parseInt(rentalIdString);
-//            } catch (Exception e) {
-//                rentalId = -1;
-//            }
-//        }
-//        if (dl.equals("")) dl = null;
-//        List<Reservation> result = qo.getReservationWith(rentalId, dl);
-//        if (result.size() == 0) {
-//            // TODO: put "no results" in text flow
-//        } else {
-//            // TODO: put results in text flow
-//        }
+        // TODO: Implement this
+        Log.log("Refreshing active rentals");
+        rentalResults.getChildren().clear();
+        // TODO: clear options combobox
+        String rentalIdString = rentalIdField.getText().trim();
+        int rentalId;
+        String dl = dlFieldRental.getText().trim();
+        if (rentalIdString.equals("")) {
+            rentalId = -1;
+        } else {
+            try {
+                rentalId = Integer.parseInt(rentalIdString);
+            } catch (Exception e) {
+                rentalId = -1;
+            }
+        }
+        if (dl.equals("")) dl = null;
+        List<Rental> result = qo.getRentalsWith(rentalId, dl);
+        if (result.size() == 0) {
+            rentalResults.getChildren().add(NO_RESULTS_FOUND);
+        } else {
+            rentalResults.getChildren().add(new Text(RENTAL_RESULT_TEMPLATE));
+            // TODO: Fill combobox
+            // TODO: Dummy value won't work due to null values
+        }
     };
 
     private Runnable startRentalWithoutReservation = () -> {

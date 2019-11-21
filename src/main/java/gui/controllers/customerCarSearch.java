@@ -24,6 +24,7 @@ public class customerCarSearch extends Controller implements Initializable {
     // TODO: Reformat string templates for better alignment
     // TODO: Add check to "see details" and "start reservation" buttons to ensure an option is selected
     // TODO: Check size of returned options before setting 1st value in combobox
+    // TODO: Change default dates
 
     private String SEARCH_RESULT_TEMPLATE = "  Option %d:  Vehicle Type = %-30s  Location = %-10s, %-10s  Number Available = %d\n";
     private String RESULT_DETAILS_TEMPLATE = "  Make = %s,   Model = %s,  Year = %d,  Colour = %s,  License plate = %s";

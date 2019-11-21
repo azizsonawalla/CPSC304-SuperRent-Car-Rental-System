@@ -87,12 +87,8 @@ public class customerMakeReservation extends Controller implements Initializable
         if (r == null) return;
         vtlabel.setText(r.vtName);
         locationlabel.setText(String.format(LOCATION_INFO_TEMPLATE, r.location.location, r.location.city));
-        Timestamp start = r.timePeriod.startDateAndTime;
-        Timestamp end = r.timePeriod.endDateAndTime;
-        Integer sDate = start.getDate(), sMonth = start.getMonth(), sYear = start.getYear(), sHour = start.getHours(), sMin = start.getMinutes();
-        Integer eDate = end.getDate(), eMonth = end.getMonth(), eYear = end.getYear(), eHour = end.getHours(), eMin = end.getMinutes();
-        startlabel.setText(String.format(TIME_INFO_TEMPLATE, sDate, sMonth, sYear, sHour, sMin));
-        endlabel.setText(String.format(TIME_INFO_TEMPLATE, eDate, eMonth, eYear, eHour, eMin));
+        startlabel.setText(r.timePeriod.getStartAsTimeDateString());
+        endlabel.setText(r.timePeriod.getEndAsTimeDateString());
     };
 
     private Runnable fillCustomerInfoIfAvailable = () -> {

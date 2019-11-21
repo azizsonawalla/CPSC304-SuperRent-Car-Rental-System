@@ -74,7 +74,7 @@ public class Queries {
                 "PRIMARY KEY (dLicense), " +
                 "UNIQUE (cellphone));";
 
-        public static String CREATE_TABLE_RETURNS = "CREATE TABLE IF NOT EXISTS Returns(\n" +
+        public static String CREATE_TABLE_RETURNS = "CREATE TABLE IF NOT EXISTS Returns(" +
                 "rId INT NOT NULL, " +
                 "dateTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
                 "odometer INT NOT NULL, " +

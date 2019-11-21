@@ -542,7 +542,8 @@ public class Database {
         ps.setString(6, v.color);
         ps.setInt(7, v.odometer);
         ps.setString(8, v.vtname);
-        ps.setBoolean(9, v.status);
+        if (v.status == Vehicle.VehicleStatus.AVAILABLE) ps.setBoolean(9, true);
+        else ps.setBoolean(9, false);
         ps.setString(10, v.location.location);
         ps.setString(11, v.location.city);
 
@@ -577,8 +578,9 @@ public class Database {
         ps.setString(5, v.color != null? v.color: rs.getString("color"));
         ps.setInt(6, v.odometer != -1? v.odometer: rs.getInt("odometer"));
         ps.setString(7, v.vtname != null? v.vtname: rs.getString("vtName"));
-        //TODO: find a way to have it so that you dont have to update v.status. Use enum
-        ps.setBoolean(8, v.status);
+        if (v.status == Vehicle.VehicleStatus.AVAILABLE) ps.setBoolean(8, true);
+        else if (v.status == Vehicle.VehicleStatus.RENTED) ps.setBoolean(8, false);
+        else ps.setBoolean(8, rs.getBoolean("status"));
         ps.setString(9, v.location != null? v.location.location: rs.getString("location"));
         ps.setString(10, v.location != null? v.location.city: rs.getString("city"));
         ps.setString(11, v.vlicense);
@@ -621,9 +623,46 @@ public class Database {
         Log.log("Vehicle with vlicense " + v.vlicense + " successfully deleted");
     }
 
-    public List<Vehicle> getVehicleWith(VehicleType vt, Location l, boolean availableNow) throws Exception {
-        // TODO: implement this
-        throw new Exception("Method not implemented");
+    public List<Vehicle> getVehicleWith(VehicleType vt, Location l, Vehicle.VehicleStatus availableNow) throws Exception {
+        String query = Queries.Vehicle.GET_VEHICLES_WITH;
+
+        if (vt == null && l == null && availableNow == null){
+            //If no filters are provided, return all the results
+            query = query.replace(" WHERE vtName = ? AND location = ? AND city = ? AND status = ?", "");
+        } else {
+            if (vt == null) query = query.replace("vtName = ? AND ", "");
+            else query = query.replace("vtName = ?", "vtName = '" + vt.vtname + "'");
+            if (l == null) query = query.replace("location = ? AND city = ? AND ", "");
+            else query = query.replace("location = ? AND city = ?", "location = '" + l.location + "' AND city = '" + l.city + "'");
+            if (availableNow == null) query = query.replace("AND status = ?", "");
+            else query = query.replace("status = ?", "status = " + (availableNow == Vehicle.VehicleStatus.AVAILABLE));
+        }
+
+        System.out.println(query);
+        PreparedStatement ps = conn.prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+
+        List<Vehicle> vehicles = new ArrayList<Vehicle>();
+
+        while (rs.next()){
+            //Make a reservation object corresponding to a tuple queried from the database
+            Vehicle v = new Vehicle(rs.getInt("vId"),
+                                    rs.getString("vLicense"),
+                                    rs.getString("make"),
+                                    rs.getString("model"),
+                                    rs.getInt("year"),
+                                    rs.getString("color"),
+                                    rs.getInt("odometer"),
+                                    rs.getString("vtName"),
+                                    (rs.getBoolean("status")) ? Vehicle.VehicleStatus.AVAILABLE: Vehicle.VehicleStatus.RENTED,
+                                    new Location(rs.getString("city"), rs.getString("location")));
+
+            //Add the reservation object to r
+            vehicles.add(v);
+        }
+        ps.close();
+        return vehicles;
+
     }
 
     public Vehicle getVehicleMatching(Vehicle v) throws Exception {
@@ -636,9 +675,16 @@ public class Database {
             return null;
         }
 
-        Vehicle res = new Vehicle(rs.getInt(1), rs.getString(2), rs.getString(3),
-                rs.getString(4), rs.getInt(5), rs.getString(6), rs.getInt(7),
-                rs.getString(8), rs.getBoolean(9), new Location(rs.getString(11), rs.getString(10)));
+        Vehicle res = new Vehicle(rs.getInt("vId"),
+                rs.getString("vLicense"),
+                rs.getString("make"),
+                rs.getString("model"),
+                rs.getInt("year"),
+                rs.getString("color"),
+                rs.getInt("odometer"),
+                rs.getString("vtName"),
+                (rs.getBoolean("status")) ? Vehicle.VehicleStatus.AVAILABLE: Vehicle.VehicleStatus.RENTED,
+                new Location(rs.getString("city"), rs.getString("location")));
 
         System.out.println("Vehicle with vlicense " + v.vlicense + " successfully retrieved");
         ps.close();

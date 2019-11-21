@@ -533,7 +533,7 @@ class DatabaseTest {
             l.location = "123 Burrard Street"; l.city = "Vancouver";
 
             Vehicle add = new Vehicle(12345, "123abc", "Toyota", "Corolla", 2018, "silver",
-                    529348, "Sedan", true, l);
+                    529348, "Sedan", Vehicle.VehicleStatus.RENTED, l);
             db.addVehicle(add);
             Vehicle result = db.getVehicleMatching(add);
             assertEquals(add.vtname, result.vtname);
@@ -558,11 +558,11 @@ class DatabaseTest {
             Location l2 = new Location("Calgary", "123 Calgary Street");
 
             Vehicle add = new Vehicle(12345, "123abc", "Toyota", "Corolla", 2018, "silver",
-                    529348, "Sedan", true, l1);
+                    529348, "Sedan", Vehicle.VehicleStatus.AVAILABLE, l1);
             db.addVehicle(add);
 
             Vehicle update = new Vehicle(56789, "123abc", "Audi", "Q7", 2017, "red",
-                    29362, "SUV", false, l2);
+                    29362, "SUV", Vehicle.VehicleStatus.RENTED, l2);
             db.updateVehicle(update);
 
             Vehicle result = db.getVehicleMatching(add);
@@ -595,12 +595,11 @@ class DatabaseTest {
             Location l2 = new Location("Calgary", "123 Calgary Street");
 
             Vehicle add = new Vehicle(12345, "123abc", "Toyota", "Corolla", 2018, "silver",
-                    529348, "Sedan", true, l1);
+                    529348, "Sedan", Vehicle.VehicleStatus.AVAILABLE, l1);
             db.addVehicle(add);
 
-            //TODO: update this once status is changed to enum so that status is "null" as well
             Vehicle update = new Vehicle(-1, "123abc", null, null, -1, null,
-                    -1, null, true, null);
+                    -1, null, null, null);
             db.updateVehicle(update);
 
             Vehicle result = db.getVehicleMatching(add);
@@ -633,7 +632,7 @@ class DatabaseTest {
             l.location = "123 Burrard Street"; l.city = "Vancouver";
 
             Vehicle add = new Vehicle(12345, "123abc", "Toyota", "Corolla", 2018, "silver",
-                    529348, "Sedan", true, l);
+                    529348, "Sedan", Vehicle.VehicleStatus.AVAILABLE, l);
             db.addVehicle(add);
             db.deleteVehicle(add);
             Vehicle result = db.getVehicleMatching(add);
@@ -645,7 +644,97 @@ class DatabaseTest {
     }
 
     @Test
-    void getVehicleWith() {
+    void getVehicleWithAll() {
+        try {
+            //populate VehicleType table with data so that foreign key constraints can be enforced
+            VehicleType vt1 = new VehicleType("Sedan", "four doors, 5 seats", 300,
+                    70, 7, 100, 20, 2, 1);
+            VehicleType vt2 = new VehicleType("SUV", "four doors, 5 seats, 1 sun roof", 400,
+                    80, 8, 150, 30, 3, 2);
+            db.addVehicleType(vt1);
+            db.addVehicleType(vt2);
+
+            //Create Vehicle object to add/update
+            Location l1 = new Location("Vancouver", "123 Burrard Street");
+            Location l2 = new Location("Calgary", "123 Calgary Street");
+
+            Vehicle v1 = new Vehicle(12345, "123abc", "Toyota", "Corolla", 2018, "silver",
+                    529348, "Sedan", Vehicle.VehicleStatus.AVAILABLE, l1);
+            db.addVehicle(v1);
+
+            Vehicle v2 = new Vehicle(56789, "456def", "Audi", "Q7", 2017, "red",
+                    29362, "SUV", Vehicle.VehicleStatus.RENTED, l2);
+            db.addVehicle(v2);
+
+            List<Vehicle> vehicles = db.getVehicleWith(null, null, null);
+
+            assertEquals(2, vehicles.size());
+
+            db.deleteVehicle(v1);
+            db.deleteVehicle(v2);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void getVehicleWithCombo() {
+        try {
+            //populate VehicleType table with data so that foreign key constraints can be enforced
+            VehicleType vt1 = new VehicleType("Sedan", "four doors, 5 seats", 300,
+                    70, 7, 100, 20, 2, 1);
+            VehicleType vt2 = new VehicleType("SUV", "four doors, 5 seats, 1 sun roof", 400,
+                    80, 8, 150, 30, 3, 2);
+            db.addVehicleType(vt1);
+            db.addVehicleType(vt2);
+
+            //Create Vehicle object to add/update
+            Location l1 = new Location("Vancouver", "123 Burrard Street");
+            Location l2 = new Location("Calgary", "123 Calgary Street");
+
+            Vehicle v1 = new Vehicle(12345, "123abc", "Toyota", "Corolla", 2018, "silver",
+                    529348, "Sedan", Vehicle.VehicleStatus.AVAILABLE, l1);
+            db.addVehicle(v1);
+
+            Vehicle v2 = new Vehicle(56789, "456def", "Audi", "Q7", 2017, "red",
+                    29362, "SUV", Vehicle.VehicleStatus.RENTED, l2);
+            db.addVehicle(v2);
+
+            List<Vehicle> vehicles = db.getVehicleWith(vt1, null, null);
+            assertEquals(1, vehicles.size());
+            assertEquals("123abc", vehicles.get(0).vlicense);
+
+            vehicles = db.getVehicleWith(null, l1, null);
+            assertEquals(1, vehicles.size());
+            assertEquals("123abc", vehicles.get(0).vlicense);
+
+            vehicles = db.getVehicleWith(null, null, Vehicle.VehicleStatus.AVAILABLE);
+            assertEquals(1, vehicles.size());
+            assertEquals("123abc", vehicles.get(0).vlicense);
+
+            vehicles = db.getVehicleWith(vt1, l1, null);
+            assertEquals(1, vehicles.size());
+            assertEquals("123abc", vehicles.get(0).vlicense);
+
+            vehicles = db.getVehicleWith(vt1, null, Vehicle.VehicleStatus.AVAILABLE);
+            assertEquals(1, vehicles.size());
+            assertEquals("123abc", vehicles.get(0).vlicense);
+
+            vehicles = db.getVehicleWith(null, l1, Vehicle.VehicleStatus.AVAILABLE);
+            assertEquals(1, vehicles.size());
+            assertEquals("123abc", vehicles.get(0).vlicense);
+
+            vehicles = db.getVehicleWith(vt1, l1, Vehicle.VehicleStatus.AVAILABLE);
+            assertEquals(1, vehicles.size());
+            assertEquals("123abc", vehicles.get(0).vlicense);
+
+            db.deleteVehicle(v1);
+            db.deleteVehicle(v2);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

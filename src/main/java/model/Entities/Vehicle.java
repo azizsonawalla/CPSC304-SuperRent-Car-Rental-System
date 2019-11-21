@@ -2,7 +2,12 @@ package model.Entities;
 
 public class Vehicle {
 
-    public Vehicle(int vid, String vlicense, String make, String model, int year, String color, int odometer, String vtname, boolean status, Location location) {
+    public enum VehicleStatus {
+        RENTED,
+        AVAILABLE
+    }
+
+    public Vehicle(int vid, String vlicense, String make, String model, int year, String color, int odometer, String vtname, VehicleStatus status, Location location) {
         this.vid = vid;
         this.vlicense = vlicense;
         this.make = make;
@@ -33,7 +38,7 @@ public class Vehicle {
     public int odometer;
 
     //Status of the car, true = available for rent, false = rented out
-    public boolean status;
+    public VehicleStatus status;
 
     //Identifies the VehicleType of a Vehicle
     public String vtname;

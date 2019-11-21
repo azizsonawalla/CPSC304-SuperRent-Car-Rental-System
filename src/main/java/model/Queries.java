@@ -184,6 +184,11 @@ public class Queries {
         public static String DELETE_VEHICLE = "DELETE FROM Vehicle " +
                 "WHERE vLicense = (?)";
 
+        public static String GET_VEHICLES_WITH =
+                "SELECT * " +
+                        "FROM Vehicle " +
+                        "WHERE vtName = ? AND location = ? AND city = ? AND status = ?";
+
     }
 
     public static class VehicleType {

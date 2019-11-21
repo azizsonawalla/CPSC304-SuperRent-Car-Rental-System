@@ -203,6 +203,8 @@ public class Queries {
 
         public static String DELETE_VEHICLE_TYPE = "DELETE FROM VehicleType " +
                 "WHERE vtName = ?";
+
+        public static String QUERY_ALL = "SELECT * FROM VehicleType";
     }
 
     public static class Returns {

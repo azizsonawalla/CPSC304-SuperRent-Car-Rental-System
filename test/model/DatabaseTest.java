@@ -61,14 +61,14 @@ class DatabaseTest {
             Reservation add = new Reservation(123456, "Sedan", t, l, "1234abcd");
             db.addReservation(add);
 
-            Reservation result = db.getReservationMatching(add);
-            assertEquals(add.confNum, result.confNum);
-            assertEquals(add.vtName, result.vtName);
-            assertEquals(add.timePeriod.endDateAndTime, result.timePeriod.endDateAndTime);
-            assertEquals(add.timePeriod.startDateAndTime, result.timePeriod.startDateAndTime);
-            assertEquals(add.location.city, result.location.city);
-            assertEquals(add.location.location, result.location.location);
-            assertEquals(add.dlicense, result.dlicense);
+            List<Reservation> result = db.getReservationMatching(add);
+            assertEquals(add.confNum, result.get(0).confNum);
+            assertEquals(add.vtName, result.get(0).vtName);
+            assertEquals(add.timePeriod.endDateAndTime, result.get(0).timePeriod.endDateAndTime);
+            assertEquals(add.timePeriod.startDateAndTime, result.get(0).timePeriod.startDateAndTime);
+            assertEquals(add.location.city, result.get(0).location.city);
+            assertEquals(add.location.location, result.get(0).location.location);
+            assertEquals(add.dlicense, result.get(0).dlicense);
 
             //empty out sample data in VehicleType and Customer tables
             db.deleteVehicleType(vt);
@@ -115,14 +115,14 @@ class DatabaseTest {
             Reservation update = new Reservation(123456, "SUV", t2, l2, "5678efgh");
             db.updateReservation(update);
 
-            Reservation result = db.getReservationMatching(add);
-            assertEquals(update.confNum, result.confNum);
-            assertEquals(update.vtName, result.vtName);
-            assertEquals(update.timePeriod.endDateAndTime, result.timePeriod.endDateAndTime);
-            assertEquals(update.timePeriod.startDateAndTime, result.timePeriod.startDateAndTime);
-            assertEquals(update.location.city, result.location.city);
-            assertEquals(update.location.location, result.location.location);
-            assertEquals(update.dlicense, result.dlicense);
+            List<Reservation> result = db.getReservationMatching(add);
+            assertEquals(update.confNum, result.get(0).confNum);
+            assertEquals(update.vtName, result.get(0).vtName);
+            assertEquals(update.timePeriod.endDateAndTime, result.get(0).timePeriod.endDateAndTime);
+            assertEquals(update.timePeriod.startDateAndTime, result.get(0).timePeriod.startDateAndTime);
+            assertEquals(update.location.city, result.get(0).location.city);
+            assertEquals(update.location.location, result.get(0).location.location);
+            assertEquals(update.dlicense, result.get(0).dlicense);
 
             //empty out sample data in VehicleType and Customer tables
             db.deleteVehicleType(vt1);
@@ -161,14 +161,14 @@ class DatabaseTest {
             Reservation update = new Reservation(123456, null, null, null, null);
             db.updateReservation(update);
 
-            Reservation result = db.getReservationMatching(add);
-            assertEquals(add.confNum, result.confNum);
-            assertEquals(add.vtName, result.vtName);
-            assertEquals(add.timePeriod.endDateAndTime, result.timePeriod.endDateAndTime);
-            assertEquals(add.timePeriod.startDateAndTime, result.timePeriod.startDateAndTime);
-            assertEquals(add.location.city, result.location.city);
-            assertEquals(add.location.location, result.location.location);
-            assertEquals(add.dlicense, result.dlicense);
+            List<Reservation> result = db.getReservationMatching(add);
+            assertEquals(add.confNum, result.get(0).confNum);
+            assertEquals(add.vtName, result.get(0).vtName);
+            assertEquals(add.timePeriod.endDateAndTime, result.get(0).timePeriod.endDateAndTime);
+            assertEquals(add.timePeriod.startDateAndTime, result.get(0).timePeriod.startDateAndTime);
+            assertEquals(add.location.city, result.get(0).location.city);
+            assertEquals(add.location.location, result.get(0).location.location);
+            assertEquals(add.dlicense, result.get(0).dlicense);
 
             //empty out sample data in VehicleType and Customer tables
             db.deleteVehicleType(vt1);

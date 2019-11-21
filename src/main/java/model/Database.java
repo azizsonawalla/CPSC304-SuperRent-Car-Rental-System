@@ -33,6 +33,8 @@ public class Database {
         Log.log("Successfully connected to database!");
     }
 
+    //region CreateDropTables
+
     /**
      * Checks all the tables required for the system and creates them if they don't exist
      * @throws Exception if there was an error creating any of the tables
@@ -66,7 +68,9 @@ public class Database {
         conn.prepareStatement(Queries.Drop.FOREIGN_KEY_CHECKS_ON).execute();
     }
 
-    /* Reservations */
+    //endregion
+
+    //region Reservations
 
     /**
      * Add the given reservation object to the reservation table in the database
@@ -105,14 +109,18 @@ public class Database {
         PreparedStatement ps = conn.prepareStatement("SELECT * FROM Reservations WHERE confNo = ?");
         ps.setInt(1, r.confNum);
         ResultSet rs = ps.executeQuery();
-        rs.next();
+        //advance cursor to first tuple. If there is no first tuple, return
+        if(!rs.next()) {
+            Log.log("No Reservation with confirmation number " + Integer.toString(r.confNum) + " found");
+            return;
+        }
 
-        //Set values for parameters in psUpdate. Update if corresponding value in Reservation r is null, otherwise, keep unchanged
+        //Set values for parameters in psUpdate. Update if corresponding value in Reservation r is not null, otherwise, keep unchanged
         ps = conn.prepareStatement(Queries.Reservation.UPDATE_RESERVATION);
         ps.setString(1, r.vtName != null? r.vtName: rs.getString("vtname"));
         ps.setString(2, r.dlicense != null? r.dlicense: rs.getString("dLicense"));
-        ps.setTimestamp(3, r.timePeriod != null? r.timePeriod.startDateAndTime: rs.getTimestamp("startDateAndTime"));
-        ps.setTimestamp(4, r.timePeriod != null? r.timePeriod.endDateAndTime: rs.getTimestamp("endDateAndTime"));
+        ps.setTimestamp(3, r.timePeriod != null? r.timePeriod.startDateAndTime: rs.getTimestamp("fromDateTime"));
+        ps.setTimestamp(4, r.timePeriod != null? r.timePeriod.endDateAndTime: rs.getTimestamp("toDateTime"));
         ps.setString(5, r.location != null? r.location.city: rs.getString("city"));
         ps.setString(6, r.location != null? r.location.location: rs.getString("location"));
         ps.setInt(7, r.confNum);
@@ -137,12 +145,13 @@ public class Database {
         ps.setInt(1, r.confNum);
 
         //execute the update
-        ps.executeUpdate();
+        int updates = ps.executeUpdate();
 
         //commit changes (automatic) and close prepared statement
         ps.close();
 
-        Log.log("Reservation with confirmation number " + Integer.toString(r.confNum) + " successfully deleted");
+        if (updates == 0) Log.log("No Reservation with confirmation number " + Integer.toString(r.confNum) + " found");
+        else Log.log("Reservation with confirmation number " + Integer.toString(r.confNum) + " successfully deleted");
     }
 
     /**
@@ -157,6 +166,7 @@ public class Database {
         //marker to indicate if a condition has been added to the WHERE clause (and if AND needs to be used)
         boolean marker = false;
 
+        //TODO: move this query to Util.Queries
         if (t == null && vt == null && l == null){
             //If no filters are provided, return all the results
             query = "SELECT * FROM Reservations";
@@ -165,8 +175,8 @@ public class Database {
             if (t != null) {
                 //Given start time (from t) is at the same time or after R.startDateAndTime AND is before R.endDateAndTime
                 //Given end time (from t) is at the same time before R.endDateAndTime AND is after R.startDateAndTime
-                query += "((R.startDateAndTime <= ? AND R.endDateAndTime > ?) OR " +
-                        "(R.endDateAndTime >= ? AND R.endDateAndTime < ?)) ";
+                query += "((R.fromDateTime <= ? AND R.toDateTime > ?) OR " +
+                        "(R.toDateTime >= ? AND R.fromDateTime < ?)) ";
                 marker = true;
             } if (vt != null) {
                 query += marker? "AND R.vtname = '" + vt.vtname + "' " :
@@ -218,37 +228,47 @@ public class Database {
      * attributes of the given object may be null. If no reservation found, returns null
      * @throws Exception if there is any error getting results
      */
-    public Reservation getReservationMatching(Reservation r) throws Exception {
-        // TODO: implement this
-        PreparedStatement ps = conn.prepareStatement("SELECT * FROM Reservations WHERE confNo = " + Integer.toString(r.confNum));
+    public List<Reservation> getReservationMatching(Reservation r) throws Exception {
+        PreparedStatement ps;
+        if(r.confNum != -1) ps = conn.prepareStatement("SELECT * FROM Reservations WHERE confNo = " + Integer.toString(r.confNum));
+        else if (r.dlicense != "") ps = conn.prepareStatement("SELECT * FROM Reservations WHERE dLicense = " + r.dlicense);
+        else throw new Exception("[WARNING}: You must provide either a confirmation number or a customer drivers license");
         ResultSet rs = ps.executeQuery();
 
         if (!rs.next()) {
-            System.out.println("NOTE: Reservation " + r.confNum + " does not exist");
+            if (r.confNum != -1) Log.log("NOTE: No Reservations with " + Integer.toString(r.confNum) + " exist");
+            else Log.log("NOTE: No Reservations with " + r.dlicense + " exist");
             ps.close();
             return null;
         }
 
-        Reservation res = new Reservation();
-        res.confNum = rs.getInt(1);
-        res.vtName = rs.getString(2);
-        res.dlicense = rs.getString(3);
+        rs.previous();
+        List<Reservation> reservations = new ArrayList<>();
+        while (rs.next()){
+            Reservation res = new Reservation();
+            res.confNum = rs.getInt(1);
+            res.vtName = rs.getString(2);
+            res.dlicense = rs.getString(3);
 
-        TimePeriod tm = new TimePeriod();
-        tm.startDateAndTime = rs.getTimestamp(4);
-        tm.endDateAndTime = rs.getTimestamp(5);
-        res.timePeriod = tm;
+            TimePeriod tm = new TimePeriod();
+            tm.startDateAndTime = rs.getTimestamp(4);
+            tm.endDateAndTime = rs.getTimestamp(5);
+            res.timePeriod = tm;
 
-        Location loc = new Location();
-        loc.city = rs.getString(6);
-        loc.location = rs.getString(7);
-        res.location = loc;
+            Location loc = new Location();
+            loc.city = rs.getString(6);
+            loc.location = rs.getString(7);
+            res.location = loc;
 
+            reservations.add(res);
+        }
         ps.close();
-        return res;
+        return reservations;
     }
 
-    /* Rental */
+    //endregion
+
+    //region Rental
 
     /**
      * Add the given rental object to the rental table in the database
@@ -308,7 +328,9 @@ public class Database {
         throw new Exception("Method not implemented");
     }
 
-    /* Customer */
+    //endregion
+
+    //region Customer
 
     /**
      * Add the given Customer object to the Customer table in the database
@@ -407,7 +429,9 @@ public class Database {
         return res;
     }
 
-    /* Vehicle Type */
+    //endregion
+
+    //region VehicleType
 
     /**
      * Add the given VehicleType object to the VehicleType table in the database
@@ -523,7 +547,20 @@ public class Database {
         return res;
     }
 
-    /* Vehicle */
+    public List<VehicleType> getAllVehicleTypes() throws SQLException {
+        ResultSet rs = conn.prepareStatement(Queries.VehicleType.QUERY_ALL).executeQuery();
+        List<VehicleType> vehicleTypes = new ArrayList<>();
+        while (rs.next()){
+            vehicleTypes.add(new VehicleType(rs.getString(1), rs.getString(2), rs.getInt(3),
+                    rs.getInt(4), rs.getInt(5), rs.getInt(6), rs.getInt(7),
+                    rs.getInt(8), rs.getInt(9)));
+        }
+        return vehicleTypes;
+    }
+
+    //endregion
+
+    //region Vehicle
 
     /**
      * Add the given Vehicle object to the Vehicle table in the database
@@ -690,6 +727,8 @@ public class Database {
         ps.close();
         return res;
     }
+
+    //endregion
 
 //    public void generateLocationCardData() throws Exception {
 //        PreparedStatement ps = conn.prepareStatement(Queries.Location.ADD_LOCATION);

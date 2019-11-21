@@ -22,13 +22,15 @@ public class QueryOrchestrator {
     VehicleType VT2 = new VehicleType("Truck");
     VehicleType VT3 = new VehicleType("Hatchback");
     VehicleType VT4 = new VehicleType("Sedan");
-    Vehicle V1 = new Vehicle(1, "license", "Tesla", "Model S", 2018, "black", 0, "sedan", Vehicle.VehicleStatus.AVAILABLE, L1);
+    Vehicle V1 = new Vehicle(1, "license", "Tesla", "Model S",
+            2018, "black", 0, "sedan", Vehicle.VehicleStatus.AVAILABLE, L1);
 
     private Database db;
 
     public void QueryOrchestrator() throws Exception {
         this.db = new Database();
     }
+
 
     public List<VTSearchResult> getVTSearchResultsFor(Location l, VehicleType vt, TimePeriod t) throws Exception {
         // TODO: Implement this
@@ -43,6 +45,7 @@ public class QueryOrchestrator {
         return list;
     }
 
+
     public List<Vehicle> getVehiclesFor(VTSearchResult searchResult) throws Exception {
         // TODO: Implement this
         return Arrays.asList(V1);
@@ -52,19 +55,21 @@ public class QueryOrchestrator {
      * Get customer with given driver's license number, or return null if not found
      */
     public Customer getCustomer(String dlNumber) throws Exception {
-        // TODO: Implement this
-        if (dlNumber.equals("DL12345")) return new Customer(12345, "DL12345", "John Smith", "Some address");
-        return null;
+        return db.getCustomerMatching(new Customer(dlNumber));
     }
 
+    /**
+     * Add given customer object to database
+     * @param c
+     * @throws Exception
+     */
     public void addCustomer(Customer c) throws Exception {
-        // TODO: Implement this
-        throw new Exception("Not implemented");
+        db.addCustomer(c);
     }
 
     public Reservation makeReservation(Reservation r) throws Exception {
-        // TODO: Implement this
-        throw new Exception("Not implemented");
+        db.addReservation(r);
+        return r;
     }
 
     public List<Location> getAllLocationNames() throws Exception {
@@ -75,10 +80,7 @@ public class QueryOrchestrator {
     }
 
     public List<VehicleType> getAllVehicleTypes() throws Exception {
-        // TODO: Implement this
-        // this is just placeholder code
-        ArrayList<VehicleType> list = new ArrayList<>(Arrays.asList(VT1, VT2, VT3, VT4));
-        return list;
+        return db.getAllVehicleTypes();
     }
 
     public List<Reservation> getReservationWith(int confNum, String customerDL) {

@@ -19,6 +19,10 @@ public class Customer {
         this.name = name;
         this.address = address;
     }
+
+    public Customer(String dlicense){
+        this.dlicense = dlicense;
+    }
 }
 
 

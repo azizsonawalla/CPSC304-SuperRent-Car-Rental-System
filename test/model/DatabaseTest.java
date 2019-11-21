@@ -523,22 +523,129 @@ class DatabaseTest {
 
     @Test
     void addVehicle() {
+        try {
+            //populate VehicleType table with data so that foreign key constraints can be enforced
+            VehicleType vt = new VehicleType("Sedan", "four doors, 5 seats", 300,
+                    70, 7, 100, 20, 2, 1);
+            db.addVehicleType(vt);
 
+            Location l = new Location();
+            l.location = "123 Burrard Street"; l.city = "Vancouver";
+
+            Vehicle add = new Vehicle(12345, "123abc", "Toyota", "Corolla", 2018, "silver",
+                    529348, "Sedan", true, l);
+            db.addVehicle(add);
+            Vehicle result = db.getVehicleMatching(add);
+            assertEquals(add.vtname, result.vtname);
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Test
-    void updateVehicle() {
+    void updateVehicleNoNulls() {
+        try {
+            //populate VehicleType table with data so that foreign key constraints can be enforced
+            VehicleType vt = new VehicleType("Sedan", "four doors, 5 seats", 300,
+                    70, 7, 100, 20, 2, 1);
+            db.addVehicleType(vt);
+            VehicleType vt2 = new VehicleType("SUV", "four doors, 5 seats, 1 sun roof", 400,
+                    80, 8, 150, 30, 3, 2);
+            db.addVehicleType(vt2);
+
+            Location l1 = new Location("Vancouver", "123 Burrard Street");
+            Location l2 = new Location("Calgary", "123 Calgary Street");
+
+            Vehicle add = new Vehicle(12345, "123abc", "Toyota", "Corolla", 2018, "silver",
+                    529348, "Sedan", true, l1);
+            db.addVehicle(add);
+
+            Vehicle update = new Vehicle(56789, "123abc", "Audi", "Q7", 2017, "red",
+                    29362, "SUV", false, l2);
+            db.updateVehicle(update);
+
+            Vehicle result = db.getVehicleMatching(add);
+            assertEquals(update.vid, result.vid);
+            assertEquals(update.vlicense, result.vlicense);
+            assertEquals(update.make, result.make);
+            assertEquals(update.model, result.model);
+            assertEquals(update.year, result.year);
+            assertEquals(update.color, result.color);
+            assertEquals(update.odometer, result.odometer);
+            assertEquals(update.vtname, result.vtname);
+            assertEquals(update.status, result.status);
+            assertEquals(update.location.location, result.location.location);
+            assertEquals(update.location.city, result.location.city);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void updateVehicleWithNulls() {
+        try {
+            //populate VehicleType table with data so that foreign key constraints can be enforced
+            VehicleType vt = new VehicleType("Sedan", "four doors, 5 seats", 300,
+                    70, 7, 100, 20, 2, 1);
+            db.addVehicleType(vt);
+
+            Location l1 = new Location("Vancouver", "123 Burrard Street");
+            Location l2 = new Location("Calgary", "123 Calgary Street");
+
+            Vehicle add = new Vehicle(12345, "123abc", "Toyota", "Corolla", 2018, "silver",
+                    529348, "Sedan", true, l1);
+            db.addVehicle(add);
+
+            //TODO: update this once status is changed to enum so that status is "null" as well
+            Vehicle update = new Vehicle(-1, "123abc", null, null, -1, null,
+                    -1, null, true, null);
+            db.updateVehicle(update);
+
+            Vehicle result = db.getVehicleMatching(add);
+            assertEquals(add.vid, result.vid);
+            assertEquals(add.vlicense, result.vlicense);
+            assertEquals(add.make, result.make);
+            assertEquals(add.model, result.model);
+            assertEquals(add.year, result.year);
+            assertEquals(add.color, result.color);
+            assertEquals(add.odometer, result.odometer);
+            assertEquals(add.vtname, result.vtname);
+            assertEquals(add.status, result.status);
+            assertEquals(add.location.location, result.location.location);
+            assertEquals(add.location.city, result.location.city);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     void deleteVehicle() {
+        try {
+            //populate VehicleType table with data so that foreign key constraints can be enforced
+            VehicleType vt = new VehicleType("Sedan", "four doors, 5 seats", 300,
+                    70, 7, 100, 20, 2, 1);
+            db.addVehicleType(vt);
+
+            Location l = new Location();
+            l.location = "123 Burrard Street"; l.city = "Vancouver";
+
+            Vehicle add = new Vehicle(12345, "123abc", "Toyota", "Corolla", 2018, "silver",
+                    529348, "Sedan", true, l);
+            db.addVehicle(add);
+            db.deleteVehicle(add);
+            Vehicle result = db.getVehicleMatching(add);
+            assertEquals(null, result);
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Test
     void getVehicleWith() {
     }
 
-    @Test
-    void getVehicleMatching() {
-    }
 }

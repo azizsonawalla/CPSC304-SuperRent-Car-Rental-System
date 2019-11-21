@@ -514,6 +514,10 @@ public class Database {
         VehicleType res = new VehicleType(rs.getString(1), rs.getString(2), rs.getInt(3),
                 rs.getInt(4), rs.getInt(5), rs.getInt(6), rs.getInt(7),
                 rs.getInt(8), rs.getInt(9));
+
+        //Handle situation where vehicle type does not have features
+        if (res.features == null) res.features = "No features";
+
         System.out.println("VehicleType with vtname " + vt.vtname + " successfully retrieved");
         ps.close();
         return res;
@@ -527,7 +531,28 @@ public class Database {
      * @throws Exception if there is an error adding the Vehicle, for example if the values don't meet constraints
      */
     public void addVehicle(Vehicle v) throws Exception {
-        // TODO: implement this
+        PreparedStatement ps = conn.prepareStatement(Queries.Vehicle.ADD_VEHICLE);
+
+        //Set values for parameters in ps
+        ps.setInt(1, v.vid);
+        ps.setString(2, v.vlicense);
+        ps.setString(3, v.make);
+        ps.setString(4, v.model);
+        ps.setInt(5, v.year);
+        ps.setString(6, v.color);
+        ps.setInt(7, v.odometer);
+        ps.setString(8, v.vtname);
+        ps.setBoolean(9, v.status);
+        ps.setString(10, v.location.location);
+        ps.setString(11, v.location.city);
+
+        //execute the update
+        ps.executeUpdate();
+
+        //commit changes and close prepared statement
+        ps.close();
+
+        Log.log("Vehicle with vlicense " + v.vlicense + " successfully added");
 
     }
 
@@ -538,7 +563,38 @@ public class Database {
      * @throws Exception if there is an error updating entry, for example if entry doesn't exist already
      */
     public void updateVehicle(Vehicle v) throws Exception {
-        // TODO: implement this
+        PreparedStatement ps = conn.prepareStatement("SELECT * FROM Vehicle WHERE vLicense = ?");
+        ps.setString(1, v.vlicense);
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+
+        //Set values for parameters in psUpdate. Update if corresponding value in Reservation r is null, otherwise, keep unchanged
+        ps = conn.prepareStatement(Queries.Vehicle.UPDATE_VEHICLE);
+        ps.setInt(1, v.vid != -1? v.vid: rs.getInt("vId"));
+        ps.setString(2, v.make != null? v.make: rs.getString("make"));
+        ps.setString(3, v.model != null? v.model: rs.getString("model"));
+        ps.setInt(4, v.year != -1? v.year: rs.getInt("year"));
+        ps.setString(5, v.color != null? v.color: rs.getString("color"));
+        ps.setInt(6, v.odometer != -1? v.odometer: rs.getInt("odometer"));
+        ps.setString(7, v.vtname != null? v.vtname: rs.getString("vtName"));
+        //TODO: find a way to have it so that you dont have to update v.status. Use enum
+        ps.setBoolean(8, v.status);
+        ps.setString(9, v.location != null? v.location.location: rs.getString("location"));
+        ps.setString(10, v.location != null? v.location.city: rs.getString("city"));
+        ps.setString(11, v.vlicense);
+
+        //execute the update
+        int rowCount = ps.executeUpdate();
+        if (rowCount == 0) {
+            System.out.println("NOTE: Vehicle " + v.vlicense + " does not exist");
+            ps.close();
+            return;
+        }
+
+        //commit changes and close prepared statement
+        ps.close();
+
+        Log.log("Vehicle with vlicense " + v.vtname + " successfully updated");
     }
 
     /**
@@ -547,8 +603,22 @@ public class Database {
      * @throws Exception if there is an error deleting entry, for example if entry doesn't exist already
      */
     public void deleteVehicle(Vehicle v) throws Exception {
-        // TODO: implement this
-        throw new Exception("Method not implemented");
+        PreparedStatement ps = conn.prepareStatement(Queries.Vehicle.DELETE_VEHICLE);
+        //Set confirmation number parameter for Reservation tuple to be deleted
+        ps.setString(1, v.vlicense);
+
+        //execute the update
+        int rowCount = ps.executeUpdate();
+        if (rowCount == 0) {
+            System.out.println("NOTE: Vehicle " + v.vlicense + " does not exist");
+            ps.close();
+            return;
+        }
+
+        //commit changes and close prepared statement
+        ps.close();
+
+        Log.log("Vehicle with vlicense " + v.vlicense + " successfully deleted");
     }
 
     public List<Vehicle> getVehicleWith(VehicleType vt, Location l, boolean availableNow) throws Exception {
@@ -557,8 +627,22 @@ public class Database {
     }
 
     public Vehicle getVehicleMatching(Vehicle v) throws Exception {
-        // TODO: implement this
-        throw new Exception("Method not implemented");
+        PreparedStatement ps = conn.prepareStatement("SELECT * FROM Vehicle WHERE vLicense = '" + v.vlicense + "'");
+        ResultSet rs = ps.executeQuery();
+
+        if (!rs.next()) {
+            System.out.println("NOTE: Vehicle " + v.vlicense + " does not exist");
+            ps.close();
+            return null;
+        }
+
+        Vehicle res = new Vehicle(rs.getInt(1), rs.getString(2), rs.getString(3),
+                rs.getString(4), rs.getInt(5), rs.getString(6), rs.getInt(7),
+                rs.getString(8), rs.getBoolean(9), new Location(rs.getString(11), rs.getString(10)));
+
+        System.out.println("Vehicle with vlicense " + v.vlicense + " successfully retrieved");
+        ps.close();
+        return res;
     }
 
 //    public void generateLocationCardData() throws Exception {

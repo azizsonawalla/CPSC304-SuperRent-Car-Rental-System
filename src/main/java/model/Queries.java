@@ -40,11 +40,11 @@ public class Queries {
                 "vLicense CHAR(10), " +
                 "make CHAR(50) NOT NULL, " +
                 "model CHAR(50) NOT NULL, " +
-                "year YEAR NOT NULL, " +
+                "year INT NOT NULL, " +
                 "color CHAR(50) NOT NULL, " +
                 "odometer INT NOT NULL, " +
                 "vtName CHAR(50) NOT NULL, " +
-                "status CHAR(50) NOT NULL, " +
+                "status BOOLEAN NOT NULL, " +
                 "location CHAR(50) NOT NULL, " +
                 "city CHAR(50) NOT NULL, " +
                 "PRIMARY KEY (vLicense), " +
@@ -138,7 +138,7 @@ public class Queries {
                 "";
 
     }
-
+    //the diving bell and the butterfly
     public static class Rent {
 
         public static String ADD_RENT = "INSERT INTO Rent(rId, vLicense, dLicense, fromDateTime, toDateTime, odometer, " +
@@ -176,7 +176,10 @@ public class Queries {
                 "vtName, status, location, city) " +
                 "VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 
-
+        public static String UPDATE_VEHICLE = "UPDATE Vehicle " +
+                "SET vId = ?, make = ?, model = ?, year = ?, color = ?, odometer = ?, vtName = ?, " +
+                "status = ?, location = ?, city = ? " +
+                "WHERE vLicense = ?";
 
         public static String DELETE_VEHICLE = "DELETE FROM Vehicle " +
                 "WHERE vLicense = (?)";

@@ -46,6 +46,7 @@ public abstract class makeReservation extends Controller implements Initializabl
         resultLine.setVisible(false);
         invalidDL.setVisible(false);
         existingCustomer.setVisible(false);
+        makeResButton.setDisable(false);
     }
 
     private boolean validateDL() {

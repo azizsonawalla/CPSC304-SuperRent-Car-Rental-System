@@ -45,6 +45,8 @@ public class clerkStartRental extends Controller implements Initializable {
         Platform.runLater(fillReservationRentalDetails);
         Platform.runLater(fillComboBoxValues);
         result.setVisible(false);
+        startRental.setDisable(false);
+        cardNumber.clear();
     }
 
     // Tasks

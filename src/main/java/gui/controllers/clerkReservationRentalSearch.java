@@ -63,7 +63,14 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
             }
         }
         if (dl.equals("")) dl = null;
-        List<Reservation> result = qo.getReservationWith(confNum, dl);
+        List<Reservation> result = null;
+
+        try {
+            result = qo.getReservationWith(confNum, dl);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         if (result.size() == 0) {
             // TODO: put "no results" in text flow
         } else {

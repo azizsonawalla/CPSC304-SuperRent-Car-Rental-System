@@ -6,6 +6,7 @@ import model.Util.Log;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Interface for the SuperRent database
@@ -14,7 +15,7 @@ public class Database {
 
     private String HOST = "jdbc:mysql://35.247.80.246/superrent";
     private String USERNAME = "root";
-    private String PASSWORD = "bobobo";
+    private String PASSWORD = "bobobobo";
 
     private Connection conn;
 
@@ -197,7 +198,7 @@ public class Database {
         }
         ResultSet rs = ps.executeQuery();
 
-        List<Reservation> r = new ArrayList<Reservation>();
+        List<Reservation> r = new ArrayList<>();
 
         while (rs.next()){
             //Make a reservation object corresponding to a tuple queried from the database
@@ -231,7 +232,7 @@ public class Database {
     public List<Reservation> getReservationMatching(Reservation r) throws Exception {
         PreparedStatement ps;
         if(r.confNum != -1) ps = conn.prepareStatement("SELECT * FROM Reservations WHERE confNo = " + Integer.toString(r.confNum));
-        else if (r.dlicense != "") ps = conn.prepareStatement("SELECT * FROM Reservations WHERE dLicense = " + r.dlicense);
+        else if (!Objects.equals(r.dlicense, "")) ps = conn.prepareStatement("SELECT * FROM Reservations WHERE dLicense = '" + r.dlicense + "'");
         else throw new Exception("[WARNING}: You must provide either a confirmation number or a customer drivers license");
         ResultSet rs = ps.executeQuery();
 
@@ -524,7 +525,6 @@ public class Database {
     }
 
     public VehicleType getVehicleTypeMatching(VehicleType vt) throws SQLException {
-        // TODO: implement this
 
         PreparedStatement ps = conn.prepareStatement("SELECT * FROM VehicleType WHERE vtName = '" + vt.vtname + "'");
         ResultSet rs = ps.executeQuery();

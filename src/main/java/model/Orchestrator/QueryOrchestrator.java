@@ -83,10 +83,9 @@ public class QueryOrchestrator {
         return db.getAllVehicleTypes();
     }
 
-    public List<Reservation> getReservationWith(int confNum, String customerDL) {
-        // TODO: Implement this
+    public List<Reservation> getReservationWith(int confNum, String customerDL) throws Exception{
         // if confNum == -1, then don't filter by confNum
         // if customerDL == "", then don't filer by customerDL
-        return Arrays.asList(new Reservation(1, "dummyvt", new TimePeriod(), new Location(), "dummyDL" ));
+        return db.getReservationMatching(new Reservation(confNum, null, null, null, customerDL));
     }
 }

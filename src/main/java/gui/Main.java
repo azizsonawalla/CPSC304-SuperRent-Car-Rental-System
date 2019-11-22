@@ -21,7 +21,7 @@ public class Main extends Application {
     private Scene scene;
     public Map<String, Pair<Pane, Controller>> scenePanes;
 
-    // Inter-scene data
+    /* Inter-scene data */
     // Customer Car Search -> Customer Make Reservation
     public Reservation customerResInProgress;
     // Clerk Res Rental Search -> Clerk Start Rental

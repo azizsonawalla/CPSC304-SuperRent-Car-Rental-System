@@ -2,10 +2,18 @@ package gui.controllers;
 
 import gui.GUIConfig;
 import gui.Main;
+import javafx.application.Platform;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import model.Entities.Reservation;
 import model.Util.Log;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
 public class clerkCarSearch extends carSearch {
+
+    @FXML private Button backToReservations;
 
     public clerkCarSearch(Main main) { super(main);
         super.startReservation = () -> {
@@ -25,4 +33,13 @@ public class clerkCarSearch extends carSearch {
             }
         };
     }
+
+    public void initialize(URL location, ResourceBundle resources) {
+        super.initialize(location, resources);
+        backToReservations.setOnAction(event -> Platform.runLater(goBackToReservationRentalsSearch));
+    }
+
+    private Runnable goBackToReservationRentalsSearch = () -> {
+        this.main.switchScene(GUIConfig.CLERK_RESERVATION_RENTAL_SEARCH);
+    };
 }

@@ -1,24 +1,26 @@
 package gui.controllers;
 
+import gui.GUIConfig;
 import gui.Main;
-import javafx.fxml.Initializable;
+import model.Entities.Reservation;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
-public class clerkMakeReservation extends Controller implements Initializable {
+public class clerkMakeReservation extends makeReservation {
 
     public clerkMakeReservation(Main main) {
         super(main);
+        super.backToCarSearch = () -> {
+            setResInProgressTo(null);
+            main.switchScene(GUIConfig.CLERK_CAR_SEARCH);
+        };
     }
 
-    public void refreshAll() {
-        // TODO;
+    @Override
+    Reservation getResInProgress() {
+        return main.clerkResInProgress;
     }
 
-    public void initialize(URL location, ResourceBundle resources) {
-
+    @Override
+    void setResInProgressTo(Reservation r) {
+        main.clerkResInProgress = r;
     }
-
-    // TODO: Create make reservation super class
 }

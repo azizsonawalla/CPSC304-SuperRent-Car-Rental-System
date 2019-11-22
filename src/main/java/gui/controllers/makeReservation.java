@@ -14,7 +14,7 @@ import model.Entities.Reservation;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class makeReservation extends Controller implements Initializable {
+public abstract class makeReservation extends Controller implements Initializable {
 
     String LOCATION_INFO_TEMPLATE = "%s, %s";
     String TIME_INFO_TEMPLATE = "On %02d/%02d/%02d at %02d:%02d";
@@ -30,7 +30,7 @@ public class makeReservation extends Controller implements Initializable {
     }
 
     public void initialize(URL location, ResourceBundle resources) {
-        backToSearchButton.setOnAction(event -> Platform.runLater(backToCustomerCarSearch));
+        backToSearchButton.setOnAction(event -> Platform.runLater(backToCarSearch));
         dlField.focusedProperty().addListener(event -> Platform.runLater(fillCustomerInfoIfAvailable));
         makeResButton.setOnAction(event -> Platform.runLater(makeReservation));
         refreshAll();
@@ -61,12 +61,14 @@ public class makeReservation extends Controller implements Initializable {
         return dlField.getText().matches("[a-zA-Z0-9\\s]{0,50}");
     }
 
+    abstract Reservation getResInProgress();
+
+    abstract void setResInProgressTo(Reservation r);
+
+
     // Tasks
 
-    private Runnable backToCustomerCarSearch = () -> {
-        main.customerResInProgress = null;
-        main.switchScene(GUIConfig.CUSTOMER_CAR_SEARCH);
-    };
+    Runnable backToCarSearch;
 
     private Runnable clearAllFields = () -> {
         dlField.clear();
@@ -82,7 +84,7 @@ public class makeReservation extends Controller implements Initializable {
     };
 
     private Runnable fillReservationDetails = () -> {
-        Reservation r = main.customerResInProgress;
+        Reservation r = getResInProgress();
         if (r == null) return;
         vtlabel.setText(r.vtName);
         locationlabel.setText(r.location.toString());
@@ -130,12 +132,12 @@ public class makeReservation extends Controller implements Initializable {
             result = "Please enter valid name";
         } else {
             makeResButton.setDisable(true);
-            Reservation r = main.customerResInProgress;
+            Reservation r = getResInProgress();
             r.dlicense = dlField.getText().trim();
             try {
                 r = qo.makeReservation(r);
                 result = String.format(result, r.confNum);
-                main.customerResInProgress = null;
+                setResInProgressTo(null);
             } catch (Exception e) {
                 result = "Failed to make reservation: " + e.getMessage();
             }

@@ -655,7 +655,21 @@ public class Database {
      * @throws Exception if there is an error adding the Card, for example if the values don't meet constraints
      */
     public void addCard(Card c) throws Exception {
-        // TODO: implement this
+        PreparedStatement ps = conn.prepareStatement(Queries.Card.ADD_CARD);
+
+        //Set values for parameters in ps
+        ps.setLong(1, c.cardNo);
+        ps.setString(2, c.cardName);
+        ps.setInt(3, c.expDate);
+
+
+        //execute the update
+        ps.executeUpdate();
+
+        //commit changes and close prepared statement
+        ps.close();
+
+        Log.log("Card with cardNo " + c.cardNo + " successfully added");
 
     }
 
@@ -666,7 +680,30 @@ public class Database {
      * @throws Exception if there is an error updating entry, for example if entry doesn't exist already
      */
     public void updateCard(Card c) throws Exception {
-        // TODO: implement this
+        //Get Card tuple with confirmation number c.cardNo
+        PreparedStatement ps = conn.prepareStatement(Queries.Card.GET_CARD);
+        ps.setLong(1, c.cardNo);
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+
+        //Set values for parameters in psUpdate. Update if corresponding value in Card c is null, otherwise, keep unchanged
+        ps = conn.prepareStatement(Queries.Card.UPDATE_CARD);
+        ps.setString(1, c.cardName != null? c.cardName: rs.getString("cardName"));
+        ps.setInt(2, c.expDate != -1? c.expDate: rs.getInt("expDate"));
+        ps.setLong(3, c.cardNo);
+
+        //execute the update
+        int rowCount = ps.executeUpdate();
+        if (rowCount == 0) {
+            System.out.println("NOTE: Card with CardNo " + c.cardNo + " does not exist");
+            ps.close();
+            return;
+        }
+
+        //commit changes and close prepared statement
+        ps.close();
+
+        Log.log("Card with cardNo " + c.cardNo + " successfully updated");
     }
 
     /**
@@ -675,8 +712,22 @@ public class Database {
      * @throws Exception if there is an error deleting entry, for example if entry doesn't exist already
      */
     public void deleteCard(Card c) throws Exception {
-        // TODO: implement this
-        throw new Exception("Method not implemented");
+        PreparedStatement ps = conn.prepareStatement(Queries.Card.DELETE_CARD);
+        //Set card number parameter for Reservation tuple to be deleted
+        ps.setLong(1, c.cardNo);
+
+        //execute the update
+        int rowCount = ps.executeUpdate();
+        if (rowCount == 0) {
+            System.out.println("NOTE: Card with CardNo " + c.cardNo + " does not exist");
+            ps.close();
+            return;
+        }
+
+        //commit changes and close prepared statement
+        ps.close();
+
+        Log.log("Card with cardNo " + c.cardNo + " successfully deleted");
     }
 
 
@@ -688,20 +739,23 @@ public class Database {
      * @throws Exception if there is an error adding the Card, for example if the values don't meet constraints
      */
     public void addLocation(Location l) throws Exception {
-        // TODO: implement this
+        PreparedStatement ps = conn.prepareStatement(Queries.Branch.ADD_BRANCH);
+
+        //Set values for parameters in ps
+        ps.setString(1, l.city);
+        ps.setString(2, l.location);
+
+        //execute the update
+        ps.executeUpdate();
+
+        //commit changes and close prepared statement
+        ps.close();
+
+        Log.log("Branch at " + l.city +  ", " + l.location + " successfully added");
+
 
     }
 
-
-    /**
-     * Update the values of the Location entry in the Location table that has the same primary key as the given
-     * Location object. New values of Location entry are values in l.
-     * @param l updated values for Location entry
-     * @throws Exception if there is an error updating entry, for example if entry doesn't exist already
-     */
-    public void updateLocation(Location l) throws Exception {
-        // TODO: implement this
-    }
 
     /**
      * Delete entry from table corresponding table that matches the primary key of the given object
@@ -709,9 +763,25 @@ public class Database {
      * @throws Exception if there is an error deleting entry, for example if entry doesn't exist already
      */
     public void deleteLocation(Location l) throws Exception {
-        // TODO: implement this
-        throw new Exception("Method not implemented");
+        PreparedStatement ps = conn.prepareStatement(Queries.Branch.DELETE_BRANCH);
+        //Set card number parameter for Reservation tuple to be deleted
+        ps.setString(1, l.city);
+        ps.setString(2, l.location);
+
+        //execute the update
+        int rowCount = ps.executeUpdate();
+        if (rowCount == 0) {
+            System.out.println("NOTE: Branch at " + l.city +  ", " + l.location + " does not exist");
+            ps.close();
+            return;
+        }
+
+        //commit changes and close prepared statement
+        ps.close();
+
+        Log.log("Branch at " + l.city +  ", " + l.location + " successfully deleted");
     }
+
 
 
 //    public void generateLocationCardData() throws Exception {

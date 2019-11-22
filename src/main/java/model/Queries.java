@@ -86,7 +86,7 @@ public class Queries {
         public static String CREATE_TABLE_CARD = "CREATE TABLE IF NOT EXISTS Card(" +
                 "cardNo BIGINT, " +
                 "cardName CHAR(50), " +
-                "ExpDate INT, " +
+                "expDate INT, " +
                 "PRIMARY KEY (cardNo));";
 
         public static String CREATE_TABLE_BRANCH = "CREATE TABLE IF NOT EXISTS Branch(" +
@@ -226,32 +226,42 @@ public class Queries {
     public static class Card {
 
         public static String ADD_CARD =
-                "INSERT INTO Card(cardNo, cardName, ExpDate) " +
+                "INSERT INTO Card(cardNo, cardName, expDate) " +
                         "VALUES (?, ?, ?)";
 
         public static String UPDATE_CARD =
                 "UPDATE Card" +
-                        "SET cardName = ?, ExpDate = ? " +
+                        "SET cardName = ?, expDate = ? " +
                         "WHERE cardNo = ?";
 
         public static String DELETE_CARD =
                 "DELETE FROM Card " +
                         "WHERE cardNo = ?";
+
+        public static String GET_CARD =
+                "SELECT * " +
+                        "FROM CARD" +
+                        "WHERE cardNo = ?";
     }
 
     public static class Branch {
 
-        public static String ADD_Bracnh =
+        public static String ADD_BRANCH =
                 "INSERT INTO Branch(city, location) " +
                         "VALUES(?, ?)";
 
-        public static String UPDATE_Branch =
+        public static String UPDATE_BRANCH =
                 "UPDATE Branch" +
                         "SET city = , location = ? " +
                         "WHERE city = ? AND location = ?";
 
         public static String DELETE_BRANCH =
                 "DELETE FROM Branch " +
+                        "WHERE city = ? AND location = ?";
+
+        public static String GET_BRANCH =
+                "SELECT * " +
+                        "FROM BRANCH " +
                         "WHERE city = ? AND location = ?";
     }
 

@@ -152,6 +152,9 @@ public class Queries {
                 "DELETE FROM Rent " +
                         "WHERE rId = ?";
 
+        public static String GET_RENTAL_MATCHING =
+                "SELECT FROM RENT WHERE rId = ?";
+
         }
 
     public static class Customer {

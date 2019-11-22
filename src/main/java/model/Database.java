@@ -14,7 +14,7 @@ public class Database {
 
     private String HOST = "jdbc:mysql://35.247.80.246/superrent";
     private String USERNAME = "root";
-    private String PASSWORD = "bobobo";
+    private String PASSWORD = "bobobobo";
 
     private Connection conn;
 

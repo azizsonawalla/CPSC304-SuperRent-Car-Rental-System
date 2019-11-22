@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import model.Entities.Customer;
 import model.Entities.Rental;
 import model.Entities.Reservation;
 import model.Entities.Return;
@@ -25,7 +26,7 @@ public class Main extends Application {
     // Customer Car Search -> Customer Make Reservation
     public Reservation customerResInProgress;
     // Clerk Res Rental Search -> Clerk Start Rental
-    public Pair<Reservation, Rental> clerkRentalInProgress;
+    public Reservation clerkRentalInProgress;
     // Clerk Res Rental Search -> Clerk Start Return
     public Return clerkReturnInProgress;
     // Clerk Car Search -> Clerk Make Reservation

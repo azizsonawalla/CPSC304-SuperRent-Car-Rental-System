@@ -135,12 +135,7 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
 
     private Runnable startRentalFromReservation = () -> {
         Log.log("Starting rental from reservation");
-        Reservation selectedRes = currReservationSearchRes.get(reservationOptions.getValue() -1);
-        Vehicle autoselectedVehicle = qo.getAutoSelectedVehicle(selectedRes);  // TODO: Handle null case (no vehicle avail)
-        TimePeriod nowUntilEndOfRes = TimePeriod.getNowTo(selectedRes.timePeriod);
-        Rental rentalInProgress = new Rental(-1, autoselectedVehicle.vlicense, selectedRes.dlicense, nowUntilEndOfRes,
-                                            autoselectedVehicle.odometer, null, selectedRes.confNum);
-        this.main.clerkRentalInProgress = new Pair<>(selectedRes, rentalInProgress);
+        this.main.clerkRentalInProgress = currReservationSearchRes.get(reservationOptions.getValue() -1);
         this.main.switchScene(GUIConfig.CLERK_START_RENTAL);
     };
 

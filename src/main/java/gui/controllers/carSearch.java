@@ -93,8 +93,8 @@ public class carSearch extends Controller implements Initializable {
         if (startAmValue.equals("PM")) startHourValue = (startHourValue + 12) % 24;
         if (endAmValue.equals("PM")) endHourValue += (endHourValue + 12) % 24;
 
-        Timestamp start = new Timestamp(startYearValue, startMonthValue, startDateValue, startHourValue, startMinuteValue, 0, 0);
-        Timestamp end = new Timestamp(endYearValue, endMonthValue, endDateValue, endHourValue, endMinuteValue, 0, 0);
+        Timestamp start = new Timestamp(startYearValue-1900, startMonthValue-1, startDateValue, startHourValue, startMinuteValue, 0, 0);
+        Timestamp end = new Timestamp(endYearValue-1900, endMonthValue-1, endDateValue, endHourValue, endMinuteValue, 0, 0);
 
         return new TimePeriod(start, end);
     }
@@ -139,65 +139,27 @@ public class carSearch extends Controller implements Initializable {
     private Runnable resetTimePeriod = () -> {
         try {
             lock.lock();
-            List<Integer> DATES = new ArrayList<>();
-            for (int i = 1; i <= 31; i++) DATES.add(i);
-            List<Integer> MONTHS = new ArrayList<>();
-            for (int i = 1; i <= 12; i++) MONTHS.add(i);
-            List<Integer> YEARS = new ArrayList<>();
-            for (int i = 2019; i <= 2025; i++) YEARS.add(i);
-            List<Integer> HOURS = new ArrayList<>();
-            for (int i = 1; i <= 12; i++) HOURS.add(i);
-            List<Integer> MINUTES = new ArrayList<>();
-            for (int i = 0; i <= 55; i++) MINUTES.add(i);
-            List<String> AMPM = Arrays.asList("AM", "PM");
+            List<ComboBox> allDateTimeComboBox = Arrays.asList(startDate, endDate, startMonth, endMonth,
+                                                                startYear, endYear, startHour, endHour,
+                                                                startMinute, endMinute, startAM, endAM);
 
-            startDate.getItems().clear();
+            for (ComboBox c: allDateTimeComboBox) c.getItems().clear();
+
             startDate.getItems().addAll(DATES);
-            startDate.setValue(startDate.getItems().get(0));
-
-            endDate.getItems().clear();
             endDate.getItems().addAll(DATES);
-            endDate.setValue(endDate.getItems().get(0));
-
-            startMonth.getItems().clear();
             startMonth.getItems().addAll(MONTHS);
-            startMonth.setValue(startMonth.getItems().get(0));
-
-            endMonth.getItems().clear();
             endMonth.getItems().addAll(MONTHS);
-            endMonth.setValue(endMonth.getItems().get(0));
-
-            startYear.getItems().clear();
             startYear.getItems().addAll(YEARS);
-            startYear.setValue(startYear.getItems().get(0));
-
-            endYear.getItems().clear();
             endYear.getItems().addAll(YEARS);
-            endYear.setValue(endYear.getItems().get(0));
-
-            startHour.getItems().clear();
             startHour.getItems().addAll(HOURS);
-            startHour.setValue(startHour.getItems().get(0));
-
-            startMinute.getItems().clear();
             startMinute.getItems().addAll(MINUTES);
-            startMinute.setValue(startMinute.getItems().get(0));
-
-            startAM.getItems().clear();
             startAM.getItems().addAll(AMPM);
-            startAM.setValue(startAM.getItems().get(0));
-
-            endHour.getItems().clear();
             endHour.getItems().addAll(HOURS);
-            endHour.setValue(endHour.getItems().get(0));
-
-            endMinute.getItems().clear();
             endMinute.getItems().addAll(MINUTES);
-            endMinute.setValue(endMinute.getItems().get(0));
-
-            endAM.getItems().clear();
             endAM.getItems().addAll(AMPM);
-            endAM.setValue(endAM.getItems().get(0));
+
+            for (ComboBox c: allDateTimeComboBox) c.setValue(c.getItems().get(0));
+
         } catch (Exception e) {
             Log.log("Error resetting time period: " + e.getMessage());
         } finally {

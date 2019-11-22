@@ -55,10 +55,9 @@ public class QueryOrchestrator {
     /**
      * Get customer with given driver's license number, or return null if not found
      */
-    public Customer getCustomer(String dlNumber) throws Exception {
+    public Customer getCustomer(String dlNumber) {
         // TODO: Implement this
-        if (dlNumber.equals("DL12345")) return new Customer(1234512345, "John Smith", "Some address", "DL12345");
-        return null;
+        return new Customer(1234512345, "John Smith", "Some address", "DL12345");
     }
 
     public void addCustomer(Customer c) throws Exception {
@@ -109,5 +108,10 @@ public class QueryOrchestrator {
     public Vehicle getAutoSelectedVehicle(Reservation selectedRes) {
         // TODO: Implement this;
         return new Vehicle(1, "license", "make", "model", 2020, "black", 0, true, "SUV", L1);
+    }
+
+    public Rental addRental(Rental r) {
+        // TODO;
+        return r;
     }
 }

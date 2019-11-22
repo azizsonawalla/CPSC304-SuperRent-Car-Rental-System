@@ -111,8 +111,8 @@ public class Database {
         ps = conn.prepareStatement(Queries.Reservation.UPDATE_RESERVATION);
         ps.setString(1, r.vtName != null? r.vtName: rs.getString("vtname"));
         ps.setString(2, r.dlicense != null? r.dlicense: rs.getString("dLicense"));
-        ps.setTimestamp(3, r.timePeriod != null? r.timePeriod.startDateAndTime: rs.getTimestamp("startDateAndTime"));
-        ps.setTimestamp(4, r.timePeriod != null? r.timePeriod.endDateAndTime: rs.getTimestamp("endDateAndTime"));
+        ps.setTimestamp(3, r.timePeriod != null? r.timePeriod.startDateAndTime: rs.getTimestamp("fromDateTime"));
+        ps.setTimestamp(4, r.timePeriod != null? r.timePeriod.endDateAndTime: rs.getTimestamp("toDateTime"));
         ps.setString(5, r.location != null? r.location.city: rs.getString("city"));
         ps.setString(6, r.location != null? r.location.location: rs.getString("location"));
         ps.setInt(7, r.confNum);
@@ -165,8 +165,8 @@ public class Database {
             if (t != null) {
                 //Given start time (from t) is at the same time or after R.startDateAndTime AND is before R.endDateAndTime
                 //Given end time (from t) is at the same time before R.endDateAndTime AND is after R.startDateAndTime
-                query += "((R.startDateAndTime <= ? AND R.endDateAndTime > ?) OR " +
-                        "(R.endDateAndTime >= ? AND R.endDateAndTime < ?)) ";
+                query += "((R.fromDateTime <= ? AND R.toDateTime > ?) OR " +
+                        "(R.toDateTime >= ? AND R.toDateTime < ?)) ";
                 marker = true;
             } if (vt != null) {
                 query += marker? "AND R.vtname = '" + vt.vtname + "' " :
@@ -219,7 +219,6 @@ public class Database {
      * @throws Exception if there is any error getting results
      */
     public Reservation getReservationMatching(Reservation r) throws Exception {
-        // TODO: implement this
         PreparedStatement ps = conn.prepareStatement("SELECT * FROM Reservations WHERE confNo = " + Integer.toString(r.confNum));
         ResultSet rs = ps.executeQuery();
 
@@ -275,7 +274,7 @@ public class Database {
         //commit changes (automatic) and close prepared statement
         ps.close();
 
-        Log.log("Rental with rent id " + Integer.toString(r.rid) + " successfully added");
+        Log.log("Rental with rent id " + r.rid + " successfully added");
 
     }
 
@@ -286,8 +285,34 @@ public class Database {
      * @throws Exception if there is an error updating entry, for example if entry doesn't exist already
      */
     public void updateRental(Rental r) throws Exception {
-        // TODO: implement this
-        throw new Exception("Method not implemented");
+        PreparedStatement ps = conn.prepareStatement(Queries.Rent.GET_RENTAL);
+        ps.setInt(1, r.rid);
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+
+        //Set values for parameters in psUpdate. Update if corresponding value in Reservation r is null, otherwise, keep unchanged
+        ps = conn.prepareStatement(Queries.Rent.UPDATE_RENTAL);
+        ps.setString(1, r.vlicense != null? r.vlicense: rs.getString("vLicense"));
+        ps.setString(2, r.dlicense != null? r.dlicense: rs.getString("dLicense"));
+        ps.setTimestamp(3,r.timePeriod.startDateAndTime != null? r.timePeriod.startDateAndTime: rs.getTimestamp("fromDateTime"));
+        ps.setTimestamp(4,r.timePeriod.endDateAndTime != null? r.timePeriod.endDateAndTime: rs.getTimestamp("toDateTime"));
+        ps.setInt(5,r.startOdometer != -1? r.startOdometer: rs.getInt("odometer"));
+        ps.setLong(6, r.card.cardNo != -1? r.card.cardNo: rs.getLong("cardNo"));
+        ps.setInt(7,r.confNo != -1? r.confNo: rs.getInt("confNo"));
+        ps.setInt(8, r.rid);
+
+        //execute the update
+        int rowCount = ps.executeUpdate();
+        if (rowCount == 0) {
+            System.out.println("NOTE: Rental " + r.rid + " does not exist");
+            ps.close();
+            return;
+        }
+
+        //commit changes and close prepared statement
+        ps.close();
+
+        Log.log("Rental with rid " + r.rid + " successfully updated");
     }
 
     /**
@@ -296,18 +321,115 @@ public class Database {
      * @throws Exception if there is an error deleting entry, for example if entry doesn't exist already
      */
     public void deleteRental(Rental r) throws Exception {
-        // TODO: implement this
-        throw new Exception("Method not implemented");
+        PreparedStatement ps = conn.prepareStatement(Queries.Rent.DELETE_RENTAL);
+        //Set confirmation number parameter for Reservation tuple to be deleted
+        ps.setInt(1, r.rid);
+
+        //execute the update
+        int rowCount = ps.executeUpdate();
+        if (rowCount == 0) {
+            System.out.println("NOTE: Rental " + r.rid + " does not exist");
+            ps.close();
+            return;
+        }
+
+        //commit changes and close prepared statement
+        ps.close();
+
+        Log.log("Rental with rid " + r.rid + " successfully deleted");
     }
 
     public List<Rental> getRentalsWith(TimePeriod t, VehicleType vt, Location l) throws Exception {
-        // TODO: implement this
-        throw new Exception("Method not implemented");
+        //Empty string to build query
+        String query;
+        //marker to indicate if a condition has been added to the WHERE clause (and if AND needs to be used)
+        boolean marker = false;
+
+        if (t == null && vt == null && l == null){
+            //If no filters are provided, return all the results
+            query = "SELECT * FROM Rent";
+        } else {
+            query = "SELECT * FROM Rent R WHERE ";
+            if (t != null) {
+                //Given start time (from t) is at the same time or after R.startDateAndTime AND is before R.endDateAndTime
+                //Given end time (from t) is at the same time before R.endDateAndTime AND is after R.startDateAndTime
+                query += "((R.fromDateTime <= ? AND R.toDateTime > ?) OR " +
+                        "(R.toDateTime >= ? AND R.toDateTime < ?)) ";
+                marker = true;
+            } if (vt != null) {
+                query += marker? "AND R.vtname = '" + vt.vtname + "' " :
+                        "R.vtname = '" + vt.vtname + "' ";
+                marker = true;
+            } if (l != null) {
+                query += marker? "AND R.location = '" + l.location + "' " + "AND R.city = '" + l.city + "'":
+                        "R.location = '" + l.location + "' " + "AND R.city = '" + l.city + "'";
+            }
+        }
+        PreparedStatement ps = conn.prepareStatement(query);
+        //Insert Timestamp values to prepared statement
+        if (t != null){
+            ps.setTimestamp(1, t.startDateAndTime);
+            ps.setTimestamp(2, t.startDateAndTime);
+            ps.setTimestamp(3, t.endDateAndTime);
+            ps.setTimestamp(4, t.endDateAndTime);
+        }
+        ResultSet rs = ps.executeQuery();
+
+        List<Rental> rentalList = new ArrayList<>();
+
+        while (rs.next()){
+            //Make a Rental object corresponding to a tuple queried from the database
+            Rental rental = new Rental();
+            rental.rid = rs.getInt("rId");
+            rental.vlicense = rs.getString("vLicense");
+            rental.dlicense = rs.getString("dLicense");
+
+            TimePeriod tm = new TimePeriod();
+            tm.startDateAndTime = rs.getTimestamp("fromDateTime");
+            tm.endDateAndTime = rs.getTimestamp("toDateTime");
+            rental.timePeriod = tm;
+
+            rental.startOdometer = rs.getInt("odometer");
+
+            rental.card = getCardMatching(rs.getLong("cardNo"));
+            rental.confNo = rs.getInt("'confNo");
+
+            //Add the reservation object to r
+            rentalList.add(rental);
+        }
+        ps.close();
+        return rentalList;
     }
 
     public Rental getRentalMatching(Rental r) throws Exception {
-        // TODO: implement this
-        throw new Exception("Method not implemented");
+        PreparedStatement ps = conn.prepareStatement(Queries.Rent.GET_RENTAL);
+        ps.setInt(1, r.rid);
+        ResultSet rs = ps.executeQuery();
+
+        if (!rs.next()) {
+            System.out.println("NOTE: Rental " + r.rid + " does not exist");
+            ps.close();
+            return null;
+        }
+
+        Rental rental = new Rental();
+        rental.rid = rs.getInt("rId");
+        rental.vlicense = rs.getString("vLicense");
+        rental.dlicense = rs.getString("dLicense");
+
+        TimePeriod tm = new TimePeriod();
+        tm.startDateAndTime = rs.getTimestamp("fromDateTime");
+        tm.endDateAndTime = rs.getTimestamp("toDateTime");
+        rental.timePeriod = tm;
+
+        rental.startOdometer = rs.getInt("odometer");
+
+        rental.card = getCardMatching(rs.getLong("cardNo"));;
+        rental.confNo = rs.getInt("'confNo");
+
+        ps.close();
+        return rental;
+
     }
 
     /* Customer */
@@ -502,7 +624,6 @@ public class Database {
     }
 
     public VehicleType getVehicleTypeMatching(VehicleType vt) throws SQLException {
-        // TODO: implement this
 
         PreparedStatement ps = conn.prepareStatement("SELECT * FROM VehicleType WHERE vtName = '" + vt.vtname + "'");
         ResultSet rs = ps.executeQuery();
@@ -728,6 +849,31 @@ public class Database {
         ps.close();
 
         Log.log("Card with cardNo " + c.cardNo + " successfully deleted");
+    }
+
+    /**
+     * Finds and returns the card entry with the same primary key as the card object given. Other
+     * attributes of the given object may be null. If no card found, returns null
+     * @throws Exception if there is any error getting results
+     */
+    public Card getCardMatching(long cardNo) throws Exception {
+        PreparedStatement ps = conn.prepareStatement(Queries.Card.GET_CARD);
+        ps.setLong(1, cardNo);
+        ResultSet rs = ps.executeQuery();
+
+        if (!rs.next()) {
+            System.out.println("NOTE: Card " + cardNo + " does not exist");
+            ps.close();
+            return null;
+        }
+
+        Card c = new Card();
+        c.cardNo = rs.getLong("cardNo");
+        c.cardName = rs.getString("cardName");
+        c.expDate = rs.getInt("expDate");
+
+        ps.close();
+        return c;
     }
 
 

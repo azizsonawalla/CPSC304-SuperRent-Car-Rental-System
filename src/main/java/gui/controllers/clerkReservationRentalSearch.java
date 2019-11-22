@@ -6,19 +6,35 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import model.Entities.Reservation;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
+import javafx.util.Pair;
+import model.Entities.*;
 import model.Util.Log;
 
 import java.net.URL;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class clerkReservationRentalSearch extends Controller implements Initializable {
 
+    // TODO: Align search result strings
+
+    private Text NO_RESULTS_FOUND = new Text("No results found for your search");
+    private String RESERVATION_RESULT_TEMPLATE = "Confirmation No = %d, Customer DL = %s, Vehicle Type = %s, Start = %s, End = %s, Pickup = %s";
+    private String RENTAL_RESULT_TEMPLATE = "Rental ID = %d, Vehicle License = %s, Customer DL = %s, Start = %s, End = %s";
+
+    private List<Reservation> currReservationSearchRes;
+    private List<Rental> currRentalSearchRes;
+
     @FXML private Button dailyReportsButton, rentalWithoutReservationButton, rentalWithReservationButton,
                             searchReservationsButton, searchRentalsButton, startReturnButton;
     @FXML private TextField confNumField, dlField, dlFieldRental, rentalIdField;
+    @FXML private TextFlow reservationResults, rentalResults;
+    @FXML private ComboBox<Integer> reservationOptions, rentalOptions;
 
     public clerkReservationRentalSearch(Main main) {
         super(main);
@@ -47,9 +63,10 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
     };
 
     private Runnable refreshActiveReservations = () -> {
-        // TODO: Implement this
         Log.log("Refreshing active reservations");
-        // TODO: clear text flow
+        reservationResults.getChildren().clear();
+        reservationOptions.getItems().clear();
+        // TODO: Disable start rental button
         String confNumString = confNumField.getText().trim();
         int confNum;
         String dl = dlField.getText().trim();
@@ -63,53 +80,69 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
             }
         }
         if (dl.equals("")) dl = null;
-        List<Reservation> result = qo.getReservationWith(confNum, dl);
-        if (result.size() == 0) {
-            // TODO: put "no results" in text flow
+        this.currReservationSearchRes = qo.getReservationsWith(confNum, dl);
+        if (currReservationSearchRes.size() == 0) {
+            reservationResults.getChildren().add(NO_RESULTS_FOUND);
         } else {
-            // TODO: put results in text flow
+            for (Reservation r: currReservationSearchRes) {
+                String resultString = String.format(RESERVATION_RESULT_TEMPLATE, r.confNum, r.dlicense, r.vtName,
+                                                    r.timePeriod.getStartAsTimeDateString(), r.timePeriod.getEndAsTimeDateString(), r.location.toString());
+                reservationResults.getChildren().add(new Text(resultString));
+            }
+            for (int i=1; i <= currReservationSearchRes.size(); i++) reservationOptions.getItems().add(i);
+            reservationOptions.setValue(reservationOptions.getItems().get(0));
+            // TODO: Enable start rental button
         }
     };
 
     private Runnable refreshOngoingRentals = () -> {
-//        // TODO: Implement this
-//        Log.log("Refreshing active rentals");
-//        // TODO: clear text flow
-//        String rentalIdString = rentalIdField.getText().trim();
-//        int rentalId;
-//        String dl = dlFieldRental.getText().trim();
-//        if (rentalIdString.equals("")) {
-//            rentalId = -1;
-//        } else {
-//            try {
-//                rentalId = Integer.parseInt(rentalIdString);
-//            } catch (Exception e) {
-//                rentalId = -1;
-//            }
-//        }
-//        if (dl.equals("")) dl = null;
-//        List<Reservation> result = qo.getReservationWith(rentalId, dl);
-//        if (result.size() == 0) {
-//            // TODO: put "no results" in text flow
-//        } else {
-//            // TODO: put results in text flow
-//        }
+        Log.log("Refreshing active rentals");
+        rentalResults.getChildren().clear();
+        rentalOptions.getItems().clear();
+        // TODO: Disable start return button
+        String rentalIdString = rentalIdField.getText().trim();
+        int rentalId;
+        String dl = dlFieldRental.getText().trim();
+        if (rentalIdString.equals("")) {
+            rentalId = -1;
+        } else {
+            try {
+                rentalId = Integer.parseInt(rentalIdString);
+            } catch (Exception e) {
+                rentalId = -1;
+            }
+        }
+        if (dl.equals("")) dl = null;
+        currRentalSearchRes = qo.getRentalsWith(rentalId, dl);
+        if (currRentalSearchRes.size() == 0) {
+            rentalResults.getChildren().add(NO_RESULTS_FOUND);
+        } else {
+            for (Rental r: currRentalSearchRes) {
+                String resultString = String.format(RENTAL_RESULT_TEMPLATE, r.rid, r.vlicense, r.dlicense,
+                                                    r.timePeriod.getStartAsTimeDateString(), r.timePeriod.getEndAsTimeDateString());
+                rentalResults.getChildren().add(new Text(resultString));
+            }
+            for (int i=1; i <= currRentalSearchRes.size(); i++) rentalOptions.getItems().add(i);
+            rentalOptions.setValue(rentalOptions.getItems().get(0));
+            // TODO: Enable start return button
+        }
     };
 
     private Runnable startRentalWithoutReservation = () -> {
         Log.log("Starting rental without reservation");
-        this.main.switchScene(GUIConfig.CLERK_MAKE_RESERVATION);
+        this.main.switchScene(GUIConfig.CLERK_CAR_SEARCH);
     };
 
     private Runnable startRentalFromReservation = () -> {
         Log.log("Starting rental from reservation");
-        // TODO: Save selected reservation in Main
+        this.main.clerkRentalInProgress = currReservationSearchRes.get(reservationOptions.getValue() -1);
         this.main.switchScene(GUIConfig.CLERK_START_RENTAL);
     };
 
     private Runnable startReturnForRental = () -> {
         Log.log("starting return for rental");
-        // TODO: Save selected rental in Main
+        Rental selectedRental = currRentalSearchRes.get(rentalOptions.getValue() - 1);
+        this.main.clerkReturnInProgress = new Return(selectedRental.rid, TimePeriod.getNow(), -1, false, -1);
         this.main.switchScene(GUIConfig.CLERK_SUBMIT_RETURN);
     };
 }

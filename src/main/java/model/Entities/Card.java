@@ -1,14 +1,14 @@
 package model.Entities;
 
+import java.sql.Timestamp;
+
 public class Card {
-    public long cardNo;
+    long CardNo;
     public String cardName;
-    public int expDate;
+    public Timestamp expDate;
 
-    public Card(){}
-
-    public Card(long cardNumber, String cardName, int expDate){
-        this.cardNo = cardNumber;
+    public Card(long cardNo, String cardName, Timestamp expDate) {
+        CardNo = cardNo;
         this.cardName = cardName;
         this.expDate = expDate;
     }

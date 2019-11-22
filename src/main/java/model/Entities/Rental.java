@@ -1,7 +1,6 @@
 package model.Entities;
 
 public class Rental {
-
     //primary key, id of Rental
     public int rid;
 
@@ -23,17 +22,13 @@ public class Rental {
     //If customer is renting from a reservation, identifies Reservation involved in the Rental
     public int confNo;
 
-    public Rental(){};
-
-    public Rental(int rid, String vLicense, String dLicense, TimePeriod timePeriod, int startOdometer, Card card,
-    int confNo){
+    public Rental(int rid, String vlicense, String dlicense, TimePeriod timePeriod, int startOdometer, Card card, int confNo) {
         this.rid = rid;
-        this.vlicense = vLicense;
-        this.dlicense = dLicense;
+        this.vlicense = vlicense;
+        this.dlicense = dlicense;
         this.timePeriod = timePeriod;
         this.startOdometer = startOdometer;
         this.card = card;
         this.confNo = confNo;
     }
-
 }

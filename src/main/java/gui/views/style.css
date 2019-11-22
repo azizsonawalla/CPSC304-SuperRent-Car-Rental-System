@@ -4,7 +4,7 @@ AnchorPane {
 
 Button {
     -fx-font-size: 14px;
-    -fx-font-family: helvetica;
+    -fx-font-family: arial;
     -fx-text-fill: #707070;
     -fx-background-color: transparent;
     -fx-border-color: #707070;

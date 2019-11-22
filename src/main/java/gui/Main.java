@@ -8,25 +8,32 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import model.Entities.Reservation;
+import model.Entities.Return;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class Main extends Application {
 
+    // TODO: Attach fonts
+
     private Scene scene;
     public Map<String, Pair<Pane, Controller>> scenePanes;
-    public ExecutorService pool;
 
-    // Inter-scene data
+    /* Inter-scene data */
+    // Customer Car Search -> Customer Make Reservation
     public Reservation customerResInProgress;
+    // Clerk Res Rental Search -> Clerk Start Rental
+    public Reservation clerkRentalInProgress;
+    // Clerk Res Rental Search -> Clerk Start Return
+    public Return clerkReturnInProgress;
+    // Clerk Car Search -> Clerk Make Reservation
+    public Reservation clerkResInProgress;
+
 
     public Main() {
         super();
-        pool = Executors.newFixedThreadPool(2*Runtime.getRuntime().availableProcessors()+1);
-        scenePanes = new HashMap<String, Pair<Pane, Controller>>();
+        scenePanes = new HashMap<>();
     }
 
     @Override
@@ -56,36 +63,36 @@ public class Main extends Application {
         // Customer
         fxml = GUIConfig.CUSTOMER_CAR_SEARCH;
         c = new customerCarSearch(this);
-        scenePanes.put(fxml, new Pair<Pane, Controller>(getPane(fxml, c), c));
+        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
 
         fxml = GUIConfig.CUSTOMER_MAKE_RES;
         c = new customerMakeReservation(this);
-        scenePanes.put(fxml, new Pair<Pane, Controller>(getPane(fxml, c), c));
+        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
 
         // Clerk
         fxml = GUIConfig.CLERK_RESERVATION_RENTAL_SEARCH;
         c = new clerkReservationRentalSearch(this);
-        scenePanes.put(fxml, new Pair<Pane, Controller>(getPane(fxml, c), c));
+        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
 
         fxml = GUIConfig.CLERK_CAR_SEARCH;
         c = new clerkCarSearch(this);
-        scenePanes.put(fxml, new Pair<Pane, Controller>(getPane(fxml, c), c));
+        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
 
         fxml = GUIConfig.CLERK_DAILY_REPORTS;
         c = new clerkDailyReports(this);
-        scenePanes.put(fxml, new Pair<Pane, Controller>(getPane(fxml, c), c));
+        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
 
         fxml = GUIConfig.CLERK_MAKE_RESERVATION;
         c = new clerkMakeReservation(this);
-        scenePanes.put(fxml, new Pair<Pane, Controller>(getPane(fxml, c), c));
+        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
 
         fxml = GUIConfig.CLERK_START_RENTAL;
         c = new clerkStartRental(this);
-        scenePanes.put(fxml, new Pair<Pane, Controller>(getPane(fxml, c), c));
+        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
 
         fxml = GUIConfig.CLERK_SUBMIT_RETURN;
         c = new clerkSubmitReturn(this);
-        scenePanes.put(fxml, new Pair<Pane, Controller>(getPane(fxml, c), c));
+        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
     }
 
     private Pane getPane(String fxml, Controller c) throws Exception {
@@ -97,7 +104,6 @@ public class Main extends Application {
     @Override
     public void stop() throws Exception {
         super.stop();
-        pool.shutdownNow();
         // TODO: Close all db connections
     }
 

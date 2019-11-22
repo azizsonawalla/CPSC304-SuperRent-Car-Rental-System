@@ -16,6 +16,9 @@ import java.util.ResourceBundle;
 
 public abstract class makeReservation extends Controller implements Initializable {
 
+    // TODO: Double check regexes (esp. char limits)
+    // TODO: Make DL matching case insensitive
+
     String LOCATION_INFO_TEMPLATE = "%s, %s";
     String TIME_INFO_TEMPLATE = "On %02d/%02d/%02d at %02d:%02d";
 
@@ -60,6 +63,8 @@ public abstract class makeReservation extends Controller implements Initializabl
     private boolean validateAdd() {
         return dlField.getText().matches("[a-zA-Z0-9\\s]{0,50}");
     }
+
+    abstract void postSuccessRes(Reservation r);
 
     abstract Reservation getResInProgress();
 
@@ -138,6 +143,7 @@ public abstract class makeReservation extends Controller implements Initializabl
                 r = qo.makeReservation(r);
                 result = String.format(result, r.confNum);
                 setResInProgressTo(null);
+                postSuccessRes(r);
             } catch (Exception e) {
                 result = "Failed to make reservation: " + e.getMessage();
             }

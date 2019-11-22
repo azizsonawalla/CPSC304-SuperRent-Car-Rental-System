@@ -57,7 +57,7 @@ public class QueryOrchestrator {
      */
     public Customer getCustomer(String dlNumber) throws Exception {
         // TODO: Implement this
-        if (dlNumber.equals("DL12345")) return new Customer(12345, "DL12345", "John Smith", "Some address");
+        if (dlNumber.equals("DL12345")) return new Customer(1234512345, "John Smith", "Some address", "DL12345");
         return null;
     }
 
@@ -68,7 +68,8 @@ public class QueryOrchestrator {
 
     public Reservation makeReservation(Reservation r) throws Exception {
         // TODO: Implement this
-        throw new Exception("Not implemented");
+        r.confNum = 1;
+        return r;
     }
 
     public List<Location> getAllLocationNames() throws Exception {

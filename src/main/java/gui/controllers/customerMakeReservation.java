@@ -15,6 +15,11 @@ public class customerMakeReservation extends makeReservation {
     }
 
     @Override
+    void postSuccessRes(Reservation r) {
+        // Nothing to be done
+    }
+
+    @Override
     Reservation getResInProgress() {
         return main.customerResInProgress;
     }

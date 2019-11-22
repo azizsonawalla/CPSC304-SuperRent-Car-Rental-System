@@ -247,7 +247,7 @@ public class Database {
         return res;
     }
 
-    /* Rental */
+    /* Return */
 
     /**
      * Add the given rental object to the rental table in the database
@@ -265,7 +265,7 @@ public class Database {
         ps.setTimestamp(4, r.timePeriod.startDateAndTime);
         ps.setTimestamp(5, r.timePeriod.endDateAndTime);
         ps.setInt(6, r.startOdometer);
-        ps.setLong(7, r.card.cardNo);
+        ps.setLong(7, r.card.CardNo);
         ps.setLong(8, r.confNo);
 
         //execute the update
@@ -297,7 +297,7 @@ public class Database {
         ps.setTimestamp(3,r.timePeriod.startDateAndTime != null? r.timePeriod.startDateAndTime: rs.getTimestamp("fromDateTime"));
         ps.setTimestamp(4,r.timePeriod.endDateAndTime != null? r.timePeriod.endDateAndTime: rs.getTimestamp("toDateTime"));
         ps.setInt(5,r.startOdometer != -1? r.startOdometer: rs.getInt("odometer"));
-        ps.setLong(6, r.card.cardNo != -1? r.card.cardNo: rs.getLong("cardNo"));
+        ps.setLong(6, r.card.CardNo != -1? r.card.CardNo: rs.getLong("cardNo"));
         ps.setInt(7,r.confNo != -1? r.confNo: rs.getInt("confNo"));
         ps.setInt(8, r.rid);
 
@@ -379,20 +379,20 @@ public class Database {
 
         while (rs.next()){
             //Make a Rental object corresponding to a tuple queried from the database
-            Rental rental = new Rental();
-            rental.rid = rs.getInt("rId");
-            rental.vlicense = rs.getString("vLicense");
-            rental.dlicense = rs.getString("dLicense");
+            int rid = rs.getInt("rId");
+            String vlicense = rs.getString("vLicense");
+            String dlicense = rs.getString("dLicense");
 
             TimePeriod tm = new TimePeriod();
             tm.startDateAndTime = rs.getTimestamp("fromDateTime");
             tm.endDateAndTime = rs.getTimestamp("toDateTime");
-            rental.timePeriod = tm;
 
-            rental.startOdometer = rs.getInt("odometer");
+            int startOdometer = rs.getInt("odometer");
 
-            rental.card = getCardMatching(rs.getLong("cardNo"));
-            rental.confNo = rs.getInt("'confNo");
+            Card card = getCardMatching(rs.getLong("cardNo"));
+            int confNo = rs.getInt("'confNo");
+
+            Rental rental = new Rental(rid, vlicense, dlicense, tm, startOdometer, card, confNo);
 
             //Add the reservation object to r
             rentalList.add(rental);
@@ -412,23 +412,140 @@ public class Database {
             return null;
         }
 
-        Rental rental = new Rental();
-        rental.rid = rs.getInt("rId");
-        rental.vlicense = rs.getString("vLicense");
-        rental.dlicense = rs.getString("dLicense");
+        int rid = rs.getInt("rId");
+        String vlicense = rs.getString("vLicense");
+        String dlicense = rs.getString("dLicense");
 
         TimePeriod tm = new TimePeriod();
         tm.startDateAndTime = rs.getTimestamp("fromDateTime");
         tm.endDateAndTime = rs.getTimestamp("toDateTime");
-        rental.timePeriod = tm;
 
-        rental.startOdometer = rs.getInt("odometer");
+        int startOdometer = rs.getInt("odometer");
 
-        rental.card = getCardMatching(rs.getLong("cardNo"));;
-        rental.confNo = rs.getInt("'confNo");
+        Card card = getCardMatching(rs.getLong("cardNo"));
+        int confNo = rs.getInt("'confNo");
+
+        Rental rental = new Rental(rid, vlicense, dlicense, tm, startOdometer, card, confNo);
 
         ps.close();
         return rental;
+
+    }
+
+    /* Rental */
+
+    /**
+     * Add the given Return object to the return table in the database
+     * @param r return object to add
+     * @throws Exception if there is an error adding the rental, for example if the values don't meet constraints
+     */
+    public void addReturn(Return r) throws Exception {
+
+        PreparedStatement ps = conn.prepareStatement(Queries.Returns.ADD_RETURN);
+
+        //Set values for parameters in ps
+        ps.setInt(1, r.rid);
+        ps.setTimestamp(2, r.returnDateTime);
+        ps.setInt(3, r.endOdometer);
+        if (r.fullTank == Return.TankStatus.FULL_TANK) ps.setBoolean(4, true);
+        else ps.setBoolean(4, false);
+        ps.setInt(5, r.cost);
+
+
+        //execute the update
+        ps.executeUpdate();
+
+        //commit changes (automatic) and close prepared statement
+        ps.close();
+
+        Log.log("Return with rent id " + r.rid + " successfully added");
+
+    }
+
+    /**
+     * Update the values of the Return entry in the Return table that has the same primary key as the given
+     * Return object. New values of Rental entry are values in r.
+     * @param r updated values for Return entry
+     * @throws Exception if there is an error updating entry, for example if entry doesn't exist already
+     */
+    public void updateReturn(Return r) throws Exception {
+        PreparedStatement ps = conn.prepareStatement(Queries.Returns.GET_RETURN);
+        ps.setInt(1, r.rid);
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+
+        //Set values for parameters in psUpdate. Update if corresponding value in Reservation r is null, otherwise, keep unchanged
+        ps = conn.prepareStatement(Queries.Returns.UPDATE_RETURN);
+        ps.setTimestamp(1, r.returnDateTime != null? r.returnDateTime: rs.getTimestamp("DateTime"));
+        ps.setInt(2, r.endOdometer != -1? r.endOdometer: rs.getInt("odometer"));
+        if (r.fullTank == Return.TankStatus.FULL_TANK) ps.setBoolean(3, true);
+        else if (r.fullTank == Return.TankStatus.NOT_FULL_TANK) ps.setBoolean(3, false);
+        else ps.setBoolean(3, rs.getBoolean("status"));
+        ps.setInt(4,r.cost!= -1? r.cost : rs.getInt("value"));
+        ps.setInt(5, r.rid);
+
+        //execute the update
+        int rowCount = ps.executeUpdate();
+        if (rowCount == 0) {
+            System.out.println("NOTE: Return " + r.rid + " does not exist");
+            ps.close();
+            return;
+        }
+
+        //commit changes and close prepared statement
+        ps.close();
+
+        Log.log("Return with rid " + r.rid + " successfully updated");
+    }
+
+    /**
+     * Delete entry from return corresponding return that matches the primary key of the given object
+     * @param r object with same primary key as entry to delete from Return
+     * @throws Exception if there is an error deleting entry, for example if entry doesn't exist already
+     */
+    public void deleteReturn(Return r) throws Exception {
+        PreparedStatement ps = conn.prepareStatement(Queries.Returns.DELETE_RETURN);
+        //Set confirmation number parameter for Return tuple to be deleted
+        ps.setInt(1, r.rid);
+
+        //execute the update
+        int rowCount = ps.executeUpdate();
+        if (rowCount == 0) {
+            System.out.println("NOTE: Return " + r.rid + " does not exist");
+            ps.close();
+            return;
+        }
+
+        //commit changes and close prepared statement
+        ps.close();
+
+        Log.log("Return with rid " + r.rid + " successfully deleted");
+    }
+
+
+    public Return getReturnMatching(Return r) throws Exception {
+        PreparedStatement ps = conn.prepareStatement(Queries.Returns.GET_RETURN);
+        ps.setInt(1, r.rid);
+        ResultSet rs = ps.executeQuery();
+
+        if (!rs.next()) {
+            System.out.println("NOTE: Return " + r.rid + " does not exist");
+            ps.close();
+            return null;
+        }
+
+        int rid = rs.getInt("rId");
+        Timestamp dateTime = rs.getTimestamp("dateTime");
+        int endOdometer = rs.getInt("odometer");
+        Boolean fullTank = rs.getBoolean("fullTank");
+        Return.TankStatus tankEnum = fullTank? Return.TankStatus.FULL_TANK : Return.TankStatus.NOT_FULL_TANK;
+        int cost = rs.getInt("value");
+
+
+        Return ret = new Return(rid, dateTime, endOdometer, tankEnum, cost);
+
+        ps.close();
+        return ret;
 
     }
 
@@ -779,9 +896,9 @@ public class Database {
         PreparedStatement ps = conn.prepareStatement(Queries.Card.ADD_CARD);
 
         //Set values for parameters in ps
-        ps.setLong(1, c.cardNo);
+        ps.setLong(1, c.CardNo);
         ps.setString(2, c.cardName);
-        ps.setInt(3, c.expDate);
+        ps.setTimestamp(3, c.expDate);
 
 
         //execute the update
@@ -790,7 +907,7 @@ public class Database {
         //commit changes and close prepared statement
         ps.close();
 
-        Log.log("Card with cardNo " + c.cardNo + " successfully added");
+        Log.log("Card with cardNo " + c.CardNo + " successfully added");
 
     }
 
@@ -803,20 +920,20 @@ public class Database {
     public void updateCard(Card c) throws Exception {
         //Get Card tuple with confirmation number c.cardNo
         PreparedStatement ps = conn.prepareStatement(Queries.Card.GET_CARD);
-        ps.setLong(1, c.cardNo);
+        ps.setLong(1, c.CardNo);
         ResultSet rs = ps.executeQuery();
         rs.next();
 
         //Set values for parameters in psUpdate. Update if corresponding value in Card c is null, otherwise, keep unchanged
         ps = conn.prepareStatement(Queries.Card.UPDATE_CARD);
         ps.setString(1, c.cardName != null? c.cardName: rs.getString("cardName"));
-        ps.setInt(2, c.expDate != -1? c.expDate: rs.getInt("expDate"));
-        ps.setLong(3, c.cardNo);
+        ps.setTimestamp(2, c.expDate != null? c.expDate: rs.getTimestamp("expDate"));
+        ps.setLong(3, c.CardNo);
 
         //execute the update
         int rowCount = ps.executeUpdate();
         if (rowCount == 0) {
-            System.out.println("NOTE: Card with CardNo " + c.cardNo + " does not exist");
+            System.out.println("NOTE: Card with CardNo " + c.CardNo + " does not exist");
             ps.close();
             return;
         }
@@ -824,7 +941,7 @@ public class Database {
         //commit changes and close prepared statement
         ps.close();
 
-        Log.log("Card with cardNo " + c.cardNo + " successfully updated");
+        Log.log("Card with cardNo " + c.CardNo + " successfully updated");
     }
 
     /**
@@ -835,12 +952,12 @@ public class Database {
     public void deleteCard(Card c) throws Exception {
         PreparedStatement ps = conn.prepareStatement(Queries.Card.DELETE_CARD);
         //Set card number parameter for Reservation tuple to be deleted
-        ps.setLong(1, c.cardNo);
+        ps.setLong(1, c.CardNo);
 
         //execute the update
         int rowCount = ps.executeUpdate();
         if (rowCount == 0) {
-            System.out.println("NOTE: Card with CardNo " + c.cardNo + " does not exist");
+            System.out.println("NOTE: Card with CardNo " + c.CardNo + " does not exist");
             ps.close();
             return;
         }
@@ -848,7 +965,7 @@ public class Database {
         //commit changes and close prepared statement
         ps.close();
 
-        Log.log("Card with cardNo " + c.cardNo + " successfully deleted");
+        Log.log("Card with cardNo " + c.CardNo + " successfully deleted");
     }
 
     /**
@@ -867,10 +984,10 @@ public class Database {
             return null;
         }
 
-        Card c = new Card();
-        c.cardNo = rs.getLong("cardNo");
-        c.cardName = rs.getString("cardName");
-        c.expDate = rs.getInt("expDate");
+        long CardNo = rs.getLong("cardNo");
+        String cardName = rs.getString("cardName");
+        Timestamp expDate = rs.getTimestamp("expDate");
+        Card c = new Card(cardNo, cardName, expDate);
 
         ps.close();
         return c;

@@ -56,7 +56,7 @@ public class Queries {
 
         public static String CREATE_TABLE_VEHICLE_TYPE = "CREATE TABLE IF NOT EXISTS VehicleType(" +
                 "vtName CHAR(50), " +
-                "features CHAR(255), " +
+                "features CHAR(255) NOT NULL, " +
                 "wRate INT NOT NULL, " +
                 "dRate INT NOT NULL, " +
                 "hRate INT NOT NULL, " +
@@ -84,9 +84,9 @@ public class Queries {
                 "FOREIGN KEY (rId) REFERENCES Rent(rId) on DELETE CASCADE);";
 
         public static String CREATE_TABLE_CARD = "CREATE TABLE IF NOT EXISTS Card(" +
-                "cardNo BIGINT, " +
-                "cardName CHAR(50), " +
-                "expDate INT, " +
+                "cardNo BIGINT NOT NULL, " +
+                "cardName CHAR(50) NOT NULL, " +
+                "expDate TIMESTAMP NOT NULL, " +
                 "PRIMARY KEY (cardNo));";
 
         public static String CREATE_TABLE_BRANCH = "CREATE TABLE IF NOT EXISTS Branch(" +
@@ -221,6 +221,11 @@ public class Queries {
 
         public static String DELETE_RETURN =
                 "DELETE FROM Return " +
+                        "WHERE rId = ?";
+
+        public static String GET_RETURN =
+                "SELECT * " +
+                        "FROM RETURN " +
                         "WHERE rId = ?";
 
     }

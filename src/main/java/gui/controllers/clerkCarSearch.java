@@ -16,8 +16,8 @@ public class clerkCarSearch extends carSearch {
                 res.location = currentResults.get(optionSelected).location;
                 res.vtName = currentResults.get(optionSelected).vt.vtname;
                 res.timePeriod = getCurrentTimePeriodSelection();
-                this.main.customerResInProgress = res;
-                this.main.switchScene(GUIConfig.CUSTOMER_MAKE_RES);
+                this.main.clerkResInProgress = res;
+                this.main.switchScene(GUIConfig.CLERK_MAKE_RESERVATION);
             } catch (Exception e) {
                 Log.log("Error starting reservation: " + e.getMessage());
             } finally {

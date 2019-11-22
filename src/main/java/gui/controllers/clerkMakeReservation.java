@@ -19,4 +19,6 @@ public class clerkMakeReservation extends Controller implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
     }
+
+    // TODO: Create make reservation super class
 }

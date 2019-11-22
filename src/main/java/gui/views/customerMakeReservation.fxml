@@ -9,7 +9,6 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="363.0" layoutX="33.0" layoutY="114.0" stroke="BLACK" strokeType="INSIDE" width="367.0" />
       <Button layoutX="230.0" layoutY="26.0" mnemonicParsing="false" onAction="#switchToClerk" prefHeight="61.0" prefWidth="165.0" text="Switch to Clerk User" />
       <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="401.0" layoutY="26.0" prefHeight="61.0" prefWidth="367.0" text="SuperRent" textAlignment="RIGHT">
          <font>
@@ -21,6 +20,7 @@
             <Font name="HelveticaLTStd-Roman" size="43.0" />
          </font>
       </Label>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="363.0" layoutX="33.0" layoutY="114.0" stroke="BLACK" strokeType="INSIDE" width="367.0" />
       <Label contentDisplay="RIGHT" layoutX="55.0" layoutY="134.0" prefHeight="31.0" prefWidth="327.0" text="Your Reservation Details:" textAlignment="RIGHT">
          <font>
             <Font name="HelveticaLTStd-Roman" size="24.0" />

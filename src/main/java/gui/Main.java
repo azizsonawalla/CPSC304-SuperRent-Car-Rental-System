@@ -22,9 +22,15 @@ public class Main extends Application {
     public Map<String, Pair<Pane, Controller>> scenePanes;
 
     // Inter-scene data
+    // Customer Car Search -> Customer Make Reservation
     public Reservation customerResInProgress;
+    // Clerk Res Rental Search -> Clerk Start Rental
     public Pair<Reservation, Rental> clerkRentalInProgress;
+    // Clerk Res Rental Search -> Clerk Start Return
     public Return clerkReturnInProgress;
+    // Clerk Car Search -> Clerk Make Reservation
+    public Reservation clerkResInProgress;
+
 
     public Main() {
         super();

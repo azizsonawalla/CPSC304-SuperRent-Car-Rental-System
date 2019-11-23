@@ -1,5 +1,6 @@
 package model.Orchestrator;
 
+import javafx.util.Pair;
 import model.Database;
 import model.Entities.*;
 
@@ -7,6 +8,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -25,13 +27,17 @@ public class QueryOrchestrator {
     VehicleType VT3 = new VehicleType("Hatchback");
     VehicleType VT4 = new VehicleType("Sedan");
     Vehicle V1 = new Vehicle(1, "license", "Tesla", "Model S", 2018, "black", 0, true, "sedan", L1);
-    Timestamp ts = new Timestamp(2020, 1, 1, 1, 1, 1, 1);
+    Timestamp ts = new Timestamp(2018-1900, 1-1, 1, 1, 1, 1, 1);
     TimePeriod t = new TimePeriod(ts, ts);
 
     private Database db;
 
-    public void QueryOrchestrator() throws Exception {
-        this.db = new Database();
+    public QueryOrchestrator() throws Exception {
+        //this.db = new Database(); // commented this out for UI testing. uncomment later
+    }
+
+    public Integer getDailyKMLimit() {
+        return 100; // TODO: Double check specs for a number
     }
 
     public List<VTSearchResult> getVTSearchResultsFor(Location l, VehicleType vt, TimePeriod t) throws Exception {
@@ -113,5 +119,54 @@ public class QueryOrchestrator {
     public Rental addRental(Rental r) {
         // TODO;
         return r;
+    }
+
+    public Vehicle getVehicle(String vlicense) {
+        // TODO
+        return V1;
+    }
+
+    public VehicleType getVehicleType(String vtname) {
+        // TODO
+        return VT1;
+    }
+
+    public void submitReturn(Return r) {
+        // TODO: implement
+        // TODO: mark vehicle as available
+        // TODO: update vehicle odometer
+    }
+
+    public RentalReport getDailyRentalReport(Location l) {
+        // TODO
+        RentalReport report = new RentalReport();
+        report.countOfRentalsByLocation = new HashMap<>();
+        report.countOfRentalsByLocation.put(L1, 0);
+        report.countOfRentalsByLocation.put(L2, 5);
+        report.countOfRentalsByVT = new HashMap<>();
+        report.countOfRentalsByVT.put(VT1, 1);
+        report.countOfRentalsByVT.put(VT2, 3);
+        report.rentalsStartedToday = new HashMap<>();
+        report.rentalsStartedToday.put(new Reservation(1, "dummyvt", t, L1, "dummyDL" ),
+                new Rental(1, "dummyplates", "dummyDL", t, 0, null, 1));
+        report.totalRentalsToday = 1;
+        return report;
+    }
+
+    public ReturnReport getDailyReturnReport(Location l) {
+        // TODO
+        ReturnReport report = new ReturnReport();
+        report.breakDownByLocation = new HashMap<>();
+        report.breakDownByLocation.put(L1, new Pair<>(0, 0.0));
+        report.breakDownByLocation.put(L3, new Pair<>(5, 100.6));
+        report.breakDownByVT = new HashMap<>();
+        report.breakDownByVT.put(VT1, new Pair<>(1, 0.0));
+        report.breakDownByVT.put(VT2, new Pair<>(4, 5.0));
+        report.returnsCreatedToday = new HashMap<>();
+        report.returnsCreatedToday.put( new Rental(1, "dummyplates", "dummyDL", t, 0, null, 1),
+                                        new Return(1, new Timestamp(System.currentTimeMillis()), 1, Return.TankStatus.FULL_TANK, 566));
+        report.totalReturnsRevenueToday = 200.5;
+        report.totalReturnsToday = 1;
+        return report;
     }
 }

@@ -1,6 +1,5 @@
 package gui.controllers;
 
-import gui.GUIConfig;
 import gui.Main;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -15,7 +14,6 @@ import model.Util.Log;
 
 import java.net.URL;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -28,9 +26,10 @@ public class carSearch extends Controller implements Initializable {
     // TODO: Add check to "see details" and "start reservation" buttons to ensure an option is selected
     // TODO: Check size of returned options before setting 1st value in combobox
     // TODO: Change default dates
+    // TODO: Throw error for time periods that are not in the future
 
-    private String SEARCH_RESULT_TEMPLATE = "  Option %d:  Vehicle Type = %-30s  Location = %-10s, %-10s  Number Available = %d\n";
-    private String RESULT_DETAILS_TEMPLATE = "  Make = %s,   Model = %s,  Year = %d,  Colour = %s,  License plate = %s";
+    private String SEARCH_RESULT_TEMPLATE = "Option %d:  Vehicle Type = %-30s  Location = %-10s, %-10s  Number Available = %d\n";
+    private String RESULT_DETAILS_TEMPLATE = "Make = %s,   Model = %s,  Year = %d,  Colour = %s,  License plate = %s";
 
     List<VTSearchResult> currentResults;
     Lock lock = new ReentrantLock();

@@ -189,6 +189,12 @@ public class Queries {
                         "FROM Vehicle " +
                         "WHERE vtName = ? AND location = ? AND city = ? AND status = ?";
 
+        public static String GET_NUM_VEHICLES_WITH =
+                        "SELECT V.vtName, V.location, V.city, COUNT(*) " +
+                        "FROM Vehicle V " +
+                        "WHERE vtName = ? AND location = ? AND city = ? " +
+                        "GROUP BY V.vtName, V.location, V.city";
+
     }
 
     public static class VehicleType {

@@ -15,7 +15,11 @@ public abstract class Controller {
 
     Controller(Main main) {
         this.main = main;
-        qo = new QueryOrchestrator();
+        try {
+            qo = new QueryOrchestrator();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public abstract void refreshAll();

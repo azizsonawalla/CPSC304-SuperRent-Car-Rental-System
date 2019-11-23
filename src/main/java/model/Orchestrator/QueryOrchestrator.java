@@ -2,6 +2,7 @@ package model.Orchestrator;
 
 import model.Database;
 import model.Entities.*;
+import model.Util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,13 +28,16 @@ public class QueryOrchestrator {
 
     private Database db;
 
-    public void QueryOrchestrator() throws Exception {
+    public QueryOrchestrator() throws Exception {
         this.db = new Database();
     }
 
 
+    /**
+     * Customer car search top table
+     */
     public List<VTSearchResult> getVTSearchResultsFor(Location l, VehicleType vt, TimePeriod t) throws Exception {
-        // TODO: Implement this
+        //region Instructions/Placeholder code
         // this is just placeholder code
         ArrayList<VTSearchResult> list = new ArrayList<>();
         list.add(new VTSearchResult(VT1, L1, 10));
@@ -42,13 +46,48 @@ public class QueryOrchestrator {
         list.add(new VTSearchResult(VT1, L4, 200));
         list.add(new VTSearchResult(VT2, L1, 25));
         list.add(new VTSearchResult(VT2, L4, 15));
-        return list;
+
+        /*
+        List<Reservation> reservations = db.getReservationsWith(t, vt, l);
+         */
+        // Query all tuples in location x VehicleType x Vehicle
+        // Filter by location if not null
+        // Filter by vt if not null
+        // group by location, vt and aggregate into count
+
+        // Query all reservations overlapping with time period
+        // For each reservation, if vt + location in table, subtract 1 from count
+
+        //endregion
+
+        //List of VTSearchResult
+        List<VTSearchResult> vtSearchResults = db.getVTSearchResultsForHelper(l, vt);
+        List<Reservation> reservations = db.getReservationsWith(t, vt, l);
+
+        for (Reservation r : reservations) {
+            for (VTSearchResult vtSearchResult : vtSearchResults) {
+                if (vtSearchResult.vt.vtname.equals(r.vtName) &&
+                        vtSearchResult.location.city.equals(r.location.city) &&
+                        vtSearchResult.location.location.equals(r.location.location))
+                    vtSearchResult.numAvail--;
+            }
+        }
+
+        return vtSearchResults;
+
     }
 
 
+    /**
+     * Customer car search results bottom table
+     * From Vehicles table, return vehicles that have vtname == searchResult.vt.vtname, location = searchResult.location
+     * and are available (status = AVAILABLE)
+     * @param searchResult
+     * @return
+     * @throws Exception
+     */
     public List<Vehicle> getVehiclesFor(VTSearchResult searchResult) throws Exception {
-        // TODO: Implement this
-        return Arrays.asList(V1);
+        return db.getVehicleWith(searchResult.vt, searchResult.location, null);
     }
 
     /**
@@ -83,9 +122,12 @@ public class QueryOrchestrator {
         return db.getAllVehicleTypes();
     }
 
+
     public List<Reservation> getReservationWith(int confNum, String customerDL) throws Exception{
         // if confNum == -1, then don't filter by confNum
         // if customerDL == "", then don't filer by customerDL
-        return db.getReservationMatching(new Reservation(confNum, null, null, null, customerDL));
+        Reservation r = new Reservation(confNum, null, null, null, customerDL);
+        Log.log(String.valueOf(db));
+        return db.getReservationMatching(r);
     }
 }

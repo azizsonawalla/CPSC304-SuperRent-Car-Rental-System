@@ -1,6 +1,7 @@
 package model;
 
 import model.Entities.*;
+import model.Orchestrator.VTSearchResult;
 import model.Util.Log;
 
 import java.sql.*;
@@ -28,6 +29,7 @@ public class Database {
         try {
             this.conn = DriverManager.getConnection(HOST, USERNAME, PASSWORD);
             if (this.conn == null) throw new Exception("Connection object is null");
+            createTables();
         } catch (Exception e) {
             throw new Exception("Error getting connection to database", e);
         }
@@ -179,7 +181,7 @@ public class Database {
                 query += "((R.fromDateTime <= ? AND R.toDateTime > ?) OR " +
                         "(R.toDateTime >= ? AND R.fromDateTime < ?)) ";
                 marker = true;
-            } if (vt != null) {
+            } if (vt != null && vt.vtname != "All Types") {
                 query += marker? "AND R.vtname = '" + vt.vtname + "' " :
                         "R.vtname = '" + vt.vtname + "' ";
                 marker = true;
@@ -188,6 +190,7 @@ public class Database {
                         "R.location = '" + l.location + "' " + "AND R.city = '" + l.city + "'";
             }
         }
+        Log.log("getReservationsWith Query: " + query);
         PreparedStatement ps = conn.prepareStatement(query);
         //Insert Timestamp values to prepared statement
         if (t != null){
@@ -231,20 +234,13 @@ public class Database {
      */
     public List<Reservation> getReservationMatching(Reservation r) throws Exception {
         PreparedStatement ps;
+        List<Reservation> reservations = new ArrayList<>();
         if(r.confNum != -1) ps = conn.prepareStatement("SELECT * FROM Reservations WHERE confNo = " + Integer.toString(r.confNum));
         else if (!Objects.equals(r.dlicense, "")) ps = conn.prepareStatement("SELECT * FROM Reservations WHERE dLicense = '" + r.dlicense + "'");
-        else throw new Exception("[WARNING}: You must provide either a confirmation number or a customer drivers license");
+        else ps = conn.prepareStatement("SELECT * FROM Reservations");
+        //else throw new Exception("[WARNING}: You must provide either a confirmation number or a customer drivers license");
         ResultSet rs = ps.executeQuery();
 
-        if (!rs.next()) {
-            if (r.confNum != -1) Log.log("NOTE: No Reservations with " + Integer.toString(r.confNum) + " exist");
-            else Log.log("NOTE: No Reservations with " + r.dlicense + " exist");
-            ps.close();
-            return null;
-        }
-
-        rs.previous();
-        List<Reservation> reservations = new ArrayList<>();
         while (rs.next()){
             Reservation res = new Reservation();
             res.confNum = rs.getInt(1);
@@ -664,25 +660,34 @@ public class Database {
         String query = Queries.Vehicle.GET_VEHICLES_WITH;
 
         if (vt == null && l == null && availableNow == null){
-            //If no filters are provided, return all the results
+            //If no filters are provided, return all the vehicles in the Vehicle table
             query = query.replace(" WHERE vtName = ? AND location = ? AND city = ? AND status = ?", "");
         } else {
+            //If no VehicleType is provided or if vtName can be anything, remove VehicleType filter from WHERE clause.
+            //If VehicleType provided, filter by vt.vtname
             if (vt == null) query = query.replace("vtName = ? AND ", "");
             else query = query.replace("vtName = ?", "vtName = '" + vt.vtname + "'");
+            //If no location is provided, remove location filter from WHERE clause.
+            //If location provided, filter by l.location and l.city
             if (l == null) query = query.replace("location = ? AND city = ? AND ", "");
             else query = query.replace("location = ? AND city = ?", "location = '" + l.location + "' AND city = '" + l.city + "'");
+            //If no VehicleStatus is provided, remove VehicleStatus filter from WHERE clause.
+            //If VehicleStatus provided, filter by VehicleStatus (AVAILABLE or RENTED)
             if (availableNow == null) query = query.replace("AND status = ?", "");
             else query = query.replace("status = ?", "status = " + (availableNow == Vehicle.VehicleStatus.AVAILABLE));
         }
 
-        System.out.println(query);
+        //For debugging purposes, prints what the final query looks like
+        Log.log("getVehicleWith query " + query);
+
+        //Prepare statement and execute query
         PreparedStatement ps = conn.prepareStatement(query);
         ResultSet rs = ps.executeQuery();
 
-        List<Vehicle> vehicles = new ArrayList<Vehicle>();
+        List<Vehicle> vehicles = new ArrayList<>();
 
         while (rs.next()){
-            //Make a reservation object corresponding to a tuple queried from the database
+            //Make a Vehicle object corresponding to a tuple queried from the database
             Vehicle v = new Vehicle(rs.getInt("vId"),
                                     rs.getString("vLicense"),
                                     rs.getString("make"),
@@ -691,12 +696,14 @@ public class Database {
                                     rs.getString("color"),
                                     rs.getInt("odometer"),
                                     rs.getString("vtName"),
-                                    (rs.getBoolean("status")) ? Vehicle.VehicleStatus.AVAILABLE: Vehicle.VehicleStatus.RENTED,
+                                    (rs.getBoolean("status")) ?
+                                            Vehicle.VehicleStatus.AVAILABLE: Vehicle.VehicleStatus.RENTED,
                                     new Location(rs.getString("city"), rs.getString("location")));
 
-            //Add the reservation object to r
+            //Add the vehicle object to vehicles
             vehicles.add(v);
         }
+        //close the prepared statement and return the results
         ps.close();
         return vehicles;
 
@@ -726,6 +733,53 @@ public class Database {
         System.out.println("Vehicle with vlicense " + v.vlicense + " successfully retrieved");
         ps.close();
         return res;
+    }
+
+    public List<VTSearchResult> getVTSearchResultsForHelper(Location l, VehicleType vt) throws Exception{
+
+        //This query returns the TOTAL number of cars that are a vehicle type and/or at a location
+        String query = Queries.Vehicle.GET_NUM_VEHICLES_WITH;
+
+
+        if (vt == null && l == null){
+            //If no location/vehicle type filter is provided, group all vehicles by vehicle types and location and
+            // return the count
+            query = query.replace(" WHERE vtName = ? AND location = ? AND city = ?", "");
+        } else {
+            //If no VehicleType is provided, remove VehicleType filter from WHERE clause.
+            //If VehicleType provided, filter by vt.vtname
+            if (vt == null || vt.vtname.equals("All Types")) query = query.replace("vtName = ? AND ", "");
+            else query = query.replace("vtName = ?", "vtName = '" + vt.vtname + "'");
+            //If no location is provided, remove location filter from WHERE clause.
+            //If location provided, filter by l.location and l.city
+            if (l == null) query = query.replace("location = ? AND city = ? AND ", "");
+            else
+                query = query.replace("location = ? AND city = ?", "location = '" + l.location +
+                        "' AND city = '" + l.city + "'");
+        }
+        //For debugging purposes, prints what the final query looks like
+        Log.log("getVTSearchResultsForHelper query " + query);
+
+        //Prepare statement and execute query
+        PreparedStatement ps = conn.prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+
+        List<VTSearchResult> vtSearchResults = new ArrayList<>();
+
+        //Iterate through resultSet
+        while (rs.next()){
+            //Make a VTSearchResult object based on current tuple.
+            VTSearchResult vtsr = new VTSearchResult(
+                    getVehicleTypeMatching(new VehicleType(rs.getString("vtName"))),
+                    new Location(rs.getString("location"), rs.getString("city")),
+                    rs.getInt(4));
+
+            //Add the VTSearchResult object to vehicles
+            vtSearchResults.add(vtsr);
+        }
+        //close the prepared statement and return the results
+        ps.close();
+        return vtSearchResults;
     }
 
     //endregion

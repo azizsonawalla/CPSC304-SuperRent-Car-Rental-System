@@ -39,6 +39,8 @@ class DatabaseTest {
     void createTables() {
     }
 
+    //region Reservation Tests
+
     @Test
     void addReservation() {
         try {
@@ -326,6 +328,10 @@ class DatabaseTest {
         }
     }
 
+    //endregion
+
+    //region Rental Tests
+
     @Test
     void addRental() {
         //TODO: Write add rental test (maybe need to implement Card table
@@ -346,6 +352,10 @@ class DatabaseTest {
     @Test
     void getRentalMatching() {
     }
+
+    //endregion
+
+    //region Customer Tests
 
     @Test
     void addCustomer() {
@@ -425,6 +435,10 @@ class DatabaseTest {
             e.printStackTrace();
         }
     }
+
+    //endregion
+
+    //region VehicleType Tests
 
     @Test
     void addVehicleType() {
@@ -520,6 +534,33 @@ class DatabaseTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    void getAllVehicleTypesTest() {
+        try {
+            VehicleType add1 = new VehicleType("Sedan", "four doors, 5 seats", 300,
+                    70, 7, 100, 20, 2, 1);
+            VehicleType add2 = new VehicleType("SUV", "four doors, 5 seats", 300,
+                    70, 7, 100, 20, 2, 1);
+            VehicleType add3 = new VehicleType("Hatchback", "four doors, 5 seats", 300,
+                    70, 7, 100, 20, 2, 1);
+            VehicleType add4 = new VehicleType("Convertible", "four doors, 5 seats", 300,
+                    70, 7, 100, 20, 2, 1);
+
+            db.addVehicleType(add1);
+            db.addVehicleType(add2);
+            db.addVehicleType(add3);
+            db.addVehicleType(add4);
+            List<VehicleType> result = db.getAllVehicleTypes();
+            assertEquals(4, result.size());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //endregion
+
+    //region Vehicle Tests
 
     @Test
     void addVehicle() {
@@ -737,4 +778,5 @@ class DatabaseTest {
         }
     }
 
+    //endregion
 }

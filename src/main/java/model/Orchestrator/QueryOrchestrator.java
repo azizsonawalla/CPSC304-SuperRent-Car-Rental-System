@@ -1,11 +1,14 @@
 package model.Orchestrator;
 
+import javafx.util.Pair;
 import model.Database;
 import model.Entities.*;
 import model.Util.Log;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -25,6 +28,8 @@ public class QueryOrchestrator {
     VehicleType VT4 = new VehicleType("Sedan");
     Vehicle V1 = new Vehicle(1, "license", "Tesla", "Model S",
             2018, "black", 0, "sedan", Vehicle.VehicleStatus.AVAILABLE, L1);
+    Timestamp ts = new Timestamp(2018-1900, 1-1, 1, 1, 1, 1, 1);
+    TimePeriod t = new TimePeriod(ts, ts);
 
     private Database db;
 
@@ -32,6 +37,9 @@ public class QueryOrchestrator {
         this.db = new Database();
     }
 
+    public Integer getDailyKMLimit() {
+        return 100; // TODO: Double check specs for a number
+    }
 
     /**
      * Customer car search top table
@@ -107,14 +115,18 @@ public class QueryOrchestrator {
     }
 
     public Reservation makeReservation(Reservation r) throws Exception {
-        db.addReservation(r);
+        // TODO: Implement this
+        // r param doesn't have a confirmation number
+        // DB will have to auto-generate this number
+        // Return new reservation object which contains the auto-generated conf number
+        // db.addReservation(r);
         return r;
     }
 
     public List<Location> getAllLocationNames() throws Exception {
         // TODO: Implement this
         // this is just placeholder code
-        ArrayList<Location> list = new ArrayList<>(Arrays.asList(L1, L2, L3, L4));
+        ArrayList<Location> list = new ArrayList<Location>(Arrays.asList(L1, L2, L3, L4));
         return list;
     }
 
@@ -123,11 +135,85 @@ public class QueryOrchestrator {
     }
 
 
-    public List<Reservation> getReservationWith(int confNum, String customerDL) throws Exception{
+    public List<Reservation> getReservationsWith(int confNum, String customerDL) throws Exception{ // TODO: This will be updated to filter only active reservations
         // if confNum == -1, then don't filter by confNum
         // if customerDL == "", then don't filer by customerDL
         Reservation r = new Reservation(confNum, null, null, null, customerDL);
         Log.log(String.valueOf(db));
         return db.getReservationMatching(r);
+    }
+
+    public List<Rental> getRentalsWith(int rentalId, String customerDL) { // TODO: This will be updated to filter only active reservations
+        // TODO: Implement this
+        // if rentalId == -1, then don't filter by confNum
+        // if customerDL == "", then don't filer by customerDL
+        return Arrays.asList(new Rental(1, "dummyplates", "dummyDL", t, 0, null, 1));
+    }
+
+    /**
+     * Given a reservation, select a vehicle from the database that is available now,
+     * of the requested type, at the reservation location. If no such vehicle is available, return null.
+     * @param selectedRes
+     * @return
+     */
+    public Vehicle getAutoSelectedVehicle(Reservation selectedRes) {
+        // TODO: Implement this;
+        return new Vehicle(1, "license", "make", "model", 2020, "black", 0, "SUV", Vehicle.VehicleStatus.AVAILABLE, L1);
+    }
+
+    public Rental addRental(Rental r) {
+        // TODO;
+        // DB will have to autogenerate primary key for r
+        // return new rental object with the primary key in it
+        return r;
+    }
+
+    public Vehicle getVehicle(String vlicense) {
+        // TODO
+        return V1;
+    }
+
+    public VehicleType getVehicleType(String vtname) {
+        // TODO
+        return VT1;
+    }
+
+    public void submitReturn(Return r) {
+        // TODO: implement
+        // TODO: mark vehicle as available
+        // TODO: update vehicle odometer
+    }
+
+    public RentalReport getDailyRentalReport(Location l) {
+        // TODO
+        RentalReport report = new RentalReport();
+        report.countOfRentalsByLocation = new HashMap<>();
+        report.countOfRentalsByLocation.put(L1, 0);
+        report.countOfRentalsByLocation.put(L2, 5);
+        report.countOfRentalsByVT = new HashMap<>();
+        report.countOfRentalsByVT.put(VT1, 1);
+        report.countOfRentalsByVT.put(VT2, 3);
+        report.rentalsStartedToday = new HashMap<>();
+        report.rentalsStartedToday.put(new Reservation(1, "dummyvt", t, L1, "dummyDL" ),
+                new Rental(1, "dummyplates", "dummyDL", t, 0, null, 1));
+        report.totalRentalsToday = 1;
+        return report;
+    }
+
+    public ReturnReport getDailyReturnReport(Location l) {
+        // TODO
+        ReturnReport report = new ReturnReport();
+        report.breakDownByLocation = new HashMap<>();
+        report.breakDownByLocation.put(L1, new Pair<>(0, 0.0));
+        report.breakDownByLocation.put(L3, new Pair<>(5, 100.6));
+        report.breakDownByVT = new HashMap<>();
+        report.breakDownByVT.put(VT1, new Pair<>(1, 0.0));
+        report.breakDownByVT.put(VT2, new Pair<>(4, 5.0));
+        report.returnsCreatedToday = new HashMap<>();
+        report.returnsCreatedToday.put( new Rental(1, "dummyplates", "dummyDL", t, 0, null, 1),
+                                        new Return(1, new Timestamp(System.currentTimeMillis()), 1, Return.TankStatus.FULL_TANK, 566));
+        report.totalReturnsRevenueToday = 200.5;
+        report.totalReturnsToday = 1;
+        return report;
     }
 }

@@ -45,7 +45,7 @@ public class Queries {
                 "color CHAR(50) NOT NULL, " +
                 "odometer INT NOT NULL, " +
                 "vtName CHAR(50) NOT NULL, " +
-                "status CHAR(50) NOT NULL, " +
+                "status BOOLEAN NOT NULL, " +
                 "location CHAR(50) NOT NULL, " +
                 "city CHAR(50) NOT NULL, " +
                 "PRIMARY KEY (vLicense), " +

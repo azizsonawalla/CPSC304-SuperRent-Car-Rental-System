@@ -1,6 +1,6 @@
 package gui.controllers;
 
-import gui.GUIConfig;
+import gui.Config;
 import gui.Main;
 import model.Entities.Reservation;
 
@@ -10,7 +10,7 @@ public class customerMakeReservation extends makeReservation {
         super(main);
         super.backToCarSearch = () -> {
             setResInProgressTo(null);
-            main.switchScene(GUIConfig.CUSTOMER_CAR_SEARCH);
+            main.switchScene(Config.CUSTOMER_CAR_SEARCH);
         };
     }
 

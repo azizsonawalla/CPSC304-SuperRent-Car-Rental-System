@@ -25,13 +25,17 @@ public class QueryOrchestrator {
     VehicleType VT3 = new VehicleType("Hatchback");
     VehicleType VT4 = new VehicleType("Sedan");
     Vehicle V1 = new Vehicle(1, "license", "Tesla", "Model S", 2018, "black", 0, true, "sedan", L1);
-    Timestamp ts = new Timestamp(2020, 1, 1, 1, 1, 1, 1);
+    Timestamp ts = new Timestamp(2018-1900, 1-1, 1, 1, 1, 1, 1);
     TimePeriod t = new TimePeriod(ts, ts);
 
     private Database db;
 
-    public void QueryOrchestrator() throws Exception {
-        this.db = new Database();
+    public QueryOrchestrator() throws Exception {
+        //this.db = new Database(); // commented this out for UI testing. uncomment later
+    }
+
+    public Integer getDailyKMLimit() {
+        return 100; // TODO: Double check specs for a number
     }
 
     public List<VTSearchResult> getVTSearchResultsFor(Location l, VehicleType vt, TimePeriod t) throws Exception {
@@ -113,5 +117,21 @@ public class QueryOrchestrator {
     public Rental addRental(Rental r) {
         // TODO;
         return r;
+    }
+
+    public Vehicle getVehicle(String vlicense) {
+        // TODO
+        return V1;
+    }
+
+    public VehicleType getVehicleType(String vtname) {
+        // TODO
+        return VT1;
+    }
+
+    public void submitReturn(Return r) {
+        // TODO: implement
+        // TODO: mark vehicle as available
+        // TODO: update vehicle odometer
     }
 }

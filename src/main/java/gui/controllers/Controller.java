@@ -1,6 +1,6 @@
 package gui.controllers;
 
-import gui.GUIConfig;
+import gui.Config;
 import gui.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,7 +27,11 @@ public abstract class Controller {
 
     Controller(Main main) {
         this.main = main;
-        qo = new QueryOrchestrator();
+        try {
+            qo = new QueryOrchestrator();
+        } catch (Exception e) {
+            // TODO: Show DB error
+        }
         initializeDateTimeArrays();
     }
 
@@ -43,10 +47,10 @@ public abstract class Controller {
     
     @FXML private void switchToClerk(ActionEvent event) throws Exception {
         main.customerResInProgress = null;
-        main.switchScene(GUIConfig.CLERK_RESERVATION_RENTAL_SEARCH);
+        main.switchScene(Config.CLERK_RESERVATION_RENTAL_SEARCH);
     }
 
     @FXML private void switchToCustomer(ActionEvent event) throws Exception {
-        main.switchScene(GUIConfig.CUSTOMER_CAR_SEARCH);
+        main.switchScene(Config.CUSTOMER_CAR_SEARCH);
     }
 }

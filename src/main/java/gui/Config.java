@@ -1,6 +1,6 @@
 package gui;
 
-public class GUIConfig {
+public class Config {
 
     static int WINDOW_WIDTH = 1000;
     static int WINDOW_HEIGHT = 800;

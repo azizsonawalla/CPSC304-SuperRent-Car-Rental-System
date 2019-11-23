@@ -1,6 +1,5 @@
 package gui.controllers;
 
-import gui.GUIConfig;
 import gui.Main;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -15,7 +14,6 @@ import model.Util.Log;
 
 import java.net.URL;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;

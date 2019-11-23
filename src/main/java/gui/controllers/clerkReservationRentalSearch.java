@@ -1,6 +1,6 @@
 package gui.controllers;
 
-import gui.GUIConfig;
+import gui.Config;
 import gui.Main;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -10,12 +10,10 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import javafx.util.Pair;
 import model.Entities.*;
 import model.Util.Log;
 
 import java.net.URL;
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -59,7 +57,7 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
 
     private Runnable goToDailyReports = () -> {
         Log.log("Switching to daily reports screen");
-        this.main.switchScene(GUIConfig.CLERK_DAILY_REPORTS);
+        this.main.switchScene(Config.CLERK_DAILY_REPORTS);
     };
 
     private Runnable refreshActiveReservations = () -> {
@@ -80,7 +78,7 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
             }
         }
         if (dl.equals("")) dl = null;
-        this.currReservationSearchRes = qo.getReservationsWith(confNum, dl);
+        this.currReservationSearchRes = qo.getReservationsWith(confNum, dl);   // TODO: filter to only get active
         if (currReservationSearchRes.size() == 0) {
             reservationResults.getChildren().add(NO_RESULTS_FOUND);
         } else {
@@ -113,7 +111,7 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
             }
         }
         if (dl.equals("")) dl = null;
-        currRentalSearchRes = qo.getRentalsWith(rentalId, dl);
+        currRentalSearchRes = qo.getRentalsWith(rentalId, dl); // TODO: filter to only get active
         if (currRentalSearchRes.size() == 0) {
             rentalResults.getChildren().add(NO_RESULTS_FOUND);
         } else {
@@ -130,19 +128,18 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
 
     private Runnable startRentalWithoutReservation = () -> {
         Log.log("Starting rental without reservation");
-        this.main.switchScene(GUIConfig.CLERK_CAR_SEARCH);
+        this.main.switchScene(Config.CLERK_CAR_SEARCH);
     };
 
     private Runnable startRentalFromReservation = () -> {
         Log.log("Starting rental from reservation");
-        this.main.clerkRentalInProgress = currReservationSearchRes.get(reservationOptions.getValue() -1);
-        this.main.switchScene(GUIConfig.CLERK_START_RENTAL);
+        this.main.clerkReservationToStart = currReservationSearchRes.get(reservationOptions.getValue() -1);
+        this.main.switchScene(Config.CLERK_START_RENTAL);
     };
 
     private Runnable startReturnForRental = () -> {
         Log.log("starting return for rental");
-        Rental selectedRental = currRentalSearchRes.get(rentalOptions.getValue() - 1);
-        this.main.clerkReturnInProgress = new Return(selectedRental.rid, TimePeriod.getNow(), -1, false, -1);
-        this.main.switchScene(GUIConfig.CLERK_SUBMIT_RETURN);
+        this.main.clerkRentalToBeReturned = currRentalSearchRes.get(rentalOptions.getValue() - 1);
+        this.main.switchScene(Config.CLERK_SUBMIT_RETURN);
     };
 }

@@ -1,6 +1,6 @@
 package gui.controllers;
 
-import gui.GUIConfig;
+import gui.Config;
 import gui.Main;
 import model.Entities.Reservation;
 
@@ -10,14 +10,14 @@ public class clerkMakeReservation extends makeReservation {
         super(main);
         super.backToCarSearch = () -> {
             setResInProgressTo(null);
-            main.switchScene(GUIConfig.CLERK_CAR_SEARCH);
+            main.switchScene(Config.CLERK_CAR_SEARCH);
         };
     }
 
     @Override
     void postSuccessRes(Reservation r) {
-        this.main.clerkRentalInProgress = r;
-        this.main.switchScene(GUIConfig.CLERK_START_RENTAL);
+        this.main.clerkReservationToStart = r;
+        this.main.switchScene(Config.CLERK_START_RENTAL);
     }
 
     @Override

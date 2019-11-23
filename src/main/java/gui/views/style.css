@@ -12,6 +12,17 @@ Button {
     -fx-cursor: hand;
 }
 
+Button:hover {
+    -fx-font-size: 14px;
+    -fx-font-family: arial;
+    -fx-text-fill: #707070;
+    -fx-background-color: transparent;
+    -fx-border-color: #707070;
+    -fx-border-width: 3px;
+    -fx-border-radius: 20px;
+    -fx-cursor: hand;
+}
+
 /**
 Label {
     -fx-font-size: 14px;

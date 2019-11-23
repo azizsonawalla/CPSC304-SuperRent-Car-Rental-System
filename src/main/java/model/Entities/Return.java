@@ -6,11 +6,11 @@ public class Return {
 
     public int rid;
     public Timestamp returnDateTime;
-    public int endOdometer;
+    public long endOdometer;
     public boolean fulltank;
-    public int cost;
+    public long cost;
 
-    public Return(int rid, Timestamp returnDateTime, int endOdometer, boolean fulltank, int cost) {
+    public Return(int rid, Timestamp returnDateTime, long endOdometer, boolean fulltank, long cost) {
         this.rid = rid;
         this.returnDateTime = returnDateTime;
         this.endOdometer = endOdometer;

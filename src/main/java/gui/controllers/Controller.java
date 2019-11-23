@@ -31,7 +31,7 @@ public abstract class Controller {
     Controller(Main main) {
         this.main = main;
         try {
-            qo = new QueryOrchestratorDummy();
+            qo = new QueryOrchestratorDummy(); // TODO: Change this back
         } catch (Exception e) {
             showError("Could not connect to cloud database. Please restart the application");
         }

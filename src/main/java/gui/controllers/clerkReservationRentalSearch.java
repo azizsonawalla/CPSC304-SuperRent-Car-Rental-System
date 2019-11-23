@@ -79,7 +79,7 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
         }
         if (dl.equals("")) dl = null;
         try {
-            this.currReservationSearchRes = qo.getReservationsWith(confNum, dl);   // TODO: filter to only get active
+            this.currReservationSearchRes = qo.getReservationsWith(confNum, dl);
         } catch (Exception e) {
             showError("Error getting active reservation entries. Please restart the application.");
             return;
@@ -116,7 +116,7 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
             }
         }
         if (dl.equals("")) dl = null;
-        currRentalSearchRes = qo.getRentalsWith(rentalId, dl); // TODO: filter to only get active
+        currRentalSearchRes = qo.getRentalsWith(rentalId, dl);
         if (currRentalSearchRes.size() == 0) {
             rentalResults.getChildren().add(NO_RESULTS_FOUND);
         } else {

@@ -4,3 +4,4 @@
 // TODO: Ensure all db action buttons get disabled after success
 // TODO: Enable all buttons on refresh that get disabled at any point
 // TODO: Use long for large values everywhere
+// TODO: Make Database class into a singleton that uses a connection pool

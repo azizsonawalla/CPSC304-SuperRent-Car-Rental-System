@@ -7,6 +7,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -133,5 +134,30 @@ public class QueryOrchestrator {
         // TODO: implement
         // TODO: mark vehicle as available
         // TODO: update vehicle odometer
+    }
+
+    public RentalReport getDailyRentalReport(Location l) {
+        // TODO
+        RentalReport report = new RentalReport();
+        report.countOfRentalsByLocation = new HashMap<>();
+        report.countOfRentalsByVT = new HashMap<>();
+        report.rentalsStartedToday = new HashMap<>();
+        report.rentalsStartedToday.put(new Reservation(1, "dummyvt", t, L1, "dummyDL" ),
+                new Rental(1, "dummyplates", "dummyDL", t, 0, null, 1));
+        report.totalRentalsToday = 0;
+        return report;
+    }
+
+    public ReturnReport getDailyReturnReport(Location l) {
+        // TODO
+        ReturnReport report = new ReturnReport();
+        report.countOfReturnsByLocation = new HashMap<>();
+        report.countOfReturnsByVT = new HashMap<>();
+        report.returnsCreatedToday = new ArrayList<>();
+        report.revenueOfReturnsByLocation = new HashMap<>();
+        report.revenueOfReturnsByVT = new HashMap<>();
+        report.totalReturnsRevenueToday = 0.0;
+        report.totalReturnsToday = 0;
+        return report;
     }
 }

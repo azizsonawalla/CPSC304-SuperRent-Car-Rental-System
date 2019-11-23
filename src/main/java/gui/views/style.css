@@ -23,6 +23,9 @@ Button:hover {
     -fx-cursor: hand;
 }
 
+TextFlow {
+    -fx-padding: 20px;
+}
 /**
 Label {
     -fx-font-size: 14px;

@@ -2,8 +2,10 @@ package gui.controllers;
 
 import gui.Config;
 import gui.Main;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import model.Orchestrator.QueryOrchestrator;
 
 import java.util.ArrayList;
@@ -53,4 +55,20 @@ public abstract class Controller {
     @FXML private void switchToCustomer(ActionEvent event) throws Exception {
         main.switchScene(Config.CUSTOMER_CAR_SEARCH);
     }
+
+    void showError(String msg) {
+        Error e = new Error();
+        e.msg = msg;
+        Platform.runLater(e);
+    }
+
+    private class Error implements Runnable {
+        public String msg = "";
+        @Override
+        public void run() {
+            Alert a = new Alert(Alert.AlertType.ERROR);
+            a.setContentText(msg);
+            a.show();
+        }
+    };
 }

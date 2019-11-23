@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.TextFlow?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
+      <TableView fx:id="entries" layoutX="33.0" layoutY="159.0" prefHeight="197.0" prefWidth="638.0" />
       <Button fx:id="backToReservations" layoutX="33.0" layoutY="26.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="189.0" text="&lt; Back to Reservations" />
       <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="484.0" layoutY="26.0" prefHeight="61.0" prefWidth="367.0" text="SuperRent" textAlignment="RIGHT">
          <font>
@@ -34,13 +34,35 @@
       </Label>
       <Button fx:id="generateReport" layoutX="705.0" layoutY="333.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="260.0" text="Generate Report" />
       <Button layoutX="245.0" layoutY="26.0" mnemonicParsing="false" onAction="#switchToCustomer" prefHeight="61.0" prefWidth="211.0" text="Switch to Customer User" />
-      <CheckBox fx:id="rentalsBox" layoutX="705.0" layoutY="256.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="260.0" text="Include Today's Rentals" />
-      <CheckBox fx:id="returnsBox" layoutX="705.0" layoutY="287.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="260.0" text="Include Today's Returns" />
-      <ScrollPane layoutX="33.0" layoutY="120.0" prefHeight="643.0" prefWidth="651.0">
-         <content>
-            <TextFlow fx:id="reportArea" prefHeight="637.0" prefWidth="635.0" />
-         </content>
-      </ScrollPane>
+      <RadioButton fx:id="rentalsBox" layoutX="705.0" layoutY="256.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="260.0" text="Show Rentals Report" />
+      <RadioButton fx:id="returnsBox" layoutX="705.0" layoutY="287.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="260.0" text="Show Returns Report" />
       <ComboBox fx:id="branchSelector" layoutX="705.0" layoutY="206.0" prefHeight="25.0" prefWidth="260.0" />
+      <Label fx:id="entriesTitle" contentDisplay="CENTER" layoutX="33.0" layoutY="117.0" prefHeight="31.0" prefWidth="500.0" text="Rentals/Returns Today" textAlignment="CENTER">
+         <font>
+            <Font name="HelveticaLTStd-Roman" size="24.0" />
+         </font>
+      </Label>
+      <TableView fx:id="byVT" layoutX="33.0" layoutY="431.0" prefHeight="197.0" prefWidth="301.0" />
+      <Label contentDisplay="CENTER" layoutX="33.0" layoutY="388.0" prefHeight="31.0" prefWidth="310.0" text="Subtotal by Vehicle Type" textAlignment="CENTER">
+         <font>
+            <Font name="HelveticaLTStd-Roman" size="24.0" />
+         </font>
+      </Label>
+      <TableView fx:id="byLocation" layoutX="367.0" layoutY="431.0" prefHeight="197.0" prefWidth="301.0" />
+      <Label contentDisplay="CENTER" layoutX="367.0" layoutY="388.0" prefHeight="31.0" prefWidth="310.0" text="Subtotal by Location" textAlignment="CENTER">
+         <font>
+            <Font name="HelveticaLTStd-Roman" size="24.0" />
+         </font>
+      </Label>
+      <Label fx:id="totalCount" contentDisplay="CENTER" layoutX="33.0" layoutY="660.0" prefHeight="31.0" prefWidth="700.0" text="Total Rentals Today = " textAlignment="CENTER">
+         <font>
+            <Font name="HelveticaLTStd-Roman" size="24.0" />
+         </font>
+      </Label>
+      <Label fx:id="totalRevenue" contentDisplay="CENTER" layoutX="33.0" layoutY="706.0" prefHeight="31.0" prefWidth="700.0" text="Total Revenue from Returns Today = " textAlignment="CENTER">
+         <font>
+            <Font name="HelveticaLTStd-Roman" size="24.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

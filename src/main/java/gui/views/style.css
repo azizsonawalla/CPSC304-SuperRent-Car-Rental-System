@@ -24,7 +24,7 @@ Button:hover {
 }
 
 TextFlow {
-    -fx-padding: 20px;
+    -fx-padding: 10px;
 }
 /**
 Label {

@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 
 public class TimePeriod {
 
-    private String TIME_INFO_TEMPLATE = "%02d/%02d/%02d %02d:%02d";
+    private static String TIME_INFO_TEMPLATE = "%02d/%02d/%02d %02d:%02d";
     private long HOUR_IN_MS = 60 * 60 * 1000;
     private long DAY_IN_MS = 24 * HOUR_IN_MS;
     private long WEEK_IN_MS = 7 * DAY_IN_MS;
@@ -22,14 +22,17 @@ public class TimePeriod {
 
     public String getStartAsTimeDateString() {
         Timestamp start = this.startDateAndTime;
-        Integer sDate = start.getDate(), sMonth = start.getMonth(), sYear = start.getYear(), sHour = start.getHours(), sMin = start.getMinutes();
-        return String.format(TIME_INFO_TEMPLATE, sDate, sMonth+1, sYear+1900, sHour, sMin);
+        return getTimestampAsTimeDateString(start);
     }
 
     public String getEndAsTimeDateString() {
         Timestamp end = this.endDateAndTime;
-        Integer eDate = end.getDate(), eMonth = end.getMonth(), eYear = end.getYear(), eHour = end.getHours(), eMin = end.getMinutes();
-        return String.format(TIME_INFO_TEMPLATE, eDate, eMonth+1, eYear+1900, eHour, eMin);
+        return getTimestampAsTimeDateString(end);
+    }
+
+    public static String getTimestampAsTimeDateString(Timestamp t) {
+        Integer d = t.getDate(), m = t.getMonth(), y = t.getYear(), h = t.getHours(), min = t.getMinutes();
+        return String.format(TIME_INFO_TEMPLATE, d, m+1, y+1900, h, min);
     }
 
     public long getDurationInMs() {

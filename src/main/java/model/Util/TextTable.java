@@ -1,20 +1,23 @@
 package model.Util;
 
+import javafx.util.Pair;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 public class TextTable {
 
     String format = "|";
-    HashMap<String, Integer> headings = new HashMap<>();
+    List<String> headings = new ArrayList<>();
     List<List<String>> rows = new ArrayList<>();
+    Integer totalWidth = 0;
 
 
     public void addColumn(String heading, int maxCharSize) {
         format = format.concat("  %-" + maxCharSize + "s|");
-        headings.put(heading, maxCharSize);
+        headings.add(heading);
+        totalWidth += maxCharSize;
     }
 
     public void addRow(List<String> row) {
@@ -22,16 +25,13 @@ public class TextTable {
     }
 
     public String getTable() {
-        Integer totalWidth = 0;
-        for(Integer width: headings.values()) totalWidth += width;
-
         StringBuilder outlineBuilder = new StringBuilder();
-        for(int i=0; i < totalWidth*1.1 + (2*headings.size()); i++) outlineBuilder.append("=");
+        for(int i=0; i < totalWidth*0.5+ (2*headings.size()); i++) outlineBuilder.append("="); // *1.1
         String outline = outlineBuilder.toString().concat("\n");
 
         String table = outline;
         format = format + "\n";
-        String[] thisHeadings = headings.keySet().toArray(new String[0]);
+        String[] thisHeadings = headings.toArray(new String[0]);
         table = table.concat(String.format(format, thisHeadings));
 
         table = table.concat(outline);
@@ -44,24 +44,24 @@ public class TextTable {
     }
 
     public static void main(String args[]) {
-//        String format = "|%-30s|%-10s|%-20s|\n";
-//        System.out.format(format, "A", "AA", "AAA");
-//        System.out.format(format, "B", "", "BBBBB");
-//        System.out.format(format, "C", "CCCCC", "CCCCCCCC");
+        String format = "|%-30s|%-10s|%-20s|\n";
+        System.out.format(format, "A  S:", "AA", "AAA");
+        System.out.format(format, "Bbb", "", "BBBBB");
+        System.out.format(format, "C", "CC::CCC", "CCccCCCC");
+
+        String ex[] = { "E", "EEEEEE", "E" };
+
+        System.out.format(String.format(format, (Object[]) ex));
+
+//        TextTable t = new TextTable();
+//        t.addColumn("ColA", 10);
+//        t.addColumn("Colb", 15);
+//        t.addColumn("ColC", 10);
 //
-//        String ex[] = { "E", "EEEEEEEEEE", "E" };
+//        t.addRow(Arrays.asList("A", "B", "C"));
+//        t.addRow(Arrays.asList("A", "B", "C"));
+//        t.addRow(Arrays.asList("A", "B", "C"));
 //
-//        System.out.format(String.format(format, (Object[]) ex));
-
-        TextTable t = new TextTable();
-        t.addColumn("ColA", 10);
-        t.addColumn("Colb", 15);
-        t.addColumn("ColC", 10);
-
-        t.addRow(Arrays.asList("A", "B", "C"));
-        t.addRow(Arrays.asList("A", "B", "C"));
-        t.addRow(Arrays.asList("A", "B", "C"));
-
-        System.out.print(t.getTable());
+//        System.out.print(t.getTable());
     }
 }

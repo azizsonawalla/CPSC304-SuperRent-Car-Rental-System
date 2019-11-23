@@ -144,20 +144,20 @@ public class QueryOrchestrator {
         report.rentalsStartedToday = new HashMap<>();
         report.rentalsStartedToday.put(new Reservation(1, "dummyvt", t, L1, "dummyDL" ),
                 new Rental(1, "dummyplates", "dummyDL", t, 0, null, 1));
-        report.totalRentalsToday = 0;
+        report.totalRentalsToday = 1;
         return report;
     }
 
     public ReturnReport getDailyReturnReport(Location l) {
         // TODO
         ReturnReport report = new ReturnReport();
-        report.countOfReturnsByLocation = new HashMap<>();
-        report.countOfReturnsByVT = new HashMap<>();
-        report.returnsCreatedToday = new ArrayList<>();
-        report.revenueOfReturnsByLocation = new HashMap<>();
-        report.revenueOfReturnsByVT = new HashMap<>();
+        report.breakDownByLocation = new HashMap<>();
+        report.breakDownByVT = new HashMap<>();
+        report.returnsCreatedToday = new HashMap<>();
+        report.returnsCreatedToday.put( new Rental(1, "dummyplates", "dummyDL", t, 0, null, 1),
+                                        new Return(1, new Timestamp(System.currentTimeMillis()), 1, true, 566));
         report.totalReturnsRevenueToday = 0.0;
-        report.totalReturnsToday = 0;
+        report.totalReturnsToday = 1;
         return report;
     }
 }

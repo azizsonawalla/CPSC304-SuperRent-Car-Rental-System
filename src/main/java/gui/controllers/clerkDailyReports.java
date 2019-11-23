@@ -5,18 +5,16 @@ import gui.Main;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
-import model.Entities.Location;
-import model.Entities.Rental;
-import model.Entities.Reservation;
+import model.Entities.*;
 import model.Orchestrator.RentalReport;
+import model.Orchestrator.ReturnReport;
 import model.Util.Log;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.locks.Lock;
@@ -24,22 +22,12 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class clerkDailyReports extends Controller implements Initializable {
 
-    private String RENTAL_REPORT_TEMPLATE =
-            "RENTALS REPORT FOR TODAY:\n\n" +
-            "Rentals Started Today (by branch, then by vehicle type):\n    %s\n\n" +
-            "Rentals by Vehicle Type:\n    %s\n\n" +
-            "Rentals by Branch:\n    %s\n\n" +
-            "Total rentals started today = %d\n\n";
-    private String RENTALS_STARTED_TODAY_TEMPLATE =
-            "\nRental ID = %d, Vehicle License = %s, Customer License = %s, Start = %s, End = %s, Vehicle Type = %s, Location = %s";
-    private String RENTALS_BY_VT_TEMPLATE = "%d %s rentals";
-    private String RENTALS_BY_LOCATION_TEMPLATE = "%d rentals from %s";
-
     private Lock lock = new ReentrantLock();
 
-    @FXML private TextFlow reportArea;
+    @FXML private TableView entries, byVT, byLocation;
+    @FXML private Label entriesTitle, totalCount, totalRevenue;
     @FXML private Button generateReport, backToReservations;
-    @FXML private CheckBox rentalsBox, returnsBox;
+    @FXML private RadioButton rentalsBox, returnsBox;
     @FXML private ComboBox<String> branchSelector;
 
     public clerkDailyReports(Main main) {
@@ -50,50 +38,108 @@ public class clerkDailyReports extends Controller implements Initializable {
         refreshAll();
         generateReport.setOnAction(event -> Platform.runLater(refreshReport));
         backToReservations.setOnAction(event -> Platform.runLater(goBackToReservations));
+        rentalsBox.setOnAction(event -> Platform.runLater(rentalsSelected));
+        returnsBox.setOnAction(event -> Platform.runLater(returnsSelected));
     }
 
     public void refreshAll() {
         rentalsBox.setSelected(true);
+        returnsBox.setSelected(false);
         Platform.runLater(fillBranchSelector);
         Platform.runLater(refreshReport);
     }
 
     // Tasks
 
-    private Runnable refreshReport = () -> {
-        reportArea.getChildren().clear();
-        if (!rentalsBox.isSelected() && !returnsBox.isSelected()) {
-            showError("Please select either rentals or returns to be included in the report");
-            return;
-        }
+    private Runnable rentalsSelected = () -> {
         if (rentalsBox.isSelected()) {
-            // insert rentals report
-            String selectedLocation = branchSelector.getValue();
-            Location location = null;
-            try {
-                location = selectedLocation.equals(ALL_BRANCHES) ? null : Location.fromString(selectedLocation);
-            } catch (Exception e) {
-                showError("Failed to parse selected location. Please restart the application.");
-            }
+            returnsBox.setSelected(false);
+        } else if (!returnsBox.isSelected()) {
+            rentalsBox.setSelected(true);
+        }
+    };
+
+    private Runnable returnsSelected = () -> {
+        if (returnsBox.isSelected()) {
+            rentalsBox.setSelected(false);
+        } else if (!rentalsBox.isSelected()) {
+            returnsBox.setSelected(true);
+        }
+    };
+
+    private Runnable refreshReport = () -> {
+        entries.getItems().clear();
+        entries.getColumns().clear();
+        // insert rentals report
+        String selectedLocation = branchSelector.getValue();
+        Location location = null;
+        try {
+            location = selectedLocation.equals(ALL_BRANCHES) ? null : Location.fromString(selectedLocation);
+        } catch (Exception e) {
+            showError("Failed to parse selected location. Please restart the application.");
+        }
+
+        if (rentalsBox.isSelected()) {
+            entriesTitle.setText("Rentals Started Today:");
+            totalRevenue.setVisible(false);
             RentalReport rentalReport = qo.getDailyRentalReport(location);
+            if (rentalReport.totalRentalsToday == 0) {
+                entries.setPlaceholder(new Label("No rentals were started today"));
+                return;
+            }
+            List<String> columnHeaders = Arrays.asList("Rental ID", "Vehicle License", "Customer License", "Rental Start", "Rental End", "Vehicle Type", "Pickup Location");
+            List<String> propertyName = Arrays.asList("rid", "vlicense", "dlicense", "start", "end", "vtName", "location");
+            for (int i = 0; i < columnHeaders.size(); i++) {
+                TableColumn<String, RentalEntry> column = new TableColumn<>(columnHeaders.get(i));
+                column.setCellValueFactory(new PropertyValueFactory<>(propertyName.get(i)));
+                entries.getColumns().add(column);
+            }
 
             // Generate all rental entries
-            String rentalsStartedToday = "";
             for (Reservation res: rentalReport.rentalsStartedToday.keySet()) {
                 Rental rental = rentalReport.rentalsStartedToday.get(res);
-                String entry = String.format(RENTALS_STARTED_TODAY_TEMPLATE, rental.rid, rental.vlicense,
-                                            rental.dlicense, rental.timePeriod.getStartAsTimeDateString(),
-                                            rental.timePeriod.getEndAsTimeDateString(), res.vtName, res.location.toString());
-                rentalsStartedToday = rentalsStartedToday.concat(entry);
+                RentalEntry entry = new RentalEntry(String.valueOf(rental.rid), rental.vlicense, rental.dlicense,
+                                                    rental.timePeriod.getStartAsTimeDateString(), rental.timePeriod.getEndAsTimeDateString(),
+                                                    res.vtName, res.location.toString());
+                entries.getItems().add(entry);
             }
-            String rentalsByVehicleType = "";
-            String rentalsByLocation = "";
-            String rentalsReport = String.format(RENTAL_REPORT_TEMPLATE, rentalsStartedToday, rentalsByVehicleType, rentalsByLocation, rentalReport.totalRentalsToday);
-            reportArea.getChildren().add(new Text(rentalsReport));
+
+            totalCount.setText(String.format("Total Rentals Today from %s = %d", selectedLocation, rentalReport.totalRentalsToday));
+
+            // TODO: Fill other tables
+            return;
         }
 
         if (returnsBox.isSelected()) {
-            // insert returns report
+            entriesTitle.setText("Returns Completed Today:");
+            totalRevenue.setVisible(true);
+
+            ReturnReport returnReport = qo.getDailyReturnReport(location);
+            if (returnReport.totalReturnsToday == 0) {
+                entries.setPlaceholder(new Label("No returns were completed today"));
+                return;
+            }
+
+            List<String> columnHeaders = Arrays.asList("Return ID", "Vehicle License", "Customer License", "Return Time", "Vehicle Type", "Pickup Location");
+            List<String> propertyName = Arrays.asList("rid", "vlicense", "dlicense", "returnTime", "vtName", "location");
+            for (int i = 0; i < columnHeaders.size(); i++) {
+                TableColumn<String, ReturnEntry> column = new TableColumn<>(columnHeaders.get(i));
+                column.setCellValueFactory(new PropertyValueFactory<>(propertyName.get(i)));
+                entries.getColumns().add(column);
+            }
+
+            // Generate all rental entries
+            for (Rental rental: returnReport.returnsCreatedToday.keySet()) {
+                Return r = returnReport.returnsCreatedToday.get(rental);
+                Reservation res = qo.getReservationsWith(rental.confNo, null).get(0);
+                ReturnEntry entry = new ReturnEntry(String.valueOf(r.rid), TimePeriod.getTimestampAsTimeDateString(r.returnDateTime),
+                                                    rental.dlicense, rental.vlicense, res.vtName, res.location.toString());
+                entries.getItems().add(entry);
+            }
+
+            totalCount.setText(String.format("Total Returns Today at %s = %d", selectedLocation, returnReport.totalReturnsToday));
+            totalRevenue.setText(String.format("Total Revenue Today from Returns at %s = $%.2f", selectedLocation, returnReport.totalReturnsRevenueToday));
+            // TODO: Fill other tables
         }
     };
 
@@ -117,4 +163,85 @@ public class clerkDailyReports extends Controller implements Initializable {
             lock.unlock();
         }
     };
+
+    public class ReturnEntry {
+
+        String rid, returnTime, dlicense, vlicense, vtName, location;
+
+        public ReturnEntry(String rid, String returnTime, String dlicense, String vlicense, String vtName, String location) {
+            this.rid = rid;
+            this.returnTime = returnTime;
+            this.dlicense = dlicense;
+            this.vlicense = vlicense;
+            this.vtName = vtName;
+            this.location = location;
+        }
+
+        public String getRid() {
+            return rid;
+        }
+
+        public String getReturnTime() {
+            return returnTime;
+        }
+
+        public String getDlicense() {
+            return dlicense;
+        }
+
+        public String getVlicense() {
+            return vlicense;
+        }
+
+        public String getVtName() {
+            return vtName;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+    }
+
+    public class RentalEntry {
+
+        public RentalEntry(String rid, String vlicense, String dlicense, String start, String end, String vtName, String location) {
+            this.rid = rid;
+            this.vlicense = vlicense;
+            this.dlicense = dlicense;
+            this.start = start;
+            this.end = end;
+            this.vtName = vtName;
+            this.location = location;
+        }
+
+        String rid, vlicense, dlicense, start, end, vtName, location;
+
+        public String getRid() {
+            return rid;
+        }
+
+        public String getVlicense() {
+            return vlicense;
+        }
+
+        public String getDlicense() {
+            return dlicense;
+        }
+
+        public String getStart() {
+            return start;
+        }
+
+        public String getEnd() {
+            return end;
+        }
+
+        public String getVtName() {
+            return vtName;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+    }
 }

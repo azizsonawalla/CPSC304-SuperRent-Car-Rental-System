@@ -8,7 +8,7 @@ public class Return {
     public Timestamp returnDateTime;
     public long endOdometer;
     public boolean fulltank;
-    public long cost;
+    public long cost; // TODO: Change to double?
 
     public Return(int rid, Timestamp returnDateTime, long endOdometer, boolean fulltank, long cost) {
         this.rid = rid;

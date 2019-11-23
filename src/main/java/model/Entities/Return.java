@@ -11,11 +11,11 @@ public class Return {
 
     public int rid;
     public Timestamp returnDateTime;
-    public int endOdometer;
+    public int endOdometer; // TODO: Change to long
     public TankStatus fullTank;
-    public long cost; // TODO: Change to double?
+    public int cost; // TODO: Change to double?
 
-    public Return(int rid, Timestamp returnDateTime, int endOdometer, TankStatus fullTank, long cost) {
+    public Return(int rid, Timestamp returnDateTime, int endOdometer, TankStatus fullTank, int cost) {
         this.rid = rid;
         this.returnDateTime = returnDateTime;
         this.endOdometer = endOdometer;

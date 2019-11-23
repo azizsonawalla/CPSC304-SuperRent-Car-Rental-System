@@ -164,7 +164,7 @@ public class QueryOrchestrator {
         report.breakDownByVT.put(VT2, new Pair<>(4, 5.0));
         report.returnsCreatedToday = new HashMap<>();
         report.returnsCreatedToday.put( new Rental(1, "dummyplates", "dummyDL", t, 0, null, 1),
-                                        new Return(1, new Timestamp(System.currentTimeMillis()), 1, true, 566));
+                                        new Return(1, new Timestamp(System.currentTimeMillis()), 1, Return.TankStatus.FULL_TANK, 566));
         report.totalReturnsRevenueToday = 200.5;
         report.totalReturnsToday = 1;
         return report;

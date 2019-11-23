@@ -146,7 +146,7 @@ public class clerkSubmitReturn extends Controller implements Initializable {
             if (currentCalculatedCost < 0) {
                 resultString = "Error calculating cost of rental";
             } else {
-                Return r = new Return(rental.rid, t.endDateAndTime, getEndOdometer(), true, currentCalculatedCost);
+                Return r = new Return(rental.rid, t.endDateAndTime, (int) getEndOdometer(), Return.TankStatus.FULL_TANK, (int) currentCalculatedCost);
                 qo.submitReturn(r);
                 submitReturn.setDisable(true);
             }

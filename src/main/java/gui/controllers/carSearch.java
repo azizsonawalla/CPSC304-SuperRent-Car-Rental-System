@@ -14,19 +14,13 @@ import model.Util.Log;
 
 import java.net.URL;
 import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class carSearch extends Controller implements Initializable {
 
-    // TODO: Reformat string templates for better alignment
-    // TODO: Add check to "see details" and "start reservation" buttons to ensure an option is selected
-    // TODO: Check size of returned options before setting 1st value in combobox
-    // TODO: Change default dates
-    // TODO: Throw error for time periods that are not in the future
+    // TODO: Replace text flow with tables
 
     private String SEARCH_RESULT_TEMPLATE = "Option %d:  Vehicle Type = %-30s  Location = %-10s, %-10s  Number Available = %d\n";
     private String RESULT_DETAILS_TEMPLATE = "Make = %s,   Model = %s,  Year = %d,  Colour = %s,  License plate = %s";
@@ -92,8 +86,25 @@ public class carSearch extends Controller implements Initializable {
         if (startAmValue.equals("PM")) startHourValue = (startHourValue + 12) % 24;
         if (endAmValue.equals("PM")) endHourValue += (endHourValue + 12) % 24;
 
+        if ((startDateValue == 31 && !Arrays.asList(1, 3, 5, 7, 8, 10, 12).contains(startMonthValue))
+            || (startDateValue > 28 && startMonthValue == 2)) {
+            showError("Invalid month and date combination");
+        }
+        if ((endDateValue == 31 && !Arrays.asList(1, 3, 5, 7, 8, 10, 12).contains(endMonthValue))
+                || (endDateValue > 28 && endMonthValue == 2)) {
+            showError("Invalid month and date combination");
+        }
+
         Timestamp start = new Timestamp(startYearValue-1900, startMonthValue-1, startDateValue, startHourValue, startMinuteValue, 0, 0);
         Timestamp end = new Timestamp(endYearValue-1900, endMonthValue-1, endDateValue, endHourValue, endMinuteValue, 0, 0);
+
+        if (start.getTime() > end.getTime()) {
+            showError("Start time must be before end time");
+            return null;
+        } else if (start.getTime() < System.currentTimeMillis() || end.getTime() < System.currentTimeMillis()) {
+            showError("Please select a reservation time in the future. Cannot back-date reservation searches");
+            return null;
+        }
 
         return new TimePeriod(start, end);
     }
@@ -141,6 +152,7 @@ public class carSearch extends Controller implements Initializable {
             List<ComboBox> allDateTimeComboBox = Arrays.asList(startDate, endDate, startMonth, endMonth,
                                                                 startYear, endYear, startHour, endHour,
                                                                 startMinute, endMinute, startAM, endAM);
+            List<ComboBox> allTimeComboBox = Arrays.asList(startHour, startMinute, endHour, endMinute, startAM, endAM);
 
             for (ComboBox c: allDateTimeComboBox) c.getItems().clear();
 
@@ -157,7 +169,15 @@ public class carSearch extends Controller implements Initializable {
             endMinute.getItems().addAll(MINUTES);
             endAM.getItems().addAll(AMPM);
 
-            for (ComboBox c: allDateTimeComboBox) c.setValue(c.getItems().get(0));
+            for (ComboBox c: allTimeComboBox) c.setValue(c.getItems().get(0));
+            Date tomorrow = new Date(System.currentTimeMillis() + 24*60*60*1000);
+            Date nextWeek = new Date((long)(tomorrow.getTime() + 6*Math.pow(10,8)));
+            startDate.setValue(tomorrow.getDate());
+            endDate.setValue(nextWeek.getDate());
+            startMonth.setValue(tomorrow.getMonth()+1);
+            endMonth.setValue(nextWeek.getMonth()+1);
+            startYear.setValue(tomorrow.getYear() + 1900);
+            endYear.setValue(nextWeek.getYear() + 1900);
 
         } catch (Exception e) {
             Log.log("Error resetting time period: " + e.getMessage());
@@ -172,11 +192,15 @@ public class carSearch extends Controller implements Initializable {
         public void run() {
             try {
                 lock.lock();
+                searchResults.getChildren().clear();
+                searchResultDetails.getChildren().clear();
+                startResWithOption.getItems().clear();
+                seeDetailsForOption.getItems().clear();
+
                 Location l = getCurrentLocationSelection();
                 VehicleType vt = getCurrentVTSelection();
                 TimePeriod t = getCurrentTimePeriodSelection();
-                currentResults = qo.getVTSearchResultsFor(l, vt, t);
-                searchResults.getChildren().clear();
+                currentResults = t == null ? new ArrayList<>() : qo.getVTSearchResultsFor(l, vt, t);
                 if (currentResults.size() > 0) {
                     int count = 1;
                     for (VTSearchResult r : currentResults) {
@@ -210,6 +234,10 @@ public class carSearch extends Controller implements Initializable {
         try {
             lock.lock();
             int optionSelected = seeDetailsForOption.getValue() - 1;
+            if (optionSelected < 0) {
+                showError("There is no option selected to show details for");
+                return;
+            }
             VTSearchResult correspondingOption = currentResults.get(optionSelected);
             List<Vehicle> vehicles = qo.getVehiclesFor(correspondingOption);
             searchResultDetails.getChildren().clear();

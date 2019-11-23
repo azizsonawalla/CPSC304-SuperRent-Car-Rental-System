@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import model.Orchestrator.QueryOrchestrator;
+import model.Orchestrator.QueryOrchestratorDummy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,7 +18,7 @@ public abstract class Controller {
     public Main main;
     String ALL_BRANCHES = "All Branches";
     String ALL_VT = "All Types";
-    QueryOrchestrator qo;
+    QueryOrchestratorDummy qo;
 
     // Global datetime arrays
     List<Integer> DATES = new ArrayList<>();
@@ -30,7 +31,7 @@ public abstract class Controller {
     Controller(Main main) {
         this.main = main;
         try {
-            qo = new QueryOrchestrator();
+            qo = new QueryOrchestratorDummy();
         } catch (Exception e) {
             // TODO: Show DB error
         }

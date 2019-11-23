@@ -3,7 +3,7 @@ package model.Entities;
 import java.sql.Timestamp;
 
 public class Card {
-    long CardNo;
+    public long CardNo;
     public String cardName;
     public Timestamp expDate;
 

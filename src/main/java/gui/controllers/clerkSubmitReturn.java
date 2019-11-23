@@ -54,7 +54,12 @@ public class clerkSubmitReturn extends Controller implements Initializable {
         rental = main.clerkRentalToBeReturned;
         vehicle = qo.getVehicle(rental.vlicense);
         vehicleType = qo.getVehicleType(vehicle.vtname);
-        customer = qo.getCustomer(rental.dlicense);
+        try {
+            customer = qo.getCustomer(rental.dlicense);
+        } catch (Exception e) {
+            // TODO: Show error
+            return;
+        }
         t = TimePeriod.getStartToNow(rental.timePeriod);
     }
 

@@ -7,6 +7,7 @@ public class Queries {
 
     public static class Create {
 
+        //TODO: Autoincrement confNo in Reservations table
         public static String CREATE_TABLE_RESERVATIONS = "CREATE TABLE IF NOT EXISTS Reservations(" +
                 "confNo INT, " +
                 "vtName CHAR(50) NOT NULL, " +
@@ -20,6 +21,7 @@ public class Queries {
                 "FOREIGN KEY (vtName) REFERENCES VehicleType(vtName) ON DELETE CASCADE, " +
                 "FOREIGN KEY (dLicense) REFERENCES Customer(dLicense) ON DELETE CASCADE);";
 
+        //TODO: Autoincrement rId in Reservation table
         public static String CREATE_TABLE_RENT = "CREATE TABLE IF NOT EXISTS Rent(" +
                 "rId INT, " +
                 "vLicense CHAR(10) NOT NULL, " +
@@ -45,7 +47,7 @@ public class Queries {
                 "color CHAR(50) NOT NULL, " +
                 "odometer INT NOT NULL, " +
                 "vtName CHAR(50) NOT NULL, " +
-                "status CHAR(50) NOT NULL, " +
+                "status BOOLEAN NOT NULL, " +
                 "location CHAR(50) NOT NULL, " +
                 "city CHAR(50) NOT NULL, " +
                 "PRIMARY KEY (vLicense), " +
@@ -189,6 +191,17 @@ public class Queries {
         public static String DELETE_VEHICLE = "DELETE FROM Vehicle " +
                 "WHERE vLicense = (?)";
 
+        public static String GET_VEHICLES_WITH =
+                "SELECT * " +
+                        "FROM Vehicle " +
+                        "WHERE vtName = ? AND location = ? AND city = ? AND status = ?";
+
+        public static String GET_NUM_VEHICLES_WITH =
+                        "SELECT V.vtName, V.location, V.city, COUNT(*) " +
+                        "FROM Vehicle V " +
+                        "WHERE vtName = ? AND location = ? AND city = ? " +
+                        "GROUP BY V.vtName, V.location, V.city";
+
     }
 
     public static class VehicleType {
@@ -203,9 +216,10 @@ public class Queries {
                         "hRate = ?, wInsRate = ?, dInsRate = ?, hInsRate = ?, kRate = ? " +
                         "WHERE vtName = ?";
 
-        public static String DELETE_VEHICLE_TYPE =
-                "DELETE FROM VehicleType " +
-                        "WHERE vtName = ?";
+        public static String DELETE_VEHICLE_TYPE = "DELETE FROM VehicleType " +
+                "WHERE vtName = ?";
+
+        public static String QUERY_ALL = "SELECT * FROM VehicleType";
     }
 
     public static class Returns {

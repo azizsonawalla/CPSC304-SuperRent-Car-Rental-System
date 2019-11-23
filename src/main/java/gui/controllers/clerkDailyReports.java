@@ -165,7 +165,13 @@ public class clerkDailyReports extends Controller implements Initializable {
             // Generate all rental entries
             for (Rental rental: returnReport.returnsCreatedToday.keySet()) {
                 Return r = returnReport.returnsCreatedToday.get(rental);
-                Reservation res = qo.getReservationsWith(rental.confNo, null).get(0);
+                Reservation res = null;
+                try {
+                    res = qo.getReservationsWith(rental.confNo, null).get(0);
+                } catch (Exception e) {
+                    // TODO: Show error
+                    return;
+                }
                 ReturnEntry entry = new ReturnEntry(String.valueOf(r.rid), TimePeriod.getTimestampAsTimeDateString(r.returnDateTime),
                                                     rental.dlicense, rental.vlicense, res.vtName, res.location.toString());
                 entries.getItems().add(entry);

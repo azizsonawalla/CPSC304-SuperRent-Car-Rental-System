@@ -46,7 +46,7 @@ public abstract class Controller {
         for (int i = 1; i <= 12; i++) HOURS.add(i);
         for (int i = 0; i <= 55; i++) MINUTES.add(i);
     }
-    
+
     @FXML private void switchToClerk(ActionEvent event) throws Exception {
         main.customerResInProgress = null;
         main.switchScene(Config.CLERK_RESERVATION_RENTAL_SEARCH);
@@ -70,5 +70,5 @@ public abstract class Controller {
             a.setContentText(msg);
             a.show();
         }
-    };
+    }
 }

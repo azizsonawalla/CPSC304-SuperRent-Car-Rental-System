@@ -13,6 +13,7 @@ import java.util.List;
 public class Database {
 
     private String HOST = "jdbc:mysql://35.247.80.246/superrent";
+    private String TEST_HOST = "jdbc:mysql://35.247.80.246/superrenttest";
     private String USERNAME = "root";
     private String PASSWORD = "bobobobo";
 
@@ -22,15 +23,19 @@ public class Database {
      * Constructor for Database class. Establishes a connection to the database and initializes the connection field.
      * @throws Exception if there was an error connecting to the database
      */
-    public Database() throws Exception {
+    public Database(boolean testmode) throws Exception {
         Log.log("Establishing connection to database...");
         try {
-            this.conn = DriverManager.getConnection(HOST, USERNAME, PASSWORD);
+            this.conn = DriverManager.getConnection(testmode ? TEST_HOST : HOST, USERNAME, PASSWORD);
             if (this.conn == null) throw new Exception("Connection object is null");
         } catch (Exception e) {
             throw new Exception("Error getting connection to database", e);
         }
         Log.log("Successfully connected to database!");
+    }
+
+    public Database() throws Exception {
+        this(false);
     }
 
     /**

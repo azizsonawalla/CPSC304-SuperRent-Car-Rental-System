@@ -17,7 +17,7 @@ class DatabaseTest {
     @BeforeEach
     void setUp() {
         try {
-            db = new Database();
+            db = new Database(true);
             db.createTables();
             System.out.println("tables successfully created!");
         } catch (Exception e) {

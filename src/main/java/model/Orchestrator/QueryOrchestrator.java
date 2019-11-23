@@ -37,7 +37,7 @@ public class QueryOrchestrator {
     public List<VTSearchResult> getVTSearchResultsFor(Location l, VehicleType vt, TimePeriod t) throws Exception {
         // TODO: Implement this
         // this is just placeholder code
-        ArrayList<VTSearchResult> list = new ArrayList<>();
+        ArrayList<VTSearchResult> list = new ArrayList<VTSearchResult>();
         list.add(new VTSearchResult(VT1, L1, 10));
         list.add(new VTSearchResult(VT2, L1, 0));
         list.add(new VTSearchResult(VT3, L3, 15));
@@ -74,14 +74,14 @@ public class QueryOrchestrator {
     public List<Location> getAllLocationNames() throws Exception {
         // TODO: Implement this
         // this is just placeholder code
-        ArrayList<Location> list = new ArrayList<>(Arrays.asList(L1, L2, L3, L4));
+        ArrayList<Location> list = new ArrayList<Location>(Arrays.asList(L1, L2, L3, L4));
         return list;
     }
 
     public List<VehicleType> getAllVehicleTypes() throws Exception {
         // TODO: Implement this
         // this is just placeholder code
-        ArrayList<VehicleType> list = new ArrayList<>(Arrays.asList(VT1, VT2, VT3, VT4));
+        ArrayList<VehicleType> list = new ArrayList<VehicleType>(Arrays.asList(VT1, VT2, VT3, VT4));
         return list;
     }
 

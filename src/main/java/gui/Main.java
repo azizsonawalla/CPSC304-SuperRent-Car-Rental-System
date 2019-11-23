@@ -7,8 +7,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Pair;
-import model.Entities.Customer;
-import model.Entities.Rental;
 import model.Entities.Reservation;
 import model.Entities.Return;
 

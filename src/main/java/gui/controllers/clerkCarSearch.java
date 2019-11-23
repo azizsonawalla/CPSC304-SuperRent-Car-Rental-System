@@ -1,6 +1,6 @@
 package gui.controllers;
 
-import gui.GUIConfig;
+import gui.Config;
 import gui.Main;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -25,7 +25,7 @@ public class clerkCarSearch extends carSearch {
                 res.vtName = currentResults.get(optionSelected).vt.vtname;
                 res.timePeriod = getCurrentTimePeriodSelection();
                 this.main.clerkResInProgress = res;
-                this.main.switchScene(GUIConfig.CLERK_MAKE_RESERVATION);
+                this.main.switchScene(Config.CLERK_MAKE_RESERVATION);
             } catch (Exception e) {
                 Log.log("Error starting reservation: " + e.getMessage());
             } finally {
@@ -40,6 +40,6 @@ public class clerkCarSearch extends carSearch {
     }
 
     private Runnable goBackToReservationRentalsSearch = () -> {
-        this.main.switchScene(GUIConfig.CLERK_RESERVATION_RENTAL_SEARCH);
+        this.main.switchScene(Config.CLERK_RESERVATION_RENTAL_SEARCH);
     };
 }

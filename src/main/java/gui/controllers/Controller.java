@@ -1,9 +1,11 @@
 package gui.controllers;
 
-import gui.GUIConfig;
+import gui.Config;
 import gui.Main;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import model.Orchestrator.QueryOrchestrator;
 
 import java.util.ArrayList;
@@ -27,7 +29,11 @@ public abstract class Controller {
 
     Controller(Main main) {
         this.main = main;
-        qo = new QueryOrchestrator();
+        try {
+            qo = new QueryOrchestrator();
+        } catch (Exception e) {
+            // TODO: Show DB error
+        }
         initializeDateTimeArrays();
     }
 
@@ -40,13 +46,29 @@ public abstract class Controller {
         for (int i = 1; i <= 12; i++) HOURS.add(i);
         for (int i = 0; i <= 55; i++) MINUTES.add(i);
     }
-    
+
     @FXML private void switchToClerk(ActionEvent event) throws Exception {
         main.customerResInProgress = null;
-        main.switchScene(GUIConfig.CLERK_RESERVATION_RENTAL_SEARCH);
+        main.switchScene(Config.CLERK_RESERVATION_RENTAL_SEARCH);
     }
 
     @FXML private void switchToCustomer(ActionEvent event) throws Exception {
-        main.switchScene(GUIConfig.CUSTOMER_CAR_SEARCH);
+        main.switchScene(Config.CUSTOMER_CAR_SEARCH);
+    }
+
+    void showError(String msg) {
+        Error e = new Error();
+        e.msg = msg;
+        Platform.runLater(e);
+    }
+
+    private class Error implements Runnable {
+        public String msg = "";
+        @Override
+        public void run() {
+            Alert a = new Alert(Alert.AlertType.ERROR);
+            a.setContentText(msg);
+            a.show();
+        }
     }
 }

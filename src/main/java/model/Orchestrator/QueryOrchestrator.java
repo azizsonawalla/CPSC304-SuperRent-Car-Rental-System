@@ -1,11 +1,14 @@
 package model.Orchestrator;
 
+import javafx.util.Pair;
 import model.Database;
 import model.Entities.*;
+import model.Util.Log;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -23,51 +26,100 @@ public class QueryOrchestrator {
     VehicleType VT2 = new VehicleType("Truck");
     VehicleType VT3 = new VehicleType("Hatchback");
     VehicleType VT4 = new VehicleType("Sedan");
-    Vehicle V1 = new Vehicle(1, "license", "Tesla", "Model S", 2018, "black",
-            0, "SUV", Vehicle.VehicleStatus.AVAILABLE, L1);
-    Timestamp ts = new Timestamp(2020, 1, 1, 1, 1, 1, 1);
+    Vehicle V1 = new Vehicle(1, "license", "Tesla", "Model S",
+            2018, "black", 0, "sedan", Vehicle.VehicleStatus.AVAILABLE, L1);
+    Timestamp ts = new Timestamp(2018-1900, 1-1, 1, 1, 1, 1, 1);
     TimePeriod t = new TimePeriod(ts, ts);
 
     private Database db;
 
-    public void QueryOrchestrator() throws Exception {
+    public QueryOrchestrator() throws Exception {
         this.db = new Database();
     }
 
+    public Integer getDailyKMLimit() {
+        return 100; // TODO: Double check specs for a number
+    }
+
+    /**
+     * Customer car search top table
+     */
     public List<VTSearchResult> getVTSearchResultsFor(Location l, VehicleType vt, TimePeriod t) throws Exception {
-        // TODO: Implement this
+        //region Instructions/Placeholder code
         // this is just placeholder code
-        ArrayList<VTSearchResult> list = new ArrayList<VTSearchResult>();
+        ArrayList<VTSearchResult> list = new ArrayList<>();
         list.add(new VTSearchResult(VT1, L1, 10));
         list.add(new VTSearchResult(VT2, L1, 0));
         list.add(new VTSearchResult(VT3, L3, 15));
         list.add(new VTSearchResult(VT1, L4, 200));
         list.add(new VTSearchResult(VT2, L1, 25));
         list.add(new VTSearchResult(VT2, L4, 15));
-        return list;
+
+        /*
+        List<Reservation> reservations = db.getReservationsWith(t, vt, l);
+         */
+        // Query all tuples in location x VehicleType x Vehicle
+        // Filter by location if not null
+        // Filter by vt if not null
+        // group by location, vt and aggregate into count
+
+        // Query all reservations overlapping with time period
+        // For each reservation, if vt + location in table, subtract 1 from count
+
+        //endregion
+
+        //List of VTSearchResult
+        List<VTSearchResult> vtSearchResults = db.getVTSearchResultsForHelper(l, vt);
+        List<Reservation> reservations = db.getReservationsWith(t, vt, l);
+
+        for (Reservation r : reservations) {
+            for (VTSearchResult vtSearchResult : vtSearchResults) {
+                if (vtSearchResult.vt.vtname.equals(r.vtName) &&
+                        vtSearchResult.location.city.equals(r.location.city) &&
+                        vtSearchResult.location.location.equals(r.location.location))
+                    vtSearchResult.numAvail--;
+            }
+        }
+
+        return vtSearchResults;
+
     }
 
+
+    /**
+     * Customer car search results bottom table
+     * From Vehicles table, return vehicles that have vtname == searchResult.vt.vtname, location = searchResult.location
+     * and are available (status = AVAILABLE)
+     * @param searchResult
+     * @return
+     * @throws Exception
+     */
     public List<Vehicle> getVehiclesFor(VTSearchResult searchResult) throws Exception {
-        // TODO: Implement this
-        return Arrays.asList(V1);
+        return db.getVehicleWith(searchResult.vt, searchResult.location, null);
     }
 
     /**
      * Get customer with given driver's license number, or return null if not found
      */
-    public Customer getCustomer(String dlNumber) {
-        // TODO: Implement this
-        return new Customer(1234512345, "John Smith", "Some address", "DL12345");
+    public Customer getCustomer(String dlNumber) throws Exception {
+        return db.getCustomerMatching(new Customer(dlNumber));
     }
 
+    /**
+     * Add given customer object to database
+     * @param c
+     * @throws Exception
+     */
     public void addCustomer(Customer c) throws Exception {
-        // TODO: Implement this
-        throw new Exception("Not implemented");
+        db.addCustomer(c);
     }
 
     public Reservation makeReservation(Reservation r) throws Exception {
         // TODO: Implement this
-        r.confNum = 1;
+        // r param doesn't have a confirmation number
+        // DB will have to auto-generate this number
+        // Return new reservation object which contains the auto-generated conf number
+        // db.addReservation(r);
         return r;
     }
 
@@ -79,20 +131,19 @@ public class QueryOrchestrator {
     }
 
     public List<VehicleType> getAllVehicleTypes() throws Exception {
-        // TODO: Implement this
-        // this is just placeholder code
-        ArrayList<VehicleType> list = new ArrayList<VehicleType>(Arrays.asList(VT1, VT2, VT3, VT4));
-        return list;
+        return db.getAllVehicleTypes();
     }
 
-    public List<Reservation> getReservationsWith(int confNum, String customerDL) {
-        // TODO: Implement this
+
+    public List<Reservation> getReservationsWith(int confNum, String customerDL) throws Exception{ // TODO: This will be updated to filter only active reservations
         // if confNum == -1, then don't filter by confNum
         // if customerDL == "", then don't filer by customerDL
-        return Arrays.asList(new Reservation(1, "dummyvt", t, L1, "dummyDL" ));
+        Reservation r = new Reservation(confNum, null, null, null, customerDL);
+        Log.log(String.valueOf(db));
+        return db.getReservationMatching(r);
     }
 
-    public List<Rental> getRentalsWith(int rentalId, String customerDL) {
+    public List<Rental> getRentalsWith(int rentalId, String customerDL) { // TODO: This will be updated to filter only active reservations
         // TODO: Implement this
         // if rentalId == -1, then don't filter by confNum
         // if customerDL == "", then don't filer by customerDL
@@ -107,12 +158,62 @@ public class QueryOrchestrator {
      */
     public Vehicle getAutoSelectedVehicle(Reservation selectedRes) {
         // TODO: Implement this;
-        return new Vehicle(1, "license", "make", "model", 2020, "black", 0,
-                "SUV", Vehicle.VehicleStatus.AVAILABLE, L1);
+        return new Vehicle(1, "license", "make", "model", 2020, "black", 0, "SUV", Vehicle.VehicleStatus.AVAILABLE, L1);
     }
 
     public Rental addRental(Rental r) {
         // TODO;
+        // DB will have to autogenerate primary key for r
+        // return new rental object with the primary key in it
         return r;
+    }
+
+    public Vehicle getVehicle(String vlicense) {
+        // TODO
+        return V1;
+    }
+
+    public VehicleType getVehicleType(String vtname) {
+        // TODO
+        return VT1;
+    }
+
+    public void submitReturn(Return r) {
+        // TODO: implement
+        // TODO: mark vehicle as available
+        // TODO: update vehicle odometer
+    }
+
+    public RentalReport getDailyRentalReport(Location l) {
+        // TODO
+        RentalReport report = new RentalReport();
+        report.countOfRentalsByLocation = new HashMap<>();
+        report.countOfRentalsByLocation.put(L1, 0);
+        report.countOfRentalsByLocation.put(L2, 5);
+        report.countOfRentalsByVT = new HashMap<>();
+        report.countOfRentalsByVT.put(VT1, 1);
+        report.countOfRentalsByVT.put(VT2, 3);
+        report.rentalsStartedToday = new HashMap<>();
+        report.rentalsStartedToday.put(new Reservation(1, "dummyvt", t, L1, "dummyDL" ),
+                new Rental(1, "dummyplates", "dummyDL", t, 0, null, 1));
+        report.totalRentalsToday = 1;
+        return report;
+    }
+
+    public ReturnReport getDailyReturnReport(Location l) {
+        // TODO
+        ReturnReport report = new ReturnReport();
+        report.breakDownByLocation = new HashMap<>();
+        report.breakDownByLocation.put(L1, new Pair<>(0, 0.0));
+        report.breakDownByLocation.put(L3, new Pair<>(5, 100.6));
+        report.breakDownByVT = new HashMap<>();
+        report.breakDownByVT.put(VT1, new Pair<>(1, 0.0));
+        report.breakDownByVT.put(VT2, new Pair<>(4, 5.0));
+        report.returnsCreatedToday = new HashMap<>();
+        report.returnsCreatedToday.put( new Rental(1, "dummyplates", "dummyDL", t, 0, null, 1),
+                                        new Return(1, new Timestamp(System.currentTimeMillis()), 1, Return.TankStatus.FULL_TANK, 566));
+        report.totalReturnsRevenueToday = 200.5;
+        report.totalReturnsToday = 1;
+        return report;
     }
 }

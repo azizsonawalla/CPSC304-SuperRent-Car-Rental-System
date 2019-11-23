@@ -187,6 +187,17 @@ public class Queries {
         public static String DELETE_VEHICLE = "DELETE FROM Vehicle " +
                 "WHERE vLicense = (?)";
 
+        public static String GET_VEHICLES_WITH =
+                "SELECT * " +
+                        "FROM Vehicle " +
+                        "WHERE vtName = ? AND location = ? AND city = ? AND status = ?";
+
+        public static String GET_NUM_VEHICLES_WITH =
+                "SELECT V.vtName, V.location, V.city, COUNT(*) " +
+                        "FROM Vehicle V " +
+                        "WHERE vtName = ? AND location = ? AND city = ? " +
+                        "GROUP BY V.vtName, V.location, V.city";
+
     }
 
     public static class VehicleType {
@@ -204,6 +215,9 @@ public class Queries {
         public static String DELETE_VEHICLE_TYPE =
                 "DELETE FROM VehicleType " +
                         "WHERE vtName = ?";
+
+        public static String QUERY_ALL =
+                "SELECT * FROM VehicleType";
     }
 
     public static class Returns {

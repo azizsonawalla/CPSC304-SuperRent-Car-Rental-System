@@ -7,8 +7,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import model.Entities.Rental;
 import model.Entities.Reservation;
-import model.Entities.Return;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,9 +24,9 @@ public class Main extends Application {
     // Customer Car Search -> Customer Make Reservation
     public Reservation customerResInProgress;
     // Clerk Res Rental Search -> Clerk Start Rental
-    public Reservation clerkRentalInProgress;
+    public Reservation clerkReservationToStart;
     // Clerk Res Rental Search -> Clerk Start Return
-    public Return clerkReturnInProgress;
+    public Rental clerkRentalToBeReturned;
     // Clerk Car Search -> Clerk Make Reservation
     public Reservation clerkResInProgress;
 
@@ -42,8 +42,8 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("views/customerCarSearch.fxml"));
         loader.setController(new customerCarSearch(this));
         Pane root = loader.load();
-        primaryStage.setTitle(GUIConfig.APP_TITLE);
-        this.scene = new Scene(root, GUIConfig.WINDOW_WIDTH, GUIConfig.WINDOW_HEIGHT);
+        primaryStage.setTitle(Config.APP_TITLE);
+        this.scene = new Scene(root, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
         scene.getStylesheets().add(getClass().getResource("views/style.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
@@ -61,36 +61,36 @@ public class Main extends Application {
         Controller c;
 
         // Customer
-        fxml = GUIConfig.CUSTOMER_CAR_SEARCH;
+        fxml = Config.CUSTOMER_CAR_SEARCH;
         c = new customerCarSearch(this);
         scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
 
-        fxml = GUIConfig.CUSTOMER_MAKE_RES;
+        fxml = Config.CUSTOMER_MAKE_RES;
         c = new customerMakeReservation(this);
         scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
 
         // Clerk
-        fxml = GUIConfig.CLERK_RESERVATION_RENTAL_SEARCH;
+        fxml = Config.CLERK_RESERVATION_RENTAL_SEARCH;
         c = new clerkReservationRentalSearch(this);
         scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
 
-        fxml = GUIConfig.CLERK_CAR_SEARCH;
+        fxml = Config.CLERK_CAR_SEARCH;
         c = new clerkCarSearch(this);
         scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
 
-        fxml = GUIConfig.CLERK_DAILY_REPORTS;
+        fxml = Config.CLERK_DAILY_REPORTS;
         c = new clerkDailyReports(this);
         scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
 
-        fxml = GUIConfig.CLERK_MAKE_RESERVATION;
+        fxml = Config.CLERK_MAKE_RESERVATION;
         c = new clerkMakeReservation(this);
         scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
 
-        fxml = GUIConfig.CLERK_START_RENTAL;
+        fxml = Config.CLERK_START_RENTAL;
         c = new clerkStartRental(this);
         scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
 
-        fxml = GUIConfig.CLERK_SUBMIT_RETURN;
+        fxml = Config.CLERK_SUBMIT_RETURN;
         c = new clerkSubmitReturn(this);
         scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
     }

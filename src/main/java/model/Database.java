@@ -1,11 +1,13 @@
 package model;
 
 import model.Entities.*;
+import model.Orchestrator.VTSearchResult;
 import model.Util.Log;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Interface for the SuperRent database
@@ -13,6 +15,7 @@ import java.util.List;
 public class Database {
 
     private String HOST = "jdbc:mysql://35.247.80.246/superrent";
+    private String TEST_HOST = "jdbc:mysql://35.247.80.246/superrenttest";
     private String USERNAME = "root";
     private String PASSWORD = "bobobobo";
 
@@ -22,16 +25,23 @@ public class Database {
      * Constructor for Database class. Establishes a connection to the database and initializes the connection field.
      * @throws Exception if there was an error connecting to the database
      */
-    public Database() throws Exception {
+    public Database(boolean testmode) throws Exception {
         Log.log("Establishing connection to database...");
         try {
-            this.conn = DriverManager.getConnection(HOST, USERNAME, PASSWORD);
+            this.conn = DriverManager.getConnection(testmode ? TEST_HOST : HOST, USERNAME, PASSWORD);
             if (this.conn == null) throw new Exception("Connection object is null");
+            createTables();
         } catch (Exception e) {
             throw new Exception("Error getting connection to database", e);
         }
         Log.log("Successfully connected to database!");
     }
+
+    public Database() throws Exception {
+        this(false);
+    }
+
+    //region CreateDropTables
 
     /**
      * Checks all the tables required for the system and creates them if they don't exist
@@ -105,9 +115,13 @@ public class Database {
         PreparedStatement ps = conn.prepareStatement("SELECT * FROM Reservations WHERE confNo = ?");
         ps.setInt(1, r.confNum);
         ResultSet rs = ps.executeQuery();
-        rs.next();
+        //advance cursor to first tuple. If there is no first tuple, return
+        if(!rs.next()) {
+            Log.log("No Reservation with confirmation number " + Integer.toString(r.confNum) + " found");
+            return;
+        }
 
-        //Set values for parameters in psUpdate. Update if corresponding value in Reservation r is null, otherwise, keep unchanged
+        //Set values for parameters in psUpdate. Update if corresponding value in Reservation r is not null, otherwise, keep unchanged
         ps = conn.prepareStatement(Queries.Reservation.UPDATE_RESERVATION);
         ps.setString(1, r.vtName != null? r.vtName: rs.getString("vtname"));
         ps.setString(2, r.dlicense != null? r.dlicense: rs.getString("dLicense"));
@@ -137,12 +151,13 @@ public class Database {
         ps.setInt(1, r.confNum);
 
         //execute the update
-        ps.executeUpdate();
+        int updates = ps.executeUpdate();
 
         //commit changes (automatic) and close prepared statement
         ps.close();
 
-        Log.log("Reservation with confirmation number " + Integer.toString(r.confNum) + " successfully deleted");
+        if (updates == 0) Log.log("No Reservation with confirmation number " + Integer.toString(r.confNum) + " found");
+        else Log.log("Reservation with confirmation number " + Integer.toString(r.confNum) + " successfully deleted");
     }
 
     /**
@@ -157,6 +172,7 @@ public class Database {
         //marker to indicate if a condition has been added to the WHERE clause (and if AND needs to be used)
         boolean marker = false;
 
+        //TODO: move this query to Util.Queries
         if (t == null && vt == null && l == null){
             //If no filters are provided, return all the results
             query = "SELECT * FROM Reservations";
@@ -166,9 +182,9 @@ public class Database {
                 //Given start time (from t) is at the same time or after R.startDateAndTime AND is before R.endDateAndTime
                 //Given end time (from t) is at the same time before R.endDateAndTime AND is after R.startDateAndTime
                 query += "((R.fromDateTime <= ? AND R.toDateTime > ?) OR " +
-                        "(R.toDateTime >= ? AND R.toDateTime < ?)) ";
+                        "(R.toDateTime >= ? AND R.fromDateTime < ?)) "; // TODO: George double-check this
                 marker = true;
-            } if (vt != null) {
+            } if (vt != null && vt.vtname != "All Types") {
                 query += marker? "AND R.vtname = '" + vt.vtname + "' " :
                         "R.vtname = '" + vt.vtname + "' ";
                 marker = true;
@@ -177,6 +193,7 @@ public class Database {
                         "R.location = '" + l.location + "' " + "AND R.city = '" + l.city + "'";
             }
         }
+        Log.log("getReservationsWith Query: " + query);
         PreparedStatement ps = conn.prepareStatement(query);
         //Insert Timestamp values to prepared statement
         if (t != null){
@@ -187,7 +204,7 @@ public class Database {
         }
         ResultSet rs = ps.executeQuery();
 
-        List<Reservation> r = new ArrayList<Reservation>();
+        List<Reservation> r = new ArrayList<>();
 
         while (rs.next()){
             //Make a reservation object corresponding to a tuple queried from the database
@@ -218,36 +235,40 @@ public class Database {
      * attributes of the given object may be null. If no reservation found, returns null
      * @throws Exception if there is any error getting results
      */
-    public Reservation getReservationMatching(Reservation r) throws Exception {
-        PreparedStatement ps = conn.prepareStatement("SELECT * FROM Reservations WHERE confNo = " + Integer.toString(r.confNum));
+    public List<Reservation> getReservationMatching(Reservation r) throws Exception {
+        PreparedStatement ps;
+        List<Reservation> reservations = new ArrayList<>();
+        if(r.confNum != -1) ps = conn.prepareStatement("SELECT * FROM Reservations WHERE confNo = " + Integer.toString(r.confNum));
+        else if (!Objects.equals(r.dlicense, "")) ps = conn.prepareStatement("SELECT * FROM Reservations WHERE dLicense = '" + r.dlicense + "'");
+        else ps = conn.prepareStatement("SELECT * FROM Reservations");
+        //else throw new Exception("[WARNING}: You must provide either a confirmation number or a customer drivers license");
         ResultSet rs = ps.executeQuery();
 
-        if (!rs.next()) {
-            System.out.println("NOTE: Reservation " + r.confNum + " does not exist");
-            ps.close();
-            return null;
+        while (rs.next()){
+            Reservation res = new Reservation();
+            res.confNum = rs.getInt(1);
+            res.vtName = rs.getString(2);
+            res.dlicense = rs.getString(3);
+
+            TimePeriod tm = new TimePeriod();
+            tm.startDateAndTime = rs.getTimestamp(4);
+            tm.endDateAndTime = rs.getTimestamp(5);
+            res.timePeriod = tm;
+
+            Location loc = new Location();
+            loc.city = rs.getString(6);
+            loc.location = rs.getString(7);
+            res.location = loc;
+
+            reservations.add(res);
         }
-
-        Reservation res = new Reservation();
-        res.confNum = rs.getInt(1);
-        res.vtName = rs.getString(2);
-        res.dlicense = rs.getString(3);
-
-        TimePeriod tm = new TimePeriod();
-        tm.startDateAndTime = rs.getTimestamp(4);
-        tm.endDateAndTime = rs.getTimestamp(5);
-        res.timePeriod = tm;
-
-        Location loc = new Location();
-        loc.city = rs.getString(6);
-        loc.location = rs.getString(7);
-        res.location = loc;
-
         ps.close();
-        return res;
+        return reservations;
     }
 
-    /* Return */
+    //endregion
+
+    //region Rental
 
     /**
      * Add the given rental object to the rental table in the database
@@ -284,7 +305,7 @@ public class Database {
      * @param r updated values for Rental entry
      * @throws Exception if there is an error updating entry, for example if entry doesn't exist already
      */
-    public void updateRental(Rental r) throws Exception { // TODO: Fix the method to ensure not to update attributes with constraints
+    public void updateRental(Rental r) throws Exception {
         PreparedStatement ps = conn.prepareStatement(Queries.Rent.GET_RENTAL);
         ps.setInt(1, r.rid);
         ResultSet rs = ps.executeQuery();
@@ -389,7 +410,7 @@ public class Database {
 
             int startOdometer = rs.getInt("odometer");
 
-            Card card = getCardMatching(rs.getLong("cardNo"));
+            Card card = getCardMatching(new Card(rs.getLong("cardNo"), null, null));
             int confNo = rs.getInt("'confNo");
 
             Rental rental = new Rental(rid, vlicense, dlicense, tm, startOdometer, card, confNo);
@@ -422,7 +443,7 @@ public class Database {
 
         int startOdometer = rs.getInt("odometer");
 
-        Card card = getCardMatching(rs.getLong("cardNo"));
+        Card card = getCardMatching(new Card(rs.getLong("cardNo"), null, null));
         int confNo = rs.getInt("'confNo");
 
         Rental rental = new Rental(rid, vlicense, dlicense, tm, startOdometer, card, confNo);
@@ -763,7 +784,20 @@ public class Database {
         return res;
     }
 
-    /* Vehicle */
+    public List<VehicleType> getAllVehicleTypes() throws SQLException {//TODO FIX TO BE GET ALL
+        ResultSet rs = conn.prepareStatement(Queries.VehicleType.QUERY_ALL).executeQuery();
+        List<VehicleType> vehicleTypes = new ArrayList<>();
+        while (rs.next()){
+            vehicleTypes.add(new VehicleType(rs.getString(1), rs.getString(2), rs.getInt(3),
+                    rs.getInt(4), rs.getInt(5), rs.getInt(6), rs.getInt(7),
+                    rs.getInt(8), rs.getInt(9)));
+        }
+        return vehicleTypes;
+    }
+
+    //endregion
+
+    //region Vehicle
 
     /**
      * Add the given Vehicle object to the Vehicle table in the database
@@ -782,7 +816,8 @@ public class Database {
         ps.setString(6, v.color);
         ps.setInt(7, v.odometer);
         ps.setString(8, v.vtname);
-        ps.setBoolean(9, v.status == Vehicle.VehicleStatus.AVAILABLE);
+        if (v.status == Vehicle.VehicleStatus.AVAILABLE) ps.setBoolean(9, true);
+        else ps.setBoolean(9, false);
         ps.setString(10, v.location.location);
         ps.setString(11, v.location.city);
 
@@ -857,9 +892,57 @@ public class Database {
         Log.log("Vehicle with vlicense " + v.vlicense + " successfully deleted");
     }
 
-    public List<Vehicle> getVehicleWith(VehicleType vt, Location l, boolean availableNow) throws Exception {
-        // TODO: implement this
-        throw new Exception("Method not implemented");
+    public List<Vehicle> getVehicleWith(VehicleType vt, Location l, Vehicle.VehicleStatus availableNow) throws Exception {
+        String query = Queries.Vehicle.GET_VEHICLES_WITH;
+
+        if (vt == null && l == null && availableNow == null){
+            //If no filters are provided, return all the vehicles in the Vehicle table
+            query = query.replace(" WHERE vtName = ? AND location = ? AND city = ? AND status = ?", "");
+        } else {
+            //If no VehicleType is provided or if vtName can be anything, remove VehicleType filter from WHERE clause.
+            //If VehicleType provided, filter by vt.vtname
+            if (vt == null) query = query.replace("vtName = ? AND ", "");
+            else query = query.replace("vtName = ?", "vtName = '" + vt.vtname + "'");
+            //If no location is provided, remove location filter from WHERE clause.
+            //If location provided, filter by l.location and l.city
+            if (l == null) query = query.replace("location = ? AND city = ? AND ", "");
+            else query = query.replace("location = ? AND city = ?", "location = '" + l.location + "' AND city = '" + l.city + "'");
+            //If no VehicleStatus is provided, remove VehicleStatus filter from WHERE clause.
+            //If VehicleStatus provided, filter by VehicleStatus (AVAILABLE or RENTED)
+            if (availableNow == null) query = query.replace("AND status = ?", "");
+            else query = query.replace("status = ?", "status = " + (availableNow == Vehicle.VehicleStatus.AVAILABLE));
+        }
+
+        //For debugging purposes, prints what the final query looks like
+        Log.log("getVehicleWith query " + query);
+
+        //Prepare statement and execute query
+        PreparedStatement ps = conn.prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+
+        List<Vehicle> vehicles = new ArrayList<>();
+
+        while (rs.next()){
+            //Make a Vehicle object corresponding to a tuple queried from the database
+            Vehicle v = new Vehicle(rs.getInt("vId"),
+                                    rs.getString("vLicense"),
+                                    rs.getString("make"),
+                                    rs.getString("model"),
+                                    rs.getInt("year"),
+                                    rs.getString("color"),
+                                    rs.getInt("odometer"),
+                                    rs.getString("vtName"),
+                                    (rs.getBoolean("status")) ?
+                                            Vehicle.VehicleStatus.AVAILABLE: Vehicle.VehicleStatus.RENTED,
+                                    new Location(rs.getString("city"), rs.getString("location")));
+
+            //Add the vehicle object to vehicles
+            vehicles.add(v);
+        }
+        //close the prepared statement and return the results
+        ps.close();
+        return vehicles;
+
     }
 
     public Vehicle getVehicleMatching(Vehicle v) throws Exception {
@@ -872,15 +955,71 @@ public class Database {
             return null;
         }
 
-        Vehicle res = new Vehicle(rs.getInt("vId"), rs.getString("vLicense"), rs.getString("make"),
-                rs.getString("model"), rs.getInt("year"), rs.getString("color"), rs.getInt("odometer"),
-                rs.getString("vtName"), rs.getBoolean("status")? Vehicle.VehicleStatus.AVAILABLE :
-                Vehicle.VehicleStatus.RENTED, new Location(rs.getString("city"), rs.getString("location")));
+        Vehicle res = new Vehicle(rs.getInt("vId"),
+                rs.getString("vLicense"),
+                rs.getString("make"),
+                rs.getString("model"),
+                rs.getInt("year"),
+                rs.getString("color"),
+                rs.getInt("odometer"),
+                rs.getString("vtName"),
+                (rs.getBoolean("status")) ? Vehicle.VehicleStatus.AVAILABLE: Vehicle.VehicleStatus.RENTED,
+                new Location(rs.getString("city"), rs.getString("location")));
 
         System.out.println("Vehicle with vlicense " + v.vlicense + " successfully retrieved");
         ps.close();
         return res;
     }
+
+    public List<VTSearchResult> getVTSearchResultsForHelper(Location l, VehicleType vt) throws Exception{
+
+        //This query returns the TOTAL number of cars that are a vehicle type and/or at a location
+        String query = Queries.Vehicle.GET_NUM_VEHICLES_WITH;
+
+
+        if (vt == null && l == null){
+            //If no location/vehicle type filter is provided, group all vehicles by vehicle types and location and
+            // return the count
+            query = query.replace(" WHERE vtName = ? AND location = ? AND city = ?", "");
+        } else {
+            //If no VehicleType is provided, remove VehicleType filter from WHERE clause.
+            //If VehicleType provided, filter by vt.vtname
+            if (vt == null || vt.vtname.equals("All Types")) query = query.replace("vtName = ? AND ", "");
+            else query = query.replace("vtName = ?", "vtName = '" + vt.vtname + "'");
+            //If no location is provided, remove location filter from WHERE clause.
+            //If location provided, filter by l.location and l.city
+            if (l == null) query = query.replace("location = ? AND city = ? AND ", "");
+            else
+                query = query.replace("location = ? AND city = ?", "location = '" + l.location +
+                        "' AND city = '" + l.city + "'");
+        }
+        //For debugging purposes, prints what the final query looks like
+        Log.log("getVTSearchResultsForHelper query " + query);
+
+        //Prepare statement and execute query
+        PreparedStatement ps = conn.prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+
+        List<VTSearchResult> vtSearchResults = new ArrayList<>();
+
+        //Iterate through resultSet
+        while (rs.next()){
+            //Make a VTSearchResult object based on current tuple.
+            VTSearchResult vtsr = new VTSearchResult(
+                    getVehicleTypeMatching(new VehicleType(rs.getString("vtName"))),
+                    new Location(rs.getString("location"), rs.getString("city")),
+                    rs.getInt(4));
+
+            //Add the VTSearchResult object to vehicles
+            vtSearchResults.add(vtsr);
+        }
+        //close the prepared statement and return the results
+        ps.close();
+        return vtSearchResults;
+    }
+
+    //endregion
+
 
     /* Card */
 
@@ -970,7 +1109,8 @@ public class Database {
      * attributes of the given object may be null. If no card found, returns null
      * @throws Exception if there is any error getting results
      */
-    public Card getCardMatching(long cardNo) throws Exception {
+    public Card getCardMatching(Card c) throws Exception {
+        long cardNo = c.CardNo;
         PreparedStatement ps = conn.prepareStatement(Queries.Card.GET_CARD);
         ps.setLong(1, cardNo);
         ResultSet rs = ps.executeQuery();
@@ -984,10 +1124,10 @@ public class Database {
         long CardNo = rs.getLong("cardNo");
         String cardName = rs.getString("cardName");
         Timestamp expDate = rs.getTimestamp("expDate");
-        Card c = new Card(cardNo, cardName, expDate);
+        Card cardFound = new Card(cardNo, cardName, expDate);
 
         ps.close();
-        return c;
+        return cardFound;
     }
 
 

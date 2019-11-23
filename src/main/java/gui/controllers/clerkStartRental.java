@@ -1,6 +1,6 @@
 package gui.controllers;
 
-import gui.GUIConfig;
+import gui.Config;
 import gui.Main;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -10,7 +10,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.Entities.*;
-import model.Util.Log;
 
 import java.net.URL;
 import java.sql.Timestamp;
@@ -53,11 +52,16 @@ public class clerkStartRental extends Controller implements Initializable {
 
     private Runnable fillReservationRentalDetails = () -> {
 
-        if (main.clerkRentalInProgress == null) return;
+        if (main.clerkReservationToStart == null) return;
 
-        res = main.clerkRentalInProgress;
+        res = main.clerkReservationToStart;
         v = qo.getAutoSelectedVehicle(res);  // TODO: Handle null case (no vehicle avail)
-        c = qo.getCustomer(res.dlicense);
+        try {
+            c = qo.getCustomer(res.dlicense);
+        } catch (Exception e) {
+            // TODO: Show error
+            return;
+        }
 
         vehicleType.setText(String.format("Vehicle Type: %s", res.vtName));
         start.setText(String.format("Start: %s (Now)", res.timePeriod.getStartAsTimeDateString()));
@@ -85,8 +89,8 @@ public class clerkStartRental extends Controller implements Initializable {
     };
 
     private Runnable goBackToReservationRentalsSearch = () -> {
-        this.main.clerkRentalInProgress = null;
-        this.main.switchScene(GUIConfig.CLERK_RESERVATION_RENTAL_SEARCH);
+        this.main.clerkReservationToStart = null;
+        this.main.switchScene(Config.CLERK_RESERVATION_RENTAL_SEARCH);
     };
 
     private Runnable createRental = () -> {

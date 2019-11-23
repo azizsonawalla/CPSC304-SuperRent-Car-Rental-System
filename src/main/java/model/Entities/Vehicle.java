@@ -6,6 +6,24 @@ public class Vehicle {
         RENTED,
         AVAILABLE
     }
+
+    public Vehicle(int vid, String vlicense, String make, String model, int year, String color, int odometer, String vtname, VehicleStatus status, Location location) {
+        this.vid = vid;
+        this.vlicense = vlicense;
+        this.make = make;
+        this.model = model;
+        this.year = year;
+        this.color = color;
+        this.odometer = odometer;
+        this.status = status;
+        this.vtname = vtname;
+        this.location = location;
+    }
+
+    public Vehicle(){
+
+    }
+
     //vid (vehicle ID) must be unique
     public int vid;
 
@@ -27,22 +45,6 @@ public class Vehicle {
 
     //Identifies the Location of a Vehicle
     public Location location;
-    public Vehicle(int vid, String vlicense, String make, String model, int year, String color, int odometer, String vtname, VehicleStatus status, Location location) {
-        this.vid = vid;
-        this.vlicense = vlicense;
-        this.make = make;
-        this.model = model;
-        this.year = year;
-        this.color = color;
-        this.odometer = odometer;
-        this.status = status;
-        this.vtname = vtname;
-        this.location = location;
-    }
-
-    public Vehicle(){
-
-    }
 
 
 }

@@ -54,12 +54,12 @@
             <Font name="HelveticaLTStd-Roman" size="24.0" />
          </font>
       </Label>
-      <Label fx:id="totalCount" contentDisplay="CENTER" layoutX="33.0" layoutY="660.0" prefHeight="31.0" prefWidth="700.0" text="Total Rentals Today = " textAlignment="CENTER">
+      <Label fx:id="totalCount" contentDisplay="CENTER" layoutX="33.0" layoutY="660.0" prefHeight="31.0" prefWidth="900.0" text="Total Rentals Today = " textAlignment="CENTER">
          <font>
             <Font name="HelveticaLTStd-Roman" size="24.0" />
          </font>
       </Label>
-      <Label fx:id="totalRevenue" contentDisplay="CENTER" layoutX="33.0" layoutY="706.0" prefHeight="31.0" prefWidth="700.0" text="Total Revenue from Returns Today = " textAlignment="CENTER">
+      <Label fx:id="totalRevenue" contentDisplay="CENTER" layoutX="33.0" layoutY="706.0" prefHeight="31.0" prefWidth="900.0" text="Total Revenue from Returns Today = " textAlignment="CENTER">
          <font>
             <Font name="HelveticaLTStd-Roman" size="24.0" />
          </font>

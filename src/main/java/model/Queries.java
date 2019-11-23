@@ -242,6 +242,11 @@ public class Queries {
                         "FROM RETURN " +
                         "WHERE rId = ?";
 
+        public static String JOIN_RENTAL =
+                "SELECT * " +
+                        "FROM Return RT, Rent R " +
+                        "WHERE RT.rId = R.rId AND RT.rId = ?";
+
     }
 
     public static class Card {
@@ -282,8 +287,7 @@ public class Queries {
 
         public static String GET_BRANCH =
                 "SELECT * " +
-                        "FROM BRANCH " +
-                        "WHERE city = ? AND location = ?";
+                        "FROM BRANCH";
     }
 
     public static class CustomerTransactions {

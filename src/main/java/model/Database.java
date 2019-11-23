@@ -179,7 +179,7 @@ public class Database {
                 //Given start time (from t) is at the same time or after R.startDateAndTime AND is before R.endDateAndTime
                 //Given end time (from t) is at the same time before R.endDateAndTime AND is after R.startDateAndTime
                 query += "((R.fromDateTime <= ? AND R.toDateTime > ?) OR " +
-                        "(R.toDateTime >= ? AND R.fromDateTime < ?)) "; // TODO: George double-check this
+                        "(R.toDateTime >= ? AND R.fromDateTime < ?)) ";
                 marker = true;
             } if (vt != null && vt.vtname != "All Types") {
                 query += marker? "AND R.vtname = '" + vt.vtname + "' " :
@@ -450,8 +450,9 @@ public class Database {
 
     }
 
-    /* Rental */
+    //endregion
 
+    //region Return
     /**
      * Add the given Return object to the return table in the database
      * @param r return object to add
@@ -565,6 +566,14 @@ public class Database {
         ps.close();
         return ret;
 
+    }
+
+    public String getReturnedVehicle(Return r) throws SQLException {
+        PreparedStatement ps = conn.prepareStatement(Queries.Returns.JOIN_RENTAL);
+        ps.setInt(1, r.rid);
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+        return rs.getString("vLicense");
     }
 
     //endregion
@@ -1026,8 +1035,7 @@ public class Database {
 
     //endregion
 
-
-    /* Card */
+    //region Card
 
     /**
      * Add the given Card object to the Card table in the database
@@ -1135,8 +1143,9 @@ public class Database {
         return c;
     }
 
+    //endregion
 
-    /* Location */
+    //region Location
 
     /**
      * Add the given Location object to the Location table in the database
@@ -1187,11 +1196,23 @@ public class Database {
         Log.log("Branch at " + l.city +  ", " + l.location + " successfully deleted");
     }
 
-//    public void generateLocationCardData() throws Exception {
-//        PreparedStatement ps = conn.prepareStatement(Queries.Location.ADD_LOCATION);
-//
-//        //Set values for parameters in ps
-//        ps.setString(1, "Vancouver");
-//        ps.setString(2, "");
-//    }
+    /**
+     * Returns all Location in the database
+     * @return
+     * @throws Exception
+     */
+    public List<Location> getAllLocations() throws Exception {
+        PreparedStatement ps = conn.prepareStatement(Queries.Branch.GET_BRANCH);
+        ResultSet rs = ps.executeQuery();
+        List<Location> locations = new ArrayList<>();
+
+        while (rs.next()){
+            locations.add(new Location(rs.getString("city"), rs.getString("location")));
+        }
+
+        ps.close();
+        return locations;
+    }
+    //endregion
+
 }

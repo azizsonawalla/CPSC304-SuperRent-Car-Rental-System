@@ -3,7 +3,6 @@ package model.Orchestrator;
 import javafx.util.Pair;
 import model.Database;
 import model.Entities.*;
-import model.Util.Log;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -38,7 +37,7 @@ public class QueryOrchestrator {
     }
 
     public Integer getDailyKMLimit() {
-        return 100; // TODO: Double check specs for a number
+        return 100;
     }
 
     /**
@@ -124,10 +123,8 @@ public class QueryOrchestrator {
     }
 
     public List<Location> getAllLocationNames() throws Exception {
-        // TODO: Implement this
-        // this is just placeholder code
-        ArrayList<Location> list = new ArrayList<Location>(Arrays.asList(L1, L2, L3, L4));
-        return list;
+        // ArrayList<Location> list = new ArrayList<Location>(Arrays.asList(L1, L2, L3, L4));
+        return db.getAllLocations();
     }
 
     public List<VehicleType> getAllVehicleTypes() throws Exception {
@@ -139,7 +136,7 @@ public class QueryOrchestrator {
         // if confNum == -1, then don't filter by confNum
         // if customerDL == "", then don't filer by customerDL
         Reservation r = new Reservation(confNum, null, null, null, customerDL);
-        Log.log(String.valueOf(db));
+
         return db.getReservationMatching(r);
     }
 
@@ -156,9 +153,10 @@ public class QueryOrchestrator {
      * @param selectedRes
      * @return
      */
-    public Vehicle getAutoSelectedVehicle(Reservation selectedRes) {
-        // TODO: Implement this;
-        return new Vehicle(1, "license", "make", "model", 2020, "black", 0, "SUV", Vehicle.VehicleStatus.AVAILABLE, L1);
+    public Vehicle getAutoSelectedVehicle(Reservation selectedRes) throws Exception {
+        List<Vehicle> vehicles = db.getVehicleWith(new VehicleType(selectedRes.vtName), selectedRes.location, Vehicle.VehicleStatus.AVAILABLE);
+        if (vehicles.size() == 0) return null;
+        else return vehicles.get(0);
     }
 
     public Rental addRental(Rental r) {
@@ -168,20 +166,20 @@ public class QueryOrchestrator {
         return r;
     }
 
-    public Vehicle getVehicle(String vlicense) {
-        // TODO
-        return V1;
+    public Vehicle getVehicle(String vlicense) throws Exception {
+        return db.getVehicleMatching(new Vehicle(vlicense));
     }
 
-    public VehicleType getVehicleType(String vtname) {
-        // TODO
-        return VT1;
+    public VehicleType getVehicleType(String vtname) throws Exception{
+        return db.getVehicleTypeMatching(new VehicleType(vtname));
     }
 
-    public void submitReturn(Return r) {
-        // TODO: implement
-        // TODO: mark vehicle as available
-        // TODO: update vehicle odometer
+    public void submitReturn(Return r) throws Exception{
+        db.addReturn(r);
+        Vehicle v = db.getVehicleMatching(new Vehicle(db.getReturnedVehicle(r)));
+        v.status = Vehicle.VehicleStatus.AVAILABLE;
+        v.odometer = r.endOdometer;
+        db.updateVehicle(v);
     }
 
     public RentalReport getDailyRentalReport(Location l) {

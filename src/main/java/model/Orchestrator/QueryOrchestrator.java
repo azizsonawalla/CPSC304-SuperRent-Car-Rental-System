@@ -3,7 +3,6 @@ package model.Orchestrator;
 import model.Database;
 import model.Entities.*;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +23,8 @@ public class QueryOrchestrator {
     VehicleType VT2 = new VehicleType("Truck");
     VehicleType VT3 = new VehicleType("Hatchback");
     VehicleType VT4 = new VehicleType("Sedan");
-    Vehicle V1 = new Vehicle(1, "license", "Tesla", "Model S", 2018, "black", 0, true, "sedan", L1);
+    Vehicle V1 = new Vehicle(1, "license", "Tesla", "Model S", 2018, "black",
+            0, "SUV", Vehicle.VehicleStatus.AVAILABLE, L1);
     Timestamp ts = new Timestamp(2020, 1, 1, 1, 1, 1, 1);
     TimePeriod t = new TimePeriod(ts, ts);
 
@@ -107,7 +107,8 @@ public class QueryOrchestrator {
      */
     public Vehicle getAutoSelectedVehicle(Reservation selectedRes) {
         // TODO: Implement this;
-        return new Vehicle(1, "license", "make", "model", 2020, "black", 0, true, "SUV", L1);
+        return new Vehicle(1, "license", "make", "model", 2020, "black", 0,
+                "SUV", Vehicle.VehicleStatus.AVAILABLE, L1);
     }
 
     public Rental addRental(Rental r) {

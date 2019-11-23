@@ -10,12 +10,13 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import javafx.util.Pair;
-import model.Entities.*;
+import model.Entities.Rental;
+import model.Entities.Reservation;
+import model.Entities.Return;
+import model.Entities.TimePeriod;
 import model.Util.Log;
 
 import java.net.URL;
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -142,7 +143,7 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
     private Runnable startReturnForRental = () -> {
         Log.log("starting return for rental");
         Rental selectedRental = currRentalSearchRes.get(rentalOptions.getValue() - 1);
-        this.main.clerkReturnInProgress = new Return(selectedRental.rid, TimePeriod.getNow(), -1, false, -1);
+        this.main.clerkReturnInProgress = new Return(selectedRental.rid, TimePeriod.getNow(), -1, Return.TankStatus.NOT_FULL_TANK, -1);
         this.main.switchScene(GUIConfig.CLERK_SUBMIT_RETURN);
     };
 }

@@ -7,7 +7,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.text.Text;
 import javafx.util.Pair;
 import model.Entities.*;
 import model.Orchestrator.RentalReport;
@@ -232,6 +231,8 @@ public class clerkDailyReports extends Controller implements Initializable {
             lock.unlock();
         }
     };
+
+    // Models for table
 
     public class Breakdown {
 

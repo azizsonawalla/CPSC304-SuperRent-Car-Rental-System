@@ -1,5 +1,6 @@
 package model.Orchestrator;
 
+import javafx.util.Pair;
 import model.Database;
 import model.Entities.*;
 
@@ -140,7 +141,11 @@ public class QueryOrchestrator {
         // TODO
         RentalReport report = new RentalReport();
         report.countOfRentalsByLocation = new HashMap<>();
+        report.countOfRentalsByLocation.put(L1, 0);
+        report.countOfRentalsByLocation.put(L2, 5);
         report.countOfRentalsByVT = new HashMap<>();
+        report.countOfRentalsByVT.put(VT1, 1);
+        report.countOfRentalsByVT.put(VT2, 3);
         report.rentalsStartedToday = new HashMap<>();
         report.rentalsStartedToday.put(new Reservation(1, "dummyvt", t, L1, "dummyDL" ),
                 new Rental(1, "dummyplates", "dummyDL", t, 0, null, 1));
@@ -152,11 +157,15 @@ public class QueryOrchestrator {
         // TODO
         ReturnReport report = new ReturnReport();
         report.breakDownByLocation = new HashMap<>();
+        report.breakDownByLocation.put(L1, new Pair<>(0, 0.0));
+        report.breakDownByLocation.put(L3, new Pair<>(5, 100.6));
         report.breakDownByVT = new HashMap<>();
+        report.breakDownByVT.put(VT1, new Pair<>(1, 0.0));
+        report.breakDownByVT.put(VT2, new Pair<>(4, 5.0));
         report.returnsCreatedToday = new HashMap<>();
         report.returnsCreatedToday.put( new Rental(1, "dummyplates", "dummyDL", t, 0, null, 1),
                                         new Return(1, new Timestamp(System.currentTimeMillis()), 1, true, 566));
-        report.totalReturnsRevenueToday = 0.0;
+        report.totalReturnsRevenueToday = 200.5;
         report.totalReturnsToday = 1;
         return report;
     }

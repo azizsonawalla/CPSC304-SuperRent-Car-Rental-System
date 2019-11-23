@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
+import javafx.util.Pair;
 import model.Entities.*;
 import model.Orchestrator.RentalReport;
 import model.Orchestrator.ReturnReport;
@@ -70,7 +71,12 @@ public class clerkDailyReports extends Controller implements Initializable {
     private Runnable refreshReport = () -> {
         entries.getItems().clear();
         entries.getColumns().clear();
-        // insert rentals report
+        byVT.getItems().clear();
+        byVT.getColumns().clear();
+        byLocation.getColumns().clear();
+        byLocation.getItems().clear();
+
+        // insert rentals entries
         String selectedLocation = branchSelector.getValue();
         Location location = null;
         try {
@@ -87,6 +93,7 @@ public class clerkDailyReports extends Controller implements Initializable {
                 entries.setPlaceholder(new Label("No rentals were started today"));
                 return;
             }
+
             List<String> columnHeaders = Arrays.asList("Rental ID", "Vehicle License", "Customer License", "Rental Start", "Rental End", "Vehicle Type", "Pickup Location");
             List<String> propertyName = Arrays.asList("rid", "vlicense", "dlicense", "start", "end", "vtName", "location");
             for (int i = 0; i < columnHeaders.size(); i++) {
@@ -106,7 +113,35 @@ public class clerkDailyReports extends Controller implements Initializable {
 
             totalCount.setText(String.format("Total Rentals Today from %s = %d", selectedLocation, rentalReport.totalRentalsToday));
 
-            // TODO: Fill other tables
+            // breakdown by VT
+            List<String> columnHeaders2 = Arrays.asList("Vehicle Type", "Rentals Today");
+            List<String> propertyName2 = Arrays.asList("vtName", "count");
+            for (int i = 0; i < columnHeaders2.size(); i++) {
+                TableColumn<String, RentalEntry> column = new TableColumn<>(columnHeaders2.get(i));
+                column.setCellValueFactory(new PropertyValueFactory<>(propertyName2.get(i)));
+                byVT.getColumns().add(column);
+            }
+
+            for (VehicleType vt: rentalReport.countOfRentalsByVT.keySet()) {
+                Integer count = rentalReport.countOfRentalsByVT.get(vt);
+                Breakdown b = new Breakdown(vt.vtname, "", Integer.toString(count), "");
+                byVT.getItems().add(b);
+            }
+
+            // breakdown by location
+            List<String> columnHeaders3 = Arrays.asList("Location", "Rentals Today");
+            List<String> propertyName3 = Arrays.asList("location", "count");
+            for (int i = 0; i < columnHeaders3.size(); i++) {
+                TableColumn<String, RentalEntry> column = new TableColumn<>(columnHeaders3.get(i));
+                column.setCellValueFactory(new PropertyValueFactory<>(propertyName3.get(i)));
+                byLocation.getColumns().add(column);
+            }
+
+            for (Location l: rentalReport.countOfRentalsByLocation.keySet()) {
+                Integer count = rentalReport.countOfRentalsByLocation.get(l);
+                Breakdown b = new Breakdown("", l.toString(), Integer.toString(count), "");
+                byLocation.getItems().add(b);
+            }
             return;
         }
 
@@ -139,7 +174,41 @@ public class clerkDailyReports extends Controller implements Initializable {
 
             totalCount.setText(String.format("Total Returns Today at %s = %d", selectedLocation, returnReport.totalReturnsToday));
             totalRevenue.setText(String.format("Total Revenue Today from Returns at %s = $%.2f", selectedLocation, returnReport.totalReturnsRevenueToday));
-            // TODO: Fill other tables
+
+            // breakdown by VT
+            List<String> columnHeaders2 = Arrays.asList("Vehicle Type", "Rentals Today", "Revenue Today");
+            List<String> propertyName2 = Arrays.asList("vtName", "count", "revenue");
+            for (int i = 0; i < columnHeaders2.size(); i++) {
+                TableColumn<String, RentalEntry> column = new TableColumn<>(columnHeaders2.get(i));
+                column.setCellValueFactory(new PropertyValueFactory<>(propertyName2.get(i)));
+                byVT.getColumns().add(column);
+            }
+
+            for (VehicleType vt: returnReport.breakDownByVT.keySet()) {
+                Pair<Integer, Double> countRevenue = returnReport.breakDownByVT.get(vt);
+                Integer count = countRevenue.getKey();
+                Double revenue = countRevenue.getValue();
+                Breakdown b = new Breakdown(vt.vtname, "", Integer.toString(count), Double.toString(revenue));
+                byVT.getItems().add(b);
+            }
+
+            // breakdown by location
+            List<String> columnHeaders3 = Arrays.asList("Location", "Rentals Today", "Revenue Today");
+            List<String> propertyName3 = Arrays.asList("location", "count", "revenue");
+            for (int i = 0; i < columnHeaders3.size(); i++) {
+                TableColumn<String, RentalEntry> column = new TableColumn<>(columnHeaders3.get(i));
+                column.setCellValueFactory(new PropertyValueFactory<>(propertyName3.get(i)));
+                byLocation.getColumns().add(column);
+            }
+
+            for (Location l: returnReport.breakDownByLocation.keySet()) {
+                Pair<Integer, Double> countRevenue = returnReport.breakDownByLocation.get(l);
+                Integer count = countRevenue.getKey();
+                Double revenue = countRevenue.getValue();
+                Breakdown b = new Breakdown("", l.toString(), Integer.toString(count), Double.toString(revenue));
+                byLocation.getItems().add(b);
+            }
+            return;
         }
     };
 
@@ -163,6 +232,34 @@ public class clerkDailyReports extends Controller implements Initializable {
             lock.unlock();
         }
     };
+
+    public class Breakdown {
+
+        String location, vtName, count, revenue;
+
+        public String getLocation() {
+            return location;
+        }
+
+        public Breakdown(String vtName, String location, String count, String revenue) {
+            this.vtName = vtName;
+            this.location = location;
+            this.count = count;
+            this.revenue = "$"+revenue;
+        }
+
+        public String getVtName() {
+            return vtName;
+        }
+
+        public String getCount() {
+            return count;
+        }
+
+        public String getRevenue() {
+            return revenue;
+        }
+    }
 
     public class ReturnEntry {
 

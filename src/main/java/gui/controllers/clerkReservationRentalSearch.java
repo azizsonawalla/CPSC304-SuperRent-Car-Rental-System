@@ -29,7 +29,7 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
     private List<Rental> currRentalSearchRes;
 
     @FXML private Button dailyReportsButton, rentalWithoutReservationButton, rentalWithReservationButton,
-                            searchReservationsButton, searchRentalsButton, startReturnButton;
+            searchReservationsButton, searchRentalsButton, startReturnButton;
     @FXML private TextField confNumField, dlField, dlFieldRental, rentalIdField;
     @FXML private TextFlow reservationResults, rentalResults;
     @FXML private ComboBox<Integer> reservationOptions, rentalOptions;
@@ -78,13 +78,18 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
             }
         }
         if (dl.equals("")) dl = null;
-        this.currReservationSearchRes = qo.getReservationsWith(confNum, dl);   // TODO: filter to only get active
+        try {
+            this.currReservationSearchRes = qo.getReservationsWith(confNum, dl);   // TODO: filter to only get active
+        } catch (Exception e) {
+            // TODO: Show error
+            return;
+        }
         if (currReservationSearchRes.size() == 0) {
             reservationResults.getChildren().add(NO_RESULTS_FOUND);
         } else {
             for (Reservation r: currReservationSearchRes) {
                 String resultString = String.format(RESERVATION_RESULT_TEMPLATE, r.confNum, r.dlicense, r.vtName,
-                                                    r.timePeriod.getStartAsTimeDateString(), r.timePeriod.getEndAsTimeDateString(), r.location.toString());
+                        r.timePeriod.getStartAsTimeDateString(), r.timePeriod.getEndAsTimeDateString(), r.location.toString());
                 reservationResults.getChildren().add(new Text(resultString));
             }
             for (int i=1; i <= currReservationSearchRes.size(); i++) reservationOptions.getItems().add(i);
@@ -117,7 +122,7 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
         } else {
             for (Rental r: currRentalSearchRes) {
                 String resultString = String.format(RENTAL_RESULT_TEMPLATE, r.rid, r.vlicense, r.dlicense,
-                                                    r.timePeriod.getStartAsTimeDateString(), r.timePeriod.getEndAsTimeDateString());
+                        r.timePeriod.getStartAsTimeDateString(), r.timePeriod.getEndAsTimeDateString());
                 rentalResults.getChildren().add(new Text(resultString));
             }
             for (int i=1; i <= currRentalSearchRes.size(); i++) rentalOptions.getItems().add(i);

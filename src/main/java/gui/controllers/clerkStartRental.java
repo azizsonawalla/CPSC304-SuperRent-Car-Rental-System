@@ -56,7 +56,12 @@ public class clerkStartRental extends Controller implements Initializable {
 
         res = main.clerkReservationToStart;
         v = qo.getAutoSelectedVehicle(res);  // TODO: Handle null case (no vehicle avail)
-        c = qo.getCustomer(res.dlicense);
+        try {
+            c = qo.getCustomer(res.dlicense);
+        } catch (Exception e) {
+            // TODO: Show error
+            return;
+        }
 
         vehicleType.setText(String.format("Vehicle Type: %s", res.vtName));
         start.setText(String.format("Start: %s (Now)", res.timePeriod.getStartAsTimeDateString()));

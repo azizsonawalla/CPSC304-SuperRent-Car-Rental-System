@@ -33,7 +33,7 @@ public abstract class Controller {
         try {
             qo = new QueryOrchestratorDummy();
         } catch (Exception e) {
-            // TODO: Show DB error
+            showError("Could not connect to cloud database. Please restart the application");
         }
         initializeDateTimeArrays();
     }
@@ -59,7 +59,7 @@ public abstract class Controller {
 
     void showError(String msg) {
         Error e = new Error();
-        e.msg = msg;
+        e.msg = msg + "\n NOTE: This application requires an internet connection to work properly.";
         Platform.runLater(e);
     }
 

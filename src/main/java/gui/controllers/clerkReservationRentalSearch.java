@@ -19,7 +19,7 @@ import java.util.ResourceBundle;
 
 public class clerkReservationRentalSearch extends Controller implements Initializable {
 
-    // TODO: Align search result strings
+    // TODO: Replace text flow with tables
 
     private Text NO_RESULTS_FOUND = new Text("No results found for your search");
     private String RESERVATION_RESULT_TEMPLATE = "Confirmation No = %d, Customer DL = %s, Vehicle Type = %s, Start = %s, End = %s, Pickup = %s";
@@ -64,7 +64,7 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
         Log.log("Refreshing active reservations");
         reservationResults.getChildren().clear();
         reservationOptions.getItems().clear();
-        // TODO: Disable start rental button
+        rentalWithReservationButton.setDisable(true);
         String confNumString = confNumField.getText().trim();
         int confNum;
         String dl = dlField.getText().trim();
@@ -81,7 +81,7 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
         try {
             this.currReservationSearchRes = qo.getReservationsWith(confNum, dl);   // TODO: filter to only get active
         } catch (Exception e) {
-            // TODO: Show error
+            showError("Error getting active reservation entries. Please restart the application.");
             return;
         }
         if (currReservationSearchRes.size() == 0) {
@@ -94,7 +94,7 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
             }
             for (int i=1; i <= currReservationSearchRes.size(); i++) reservationOptions.getItems().add(i);
             reservationOptions.setValue(reservationOptions.getItems().get(0));
-            // TODO: Enable start rental button
+            rentalWithReservationButton.setDisable(false);
         }
     };
 
@@ -102,7 +102,7 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
         Log.log("Refreshing active rentals");
         rentalResults.getChildren().clear();
         rentalOptions.getItems().clear();
-        // TODO: Disable start return button
+        startReturnButton.setDisable(true);
         String rentalIdString = rentalIdField.getText().trim();
         int rentalId;
         String dl = dlFieldRental.getText().trim();
@@ -127,7 +127,7 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
             }
             for (int i=1; i <= currRentalSearchRes.size(); i++) rentalOptions.getItems().add(i);
             rentalOptions.setValue(rentalOptions.getItems().get(0));
-            // TODO: Enable start return button
+            startReturnButton.setDisable(true);
         }
     };
 

@@ -169,7 +169,7 @@ public class clerkDailyReports extends Controller implements Initializable {
                 try {
                     res = qo.getReservationsWith(rental.confNo, null).get(0);
                 } catch (Exception e) {
-                    // TODO: Show error
+                    showError("Error getting rental entries for today. Please restart the application");
                     return;
                 }
                 ReturnEntry entry = new ReturnEntry(String.valueOf(r.rid), TimePeriod.getTimestampAsTimeDateString(r.returnDateTime),

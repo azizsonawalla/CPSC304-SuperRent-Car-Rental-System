@@ -15,9 +15,6 @@ import java.util.ResourceBundle;
 
 public abstract class makeReservation extends Controller implements Initializable {
 
-    // TODO: Double check regexes (esp. char limits)
-    // TODO: Make DL matching case insensitive
-
     String LOCATION_INFO_TEMPLATE = "%s, %s";
     String TIME_INFO_TEMPLATE = "On %02d/%02d/%02d at %02d:%02d";
 
@@ -49,7 +46,7 @@ public abstract class makeReservation extends Controller implements Initializabl
     }
 
     private boolean validateDL() {
-        return dlField.getText().matches("[a-zA-Z0-9]{0,15}");
+        return dlField.getText().matches("[a-zA-Z0-9]{0,50}");
     }
 
     private boolean validateCell() {
@@ -57,11 +54,11 @@ public abstract class makeReservation extends Controller implements Initializabl
     }
 
     private boolean validateName() {
-        return nameField.getText().matches("[a-zA-Z\\s]{0,30}");
+        return nameField.getText().matches("[a-zA-Z\\s]{0,255}");
     }
 
     private boolean validateAdd() {
-        return dlField.getText().matches("[a-zA-Z0-9\\s]{0,50}");
+        return addField.getText().matches("[a-zA-Z0-9\\s]{0,255}");
     }
 
     abstract void postSuccessRes(Reservation r);
@@ -112,7 +109,7 @@ public abstract class makeReservation extends Controller implements Initializabl
         try {
             customer = qo.getCustomer(dlField.getText().trim());
         } catch (Exception e) {
-            e.printStackTrace();
+            // do nothing here
         }
         if (customer != null) {
             existingCustomer.setVisible(true);
@@ -125,7 +122,6 @@ public abstract class makeReservation extends Controller implements Initializabl
     };
 
     private Runnable makeReservation = () -> {
-        // TODO;
         String result = "Success! Your confirmation number is %d";
         if (dlField.getText().length() == 0 || !validateDL()) {
             result = "Please enter valid driver's license number";

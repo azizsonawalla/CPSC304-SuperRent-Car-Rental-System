@@ -56,8 +56,9 @@ public class clerkSubmitReturn extends Controller implements Initializable {
         vehicleType = qo.getVehicleType(vehicle.vtname);
         try {
             customer = qo.getCustomer(rental.dlicense);
+            if (customer == null) throw new Exception();
         } catch (Exception e) {
-            // TODO: Show error
+            showError("Failed to retrieve customer information. Please restart the application");
             return;
         }
         t = TimePeriod.getStartToNow(rental.timePeriod);

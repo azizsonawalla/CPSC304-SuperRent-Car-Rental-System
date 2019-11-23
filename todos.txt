@@ -5,3 +5,5 @@
 // TODO: Enable all buttons on refresh that get disabled at any point
 // TODO: Use long for large values everywhere
 // TODO: Make Database class into a singleton that uses a connection pool
+
+// TODO: Show error at beginning if screen size of device is too small

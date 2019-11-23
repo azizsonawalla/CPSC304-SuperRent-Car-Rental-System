@@ -7,6 +7,7 @@ public class Queries {
 
     public static class Create {
 
+        //TODO: Autoincrement confNo in Reservations table
         public static String CREATE_TABLE_RESERVATIONS = "CREATE TABLE IF NOT EXISTS Reservations(" +
                 "confNo INT, " +
                 "vtName CHAR(50) NOT NULL, " +
@@ -20,6 +21,7 @@ public class Queries {
                 "FOREIGN KEY (vtName) REFERENCES VehicleType(vtName) ON DELETE CASCADE, " +
                 "FOREIGN KEY (dLicense) REFERENCES Customer(dLicense) ON DELETE CASCADE);";
 
+        //TODO: Autoincrement rId in Reservation table
         public static String CREATE_TABLE_RENT = "CREATE TABLE IF NOT EXISTS Rent(" +
                 "rId INT, " +
                 "vLicense CHAR(10) NOT NULL, " +

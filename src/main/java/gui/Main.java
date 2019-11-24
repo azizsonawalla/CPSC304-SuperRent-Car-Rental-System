@@ -68,11 +68,11 @@ public class Main extends Application {
         fxml = Config.CUSTOMER_MAKE_RES;
         c = new customerMakeReservation(this);
         scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
-//
-//        // Clerk
-//        fxml = Config.CLERK_RESERVATION_RENTAL_SEARCH;
-//        c = new clerkReservationRentalSearch(this);
-//        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
+
+        // Clerk
+        fxml = Config.CLERK_RESERVATION_RENTAL_SEARCH;
+        c = new clerkReservationRentalSearch(this);
+        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
 //
 //        fxml = Config.CLERK_CAR_SEARCH;
 //        c = new clerkCarSearch(this);

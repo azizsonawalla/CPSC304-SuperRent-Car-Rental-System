@@ -272,11 +272,18 @@ public class Database {
     public List<Reservation> getReservationsWithHelper(TimePeriod t, Reservation r) throws Exception {
         String query = Queries.Reservation.GET_ACTIVE_RESERVATIONS;
 
-        if (r.confNum == -1) query.replace("confNo = ? AND ", "");
-        else query.replace("confNo = ? AND", "confNo = " + r.confNum + " AND");
+        if (r.confNum == -1) {
+            query = query.replace("confNo = ? AND ", "");
+        } else {
+            query = query.replace("confNo = ? AND", "confNo = " + r.confNum + " AND");
+        }
 
-        if (r.dlicense == null) query.replace("dLicense = ? AND ", "");
-        else query.replace("dLicense = ? AND ", "dLicense = " + r.dlicense + " AND ");
+        if (r.dlicense == null) {
+            query = query.replace("dLicense = ? AND ", "");
+        } else {
+            query = query.replace("dLicense = ? AND ", "dLicense = '" + r.dlicense + "' AND ");
+        }
+        Log.log(query);
 
         PreparedStatement ps = conn.prepareStatement(query);
         ps.setTimestamp(1, t.startDateAndTime);
@@ -301,7 +308,7 @@ public class Database {
             res.location = loc;
             reservations.add(res);
         }
-
+        Log.log(reservations.toString());
         return reservations;
     }
 
@@ -496,11 +503,17 @@ public class Database {
     public List<Rental> getRentalsWithHelper(TimePeriod timePeriod, Rental rental) throws Exception {
         String query = Queries.Rent.GET_ACTIVE_RENTALS;
 
-        if (rental.rid == -1) query.replace("rId = ? AND ", "");
-        else query.replace("rId = ? AND", "rId = " + rental.rid + " AND");
+        if (rental.rid == -1) {
+            query = query.replace("rId = ? AND ", "");
+        } else {
+            query = query.replace("rId = ? AND", "rId = " + rental.rid + " AND");
+        }
 
-        if (rental.dlicense == null) query.replace("dLicense = ? AND ", "");
-        else query.replace("dLicense = ? AND ", "dLicense = " + rental.dlicense + " AND ");
+        if (rental.dlicense == null) {
+            query = query.replace("dLicense = ? AND ", "");
+        } else {
+            query = query.replace("dLicense = ? AND ", "dLicense = '" + rental.dlicense + "' AND ");
+        }
 
         PreparedStatement ps = conn.prepareStatement(query);
         ps.setTimestamp(1, timePeriod.startDateAndTime);

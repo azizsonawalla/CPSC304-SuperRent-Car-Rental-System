@@ -97,7 +97,8 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
             this.currReservationSearchRes = qo.getReservationsWith(confNum, dl);
         } catch (Exception e) {
             showError("Error getting active reservation entries. Please restart the application.");
-            return;
+            throw new RuntimeException(e);
+//            return;
         }
         if (currReservationSearchRes.size() == 0) {
             reservationResults.setPlaceholder(NO_RESULTS_FOUND);

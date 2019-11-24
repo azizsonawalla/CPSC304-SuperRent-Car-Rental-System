@@ -28,7 +28,7 @@ public class Queries {
                 "toDateTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
                 "odometer INT NOT NULL, " +
                 "cardNo BIGINT NOT NULL, " +
-                "confNo INT NOT NULL UNIQUE, " +
+                "confNo INT NOT NULL, " +
                 "PRIMARY KEY (rId), " +
                 "FOREIGN KEY (vLicense) REFERENCES Vehicle(vLicense), " +
                 "FOREIGN KEY (cardNo) REFERENCES Card(cardNo), " +

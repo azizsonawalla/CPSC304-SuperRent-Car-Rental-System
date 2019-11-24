@@ -368,9 +368,9 @@ public class Database {
 
         if (t == null && vt == null && l == null){
             //If no filters are provided, return all the results
-            query = "SELECT * FROM Rent";
+            query = "SELECT * FROM Rent ";
         } else {
-            query = "SELECT * FROM Rent R WHERE ";
+            query = "SELECT * FROM Rent R, Reservations V WHERE R.confNo = V.confNo AND ";
             if (t != null) {
                 //Given start time (from t) is at the same time or after R.startDateAndTime AND is before R.endDateAndTime
                 //Given end time (from t) is at the same time before R.endDateAndTime AND is after R.startDateAndTime
@@ -378,12 +378,12 @@ public class Database {
                         "(R.toDateTime >= ? AND R.toDateTime < ?)) ";
                 marker = true;
             } if (vt != null) {
-                query += marker? "AND R.vtname = '" + vt.vtname + "' " :
-                        "R.vtname = '" + vt.vtname + "' ";
+                query += marker? "AND V.vtName = '" + vt.vtname + "' " :
+                        "V.vtname = '" + vt.vtname + "' ";
                 marker = true;
             } if (l != null) {
-                query += marker? "AND R.location = '" + l.location + "' " + "AND R.city = '" + l.city + "'":
-                        "R.location = '" + l.location + "' " + "AND R.city = '" + l.city + "'";
+                query += marker? "AND V.location = '" + l.location + "' " + "AND V.city = '" + l.city + "'":
+                        "V.location = '" + l.location + "' " + "AND V.city = '" + l.city + "'";
             }
         }
         PreparedStatement ps = conn.prepareStatement(query);
@@ -411,7 +411,7 @@ public class Database {
             int startOdometer = rs.getInt("odometer");
 
             Card card = getCardMatching(new Card(rs.getLong("cardNo"), null, null));
-            int confNo = rs.getInt("'confNo");
+            int confNo = rs.getInt("confNo");
 
             Rental rental = new Rental(rid, vlicense, dlicense, tm, startOdometer, card, confNo);
 
@@ -444,7 +444,7 @@ public class Database {
         int startOdometer = rs.getInt("odometer");
 
         Card card = getCardMatching(new Card(rs.getLong("cardNo"), null, null));
-        int confNo = rs.getInt("'confNo");
+        int confNo = rs.getInt("confNo");
 
         Rental rental = new Rental(rid, vlicense, dlicense, tm, startOdometer, card, confNo);
 
@@ -453,7 +453,7 @@ public class Database {
 
     }
 
-    /* Rental */
+    /* Return */
 
     /**
      * Add the given Return object to the return table in the database
@@ -468,10 +468,8 @@ public class Database {
         ps.setInt(1, r.rid);
         ps.setTimestamp(2, r.returnDateTime);
         ps.setInt(3, r.endOdometer);
-        if (r.fullTank == Return.TankStatus.FULL_TANK) ps.setBoolean(4, true);
-        else ps.setBoolean(4, false);
-        ps.setInt(5, r.cost);
-
+        ps.setBoolean(4, r.fullTank == Return.TankStatus.FULL_TANK);
+        ps.setDouble(5, r.cost);
 
         //execute the update
         ps.executeUpdate();
@@ -483,13 +481,67 @@ public class Database {
 
     }
 
+    public List<Return> getReturnsWith(TimePeriod t, VehicleType vt, Location l) throws Exception {
+        //Empty string to build query
+        String query;
+        //marker to indicate if a condition has been added to the WHERE clause (and if AND needs to be used)
+        boolean marker = false;
+
+        if (t == null && vt == null && l == null){
+            //If no filters are provided, return all the results
+            query = "SELECT * FROM Returns R ";
+        } else {
+            query = "SELECT * FROM Returns R, Rent N, Reservations V WHERE R.rId = N.rId AND N.confNo = V.confNo AND ";
+            if (t != null) {
+                //Given start time (from t) is at the same time or after R.startDateAndTime AND is before R.endDateAndTime
+                //Given end time (from t) is at the same time before R.endDateAndTime AND is after R.startDateAndTime
+                query += "(R.dateTime <= ? ) AND (R.dateTime >= ? )";
+                marker = true;
+            } if (vt != null) {
+                query += marker? "AND V.vtName = '" + vt.vtname + "' " :
+                        "V.vtname = '" + vt.vtname + "' ";
+                marker = true;
+            } if (l != null) {
+                query += marker? "AND V.location = '" + l.location + "' " + "AND V.city = '" + l.city + "'":
+                        "V.location = '" + l.location + "' " + "AND V.city = '" + l.city + "'";
+            }
+        }
+        PreparedStatement ps = conn.prepareStatement(query);
+        //Insert Timestamp values to prepared statement
+        if (t != null){
+            ps.setTimestamp(1, t.startDateAndTime);
+            ps.setTimestamp(2, t.endDateAndTime);
+
+        }
+        ResultSet rs = ps.executeQuery();
+
+        List<Return> returnList = new ArrayList<>();
+
+        while (rs.next()){
+            //Make a Rental object corresponding to a tuple queried from the database
+            int rid = rs.getInt("rId");
+            Timestamp returnDateTime = rs.getTimestamp("dateTime");
+            int endOdometer = rs.getInt("R.odometer");
+            Return.TankStatus tank = rs.getBoolean("fullTank")? Return.TankStatus.FULL_TANK : Return.TankStatus.NOT_FULL_TANK;
+            double cost = rs.getDouble("value");
+
+            Return ret = new Return(rid, returnDateTime, endOdometer,tank, cost);
+
+            //Add the reservation object to r
+            returnList.add(ret);
+        }
+        ps.close();
+        return returnList;
+    }
+
+
     /**
      * Update the values of the Return entry in the Return table that has the same primary key as the given
      * Return object. New values of Rental entry are values in r.
      * @param r updated values for Return entry
      * @throws Exception if there is an error updating entry, for example if entry doesn't exist already
      */
-    public void updateReturn(Return r) throws Exception {
+    public void updateReturn(Return r) throws Exception { // TODO: FIX if we need to use.
         PreparedStatement ps = conn.prepareStatement(Queries.Returns.GET_RETURN);
         ps.setInt(1, r.rid);
         ResultSet rs = ps.executeQuery();
@@ -502,7 +554,7 @@ public class Database {
         if (r.fullTank == Return.TankStatus.FULL_TANK) ps.setBoolean(3, true);
         else if (r.fullTank == Return.TankStatus.NOT_FULL_TANK) ps.setBoolean(3, false);
         else ps.setBoolean(3, rs.getBoolean("status"));
-        ps.setInt(4,r.cost!= -1? r.cost : rs.getInt("value"));
+        ps.setDouble(4,r.cost!= -1.? r.cost : rs.getDouble("value"));
         ps.setInt(5, r.rid);
 
         //execute the update
@@ -682,13 +734,13 @@ public class Database {
         //Set values for parameters in ps
         ps.setString(1, vt.vtname);
         ps.setString(2, vt.features);
-        ps.setInt(3, vt.wrate);
-        ps.setInt(4, vt.drate);
-        ps.setInt(5, vt.hrate);
-        ps.setInt(6, vt.wirate);
-        ps.setInt(7, vt.dirate);
-        ps.setInt(8, vt.hirate);
-        ps.setInt(9, vt.krate);
+        ps.setDouble(3, vt.wrate);
+        ps.setDouble(4, vt.drate);
+        ps.setDouble(5, vt.hrate);
+        ps.setDouble(6, vt.wirate);
+        ps.setDouble(7, vt.dirate);
+        ps.setDouble(8, vt.hirate);
+        ps.setDouble(9, vt.krate);
 
         //execute the update
         ps.executeUpdate();
@@ -714,13 +766,13 @@ public class Database {
         //Set values for parameters in psUpdate. Update if corresponding value in Reservation r is null, otherwise, keep unchanged
         ps = conn.prepareStatement(Queries.VehicleType.UPDATE_VEHICLE_TYPE);
         ps.setString(1, vt.features != null? vt.features: rs.getString("features"));
-        ps.setInt(2, vt.wrate != -1? vt.wrate: rs.getInt("wRate"));
-        ps.setInt(3, vt.drate != -1? vt.drate: rs.getInt("dRate"));
-        ps.setInt(4, vt.hrate != -1? vt.hrate: rs.getInt("hRate"));
-        ps.setInt(5, vt.wirate != -1? vt.wirate: rs.getInt("wInsRate"));
-        ps.setInt(6, vt.dirate != -1? vt.dirate: rs.getInt("dInsRate"));
-        ps.setInt(7, vt.hirate != -1? vt.hirate: rs.getInt("hInsRate"));
-        ps.setInt(8, vt.krate != -1? vt.krate: rs.getInt("kRate"));
+        ps.setDouble(2, vt.wrate != -1? vt.wrate: rs.getInt("wRate"));
+        ps.setDouble(3, vt.drate != -1? vt.drate: rs.getInt("dRate"));
+        ps.setDouble(4, vt.hrate != -1? vt.hrate: rs.getInt("hRate"));
+        ps.setDouble(5, vt.wirate != -1? vt.wirate: rs.getInt("wInsRate"));
+        ps.setDouble(6, vt.dirate != -1? vt.dirate: rs.getInt("dInsRate"));
+        ps.setDouble(7, vt.hirate != -1? vt.hirate: rs.getInt("hInsRate"));
+        ps.setDouble(8, vt.krate != -1? vt.krate: rs.getInt("kRate"));
         ps.setString(9, vt.vtname);
 
         //execute the update
@@ -1124,7 +1176,7 @@ public class Database {
         long CardNo = rs.getLong("cardNo");
         String cardName = rs.getString("cardName");
         Timestamp expDate = rs.getTimestamp("expDate");
-        Card cardFound = new Card(cardNo, cardName, expDate);
+        Card cardFound = new Card(CardNo, cardName, expDate);
 
         ps.close();
         return cardFound;
@@ -1152,8 +1204,29 @@ public class Database {
         ps.close();
 
         Log.log("Branch at " + l.city +  ", " + l.location + " successfully added");
+    }
 
+    /**
+     * Finds and returns the location entry with the same primary key as the card object given. Other
+     * attributes of the given object may be null. If no location found, returns null
+     * @throws Exception if there is any error getting results
+     */
+    public Location getLocationMatching(Location l) throws Exception {
+        PreparedStatement ps = conn.prepareStatement(Queries.Branch.GET_BRANCH);
+        ps.setString(1, l.city);
+        ps.setString(2, l.location);
+        ResultSet rs = ps.executeQuery();
 
+        if (!rs.next()) {
+            System.out.println("NOTE: Branch at" + l.toString() + " does not exist");
+            ps.close();
+            return null;
+        }
+
+        Location locationFound = new Location(rs.getString("city"), rs.getString("location"));
+
+        ps.close();
+        return locationFound;
     }
 
 

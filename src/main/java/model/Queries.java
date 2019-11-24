@@ -56,13 +56,13 @@ public class Queries {
         public static String CREATE_TABLE_VEHICLE_TYPE = "CREATE TABLE IF NOT EXISTS VehicleType(" +
                 "vtName CHAR(50), " +
                 "features CHAR(255) NOT NULL, " +
-                "wRate INT NOT NULL, " +
-                "dRate INT NOT NULL, " +
-                "hRate INT NOT NULL, " +
-                "wInsRate INT NOT NULL, " +
-                "dInsRate INT NOT NULL, " +
-                "hInsRate INT NOT NULL, " +
-                "kRate INT NOT NULL, " +
+                "wRate DOUBLE NOT NULL, " +
+                "dRate DOUBLE NOT NULL, " +
+                "hRate DOUBLE NOT NULL, " +
+                "wInsRate DOUBLE NOT NULL, " +
+                "dInsRate DOUBLE NOT NULL, " +
+                "hInsRate DOUBLE NOT NULL, " +
+                "kRate DOUBLE NOT NULL, " +
                 "PRIMARY KEY (vtName))";
 
         public static String CREATE_TABLE_CUSTOMER = "CREATE TABLE IF NOT EXISTS Customer(" +
@@ -77,8 +77,8 @@ public class Queries {
                 "rId INT NOT NULL, " +
                 "dateTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
                 "odometer INT NOT NULL, " +
-                "fullTank BOOL NOT NULL DEFAULT '0'," +
-                "value INT NOT NULL NOT NULL," +
+                "fullTank BOOL NOT NULL," +
+                "value DOUBLE NOT NULL NOT NULL," +
                 "PRIMARY KEY (rId)," +
                 "FOREIGN KEY (rId) REFERENCES Rent(rId) on DELETE CASCADE)";
 
@@ -223,21 +223,21 @@ public class Queries {
     public static class Returns {
 
         public static String ADD_RETURN =
-                "INSERT INTO Return(rId, dateTime, odometer, fullTank, value)" +
+                "INSERT INTO Returns(rId, dateTime, odometer, fullTank, value) " +
                         "VALUES (?, ?, ?, ?, ?)";
 
         public static String UPDATE_RETURN =
-                "UPDATE Return" +
-                        "SET DateTime = ?, odometer = ?, fullTank = ?, value = ?" +
+                "UPDATE Returns" +
+                        "SET dateTime = ?, odometer = ?, fullTank = ?, value = ?" +
                         "WHERE rId = ?";
 
         public static String DELETE_RETURN =
-                "DELETE FROM Return " +
+                "DELETE FROM Returns " +
                         "WHERE rId = ?";
 
         public static String GET_RETURN =
                 "SELECT * " +
-                        "FROM RETURN " +
+                        "FROM Returns " +
                         "WHERE rId = ?";
 
     }
@@ -259,7 +259,7 @@ public class Queries {
 
         public static String GET_CARD =
                 "SELECT * " +
-                        "FROM Card" +
+                        "FROM Card " +
                         "WHERE cardNo = ?";
     }
 
@@ -280,7 +280,7 @@ public class Queries {
 
         public static String GET_BRANCH =
                 "SELECT * " +
-                        "FROM BRANCH " +
+                        "FROM Branch " +
                         "WHERE city = ? AND location = ?";
     }
 

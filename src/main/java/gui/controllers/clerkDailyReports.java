@@ -98,6 +98,7 @@ public class clerkDailyReports extends Controller implements Initializable {
             }
             if (rentalReport.totalRentalsToday == 0) {
                 entries.setPlaceholder(new Label("No rentals were started today"));
+                totalCount.setText(String.format("Total Rentals Today from %s = %d", selectedLocation, 0));
                 return;
             }
 
@@ -166,6 +167,8 @@ public class clerkDailyReports extends Controller implements Initializable {
             }
             if (returnReport.totalReturnsToday == 0) {
                 entries.setPlaceholder(new Label("No returns were completed today"));
+                totalCount.setText(String.format("Total Returns Today at %s = %d", selectedLocation, 0));
+                totalRevenue.setText(String.format("Total Revenue Today from Returns at %s = $%.2f", selectedLocation, 0.0));
                 return;
             }
 

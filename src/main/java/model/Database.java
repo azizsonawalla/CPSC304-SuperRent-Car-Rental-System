@@ -335,6 +335,12 @@ public class Database {
      */
     public Rental addRental(Rental r) throws Exception {
 
+        // Check if Card associated with rental exists. If not, add it first
+        Card c = getCardMatching(r.card);
+        if (c == null) {
+            addCard(r.card);
+        }
+
         PreparedStatement ps = conn.prepareStatement(Queries.Rent.ADD_RENTAL, Statement.RETURN_GENERATED_KEYS);
 
         //Set values for parameters in ps

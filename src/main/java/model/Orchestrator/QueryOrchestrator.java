@@ -240,7 +240,6 @@ public class QueryOrchestrator {
         List<Reservation> reservations = db.getReservationsWith(null, null, l);
 
         List<ReturnReportEntry> returnsCreatedToday = new ArrayList<>();
-
         for (Return ret : returns) {
             for (Reservation reservation: reservations) {
                 for (Rental rental : rentals) {

@@ -9,12 +9,6 @@ Bugs George found
 
 // Clerk Car Search
 
-// TODO: Change all reservation references to rentals
-
-// TODO: Investigate card number bug
-
 // TODO: Add to error messages "what to do"
-
-// TODO: Daily reports count/revenue sum not updated if result is empty
 
 // TODO: Address allow special characters

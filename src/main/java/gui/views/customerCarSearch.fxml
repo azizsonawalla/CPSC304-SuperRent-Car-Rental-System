@@ -20,7 +20,7 @@
             <Font name="Arial" size="43.0" />
          </font>
       </Label>
-      <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="33.0" layoutY="117.0" prefHeight="31.0" prefWidth="211.0" text="Car Search Results" textAlignment="RIGHT">
+      <Label contentDisplay="RIGHT" layoutX="33.0" layoutY="117.0" prefHeight="31.0" prefWidth="634.0" text="Vehicle Types and Locations Available:" textAlignment="RIGHT">
          <font>
             <Font name="Arial" size="24.0" />
          </font>

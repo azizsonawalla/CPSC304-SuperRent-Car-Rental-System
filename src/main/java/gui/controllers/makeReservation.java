@@ -57,7 +57,7 @@ public abstract class makeReservation extends Controller implements Initializabl
     }
 
     private boolean validateAdd() {
-        return addField.getText().matches("[a-zA-Z0-9\\s]{0,255}");
+        return addField.getText().matches("[a-zA-Z0-9\\s:#,.]{0,255}");
     }
 
     abstract void postSuccessRes(Reservation r);
@@ -95,6 +95,10 @@ public abstract class makeReservation extends Controller implements Initializabl
 
     private Runnable fillCustomerInfoIfAvailable = () -> {
         if(currentDLInput.equals(dlField.getText().trim())) return;
+        cellField.setDisable(false);
+        nameField.setDisable(false);
+        addField.setDisable(false);
+
         currentDLInput = dlField.getText().trim();
 
         existingCustomer.setVisible(false);
@@ -113,8 +117,11 @@ public abstract class makeReservation extends Controller implements Initializabl
         if (customer != null) {
             existingCustomer.setVisible(true);
             cellField.setText(Long.toString(customer.cellphone));
+            cellField.setDisable(true);
             nameField.setText(customer.name);
+            nameField.setDisable(true);
             addField.setText(customer.address);
+            addField.setDisable(true);
         } else {
             Platform.runLater(clearAllButDL);
         }

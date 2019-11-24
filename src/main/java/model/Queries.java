@@ -325,8 +325,6 @@ public class Queries {
     public static class CustomerTransactions {
         //TODO: Find the number of vehicles for any combination of: car type, location, and time interval
 
-        //TODO: Decide on/generate confirmation number
-
     }
 
     public static class ClerkTransactions {

@@ -126,7 +126,7 @@ public class carSearch extends Controller implements Initializable {
             branchSelector.getItems().add(ALL_BRANCHES);
             branchSelector.setValue(ALL_BRANCHES);
         } catch (Exception e) {
-            // TODO: show error
+            showError("Failed to get list of all branches. Please restart the application.");
             Log.log("Error refreshing branch list on customer car search screen: " + e.getMessage());
         } finally {
             lock.unlock();
@@ -145,7 +145,7 @@ public class carSearch extends Controller implements Initializable {
             vtSelector.getItems().add(ALL_VT);
             vtSelector.setValue(ALL_VT);
         } catch (Exception e) {
-            // TODO: Show error
+            showError("Failed to get list of all vehicle types. Please restart the application.");
             Log.log("Error refreshing vt list on customer car search screen: " + e.getMessage());
             throw new RuntimeException(e);
         } finally {
@@ -238,7 +238,7 @@ public class carSearch extends Controller implements Initializable {
                     searchResults.setPlaceholder(new Label("No results matched your search"));
                 }
             } catch (Exception e) {
-                // TODO: Show error
+                showError("Error refreshing search results in table: " + e.getMessage());
                 Log.log("Error refreshing search results in table: " + e.getMessage());
                 throw new RuntimeException(e);
             } finally {
@@ -278,6 +278,7 @@ public class carSearch extends Controller implements Initializable {
                 searchResultDetails.setPlaceholder(new Text("No vehicles in this category"));
             }
         } catch (Exception e) {
+            showError("Error refreshing vehicle details: " + e.getMessage());
             Log.log("Error showing vehicle details: " + e.getMessage());
         } finally {
             lock.unlock();

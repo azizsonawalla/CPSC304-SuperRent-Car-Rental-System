@@ -1,6 +1,7 @@
 // TODO: Fill up the readme
 
-// TODO: Use long for large values everywhere
-// TODO: Make Database class into a singleton that uses a connection pool
-
 // TODO: Show error at beginning if screen size of device is too small
+
+Bugs George found
+
+//TODO: Option selector in car search should be the same

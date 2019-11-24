@@ -7,7 +7,6 @@ import model.Util.Log;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 /**
  * Interface for the SuperRent database
@@ -275,10 +274,14 @@ public class Database {
     }
 
     /**
-     * Helper method for QueryOrchestrator.getReservationsWith. Finds all active reservations with r.confNum and
-     * r.dlicense.
+     * Returns all active Reservations. Active reservations are reservations that have an end time greater than the
+     * current time in milliseconds, and also don't have any rental associated with them. If r.confNum is not null,
+     * filters results matching r.confNum. If r.dlicense is not null, filters results matching r.dlicense.
+     * @param r
+     * @return
+     * @throws Exception
      */
-    public List<Reservation> getReservationsWithHelper(TimePeriod t, Reservation r) throws Exception {
+    public List<Reservation> getActiveReservationsMatching(Reservation r) throws Exception {
         String query = Queries.Reservation.GET_ACTIVE_RESERVATIONS;
 
         if (r.confNum == -1) {
@@ -293,8 +296,10 @@ public class Database {
             query = query.replace("dLicense = ? AND ", "dLicense = '" + r.dlicense + "' AND ");
         }
 
+        Log.log(query);
+
         PreparedStatement ps = conn.prepareStatement(query);
-        ps.setTimestamp(1, t.startDateAndTime);
+        ps.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
         ResultSet rs = ps.executeQuery();
 
         List<Reservation> reservations = new ArrayList<>();

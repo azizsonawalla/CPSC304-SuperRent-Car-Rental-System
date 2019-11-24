@@ -137,7 +137,8 @@ public class Queries {
         public static String GET_ACTIVE_RESERVATIONS =
                 "SELECT * " +
                         "FROM Reservations " +
-                        "WHERE confNo = ? AND dLicense = ? AND ? BETWEEN fromDateTime AND toDateTime";
+                        "WHERE confNo = ? AND dLicense = ? AND ? <= toDateTime " +
+                        "AND confNo NOT IN (SELECT r.confNo FROM Rent r)";
 
         public static String GET_RECENT_RESERVATIONS =
                         "SELECT * " +
@@ -172,7 +173,8 @@ public class Queries {
         public static String GET_ACTIVE_RENTALS =
                 "SELECT * " +
                         "FROM Rent " +
-                        "WHERE rId = ? AND dLicense = ? AND ? BETWEEN fromDateTime AND toDateTime";
+                        "WHERE rId = ? AND dLicense = ? AND ? <= toDateTime " +
+                        "AND rId NOT IN (SELECT rId FROM Returns)";
 
         public static String GET_RENTALS_TODAY =
                 "SELECT * " +

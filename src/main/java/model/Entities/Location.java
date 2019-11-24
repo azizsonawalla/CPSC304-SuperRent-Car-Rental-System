@@ -19,6 +19,6 @@ public class Location {
 
     public static Location fromString(String input) throws Exception {
         String[] parts = input.trim().split(",");
-        return new Location(parts[1], parts[0]);
+        return new Location(parts[1].trim(), parts[0].trim());
     }
 }

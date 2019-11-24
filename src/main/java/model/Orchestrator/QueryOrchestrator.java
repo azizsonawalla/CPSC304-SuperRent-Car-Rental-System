@@ -62,13 +62,18 @@ public class QueryOrchestrator {
         for (Reservation r : reservations) {
             for (VTSearchResult vtSearchResult : vtSearchResults) {
                 if (vtSearchResult.vt.vtname.equals(r.vtName) &&
-                        vtSearchResult.location.city.equals(r.location.city) &&
-                        vtSearchResult.location.location.equals(r.location.location))
+                    vtSearchResult.location.city.equals(r.location.city) &&
+                    vtSearchResult.location.location.equals(r.location.location))
                     vtSearchResult.numAvail--;
             }
         }
 
-        return vtSearchResults;
+        List<VTSearchResult> filteredVtSearchResults = new ArrayList<>();
+        for (VTSearchResult vtsr: vtSearchResults) {
+            if (vtsr.numAvail > 0) filteredVtSearchResults.add(vtsr);
+        }
+
+        return filteredVtSearchResults;
 
     }
 
@@ -122,8 +127,7 @@ public class QueryOrchestrator {
         // if confNum == -1, then don't filter by confNum
         // if customerDL == "", then don't filer by customerDL
         Timestamp now = TimePeriod.getNow();
-        return db.getReservationsWithHelper(new TimePeriod(now, now),
-                new Reservation(confNum, null, null, null, customerDL));
+        return db.getActiveReservationsMatching(new Reservation(confNum, null, null, null, customerDL));
     }
 
     public List<Rental> getRentalsWith(int rentalId, String customerDL) throws Exception {

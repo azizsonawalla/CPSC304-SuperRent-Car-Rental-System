@@ -8,9 +8,9 @@
 Bugs George found
 
 //TODO: Debug selecting available reservations
-//TODO: Filter out the search results with 0 available
 //TODO: Clerk make reservation without rental should not be able to choose start time date. Should default to current
 //TODO: Option selector in car search should be the same
 //TODO: Once Rental is started for a Reservation, do not show it in the Active Reservations (Clerk view)
 //TODO: When a vehicle is returned, do not show it in the Ongoing Rentals (Clerk view)
 //TODO: Debug Branch filter for daily report
+//TODO: Show features in car search

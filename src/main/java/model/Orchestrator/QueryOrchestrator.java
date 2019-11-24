@@ -5,10 +5,7 @@ import model.Database;
 import model.Entities.*;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * This class serves as the intermediate layer between the UI controller and the Database interface class.
@@ -132,19 +129,18 @@ public class QueryOrchestrator {
     }
 
 
-    public List<Reservation> getReservationsWith(int confNum, String customerDL) throws Exception{ // TODO: This will be updated to filter only active reservations
+    public List<Reservation> getReservationsWith(int confNum, String customerDL) throws Exception{
         // if confNum == -1, then don't filter by confNum
         // if customerDL == "", then don't filer by customerDL
-        Reservation r = new Reservation(confNum, null, null, null, customerDL);
-
-        return db.getReservationMatching(r);
+        return db.getReservationsWithHelper(new TimePeriod(TimePeriod.getNow(), TimePeriod.getNow()),
+                new Reservation(confNum, null, null, null, customerDL));
     }
 
-    public List<Rental> getRentalsWith(int rentalId, String customerDL) { // TODO: This will be updated to filter only active reservations
-        // TODO: Implement this
+    public List<Rental> getRentalsWith(int rentalId, String customerDL) throws Exception {
         // if rentalId == -1, then don't filter by confNum
         // if customerDL == "", then don't filer by customerDL
-        return Arrays.asList(new Rental(1, "dummyplates", "dummyDL", t, 0, null, 1));
+        return db.getRentalsWithHelper(new TimePeriod(TimePeriod.getNow(), TimePeriod.getNow()),
+                new Rental(rentalId, null, customerDL, null, -1, null, -1));
     }
 
     /**
@@ -182,36 +178,106 @@ public class QueryOrchestrator {
         db.updateVehicle(v);
     }
 
-    public RentalReport getDailyRentalReport(Location l) {
-        // TODO
+    public RentalReport getDailyRentalReport(Location l) throws Exception {
+        //region Sample Data
+        //        RentalReport report = new RentalReport();
+        //        report.countOfRentalsByLocation = new HashMap<>();
+        //        report.countOfRentalsByLocation.put(L1, 0);
+        //        report.countOfRentalsByLocation.put(L2, 5);
+        //        report.countOfRentalsByVT = new HashMap<>();
+        //        report.countOfRentalsByVT.put(VT1, 1);
+        //        report.countOfRentalsByVT.put(VT2, 3);
+        //        report.rentalsStartedToday = new HashMap<>();
+        //        report.rentalsStartedToday.put(new Reservation(1, "dummyvt", t, L1, "dummyDL" ),
+        //                new Rental(1, "dummyplates", "dummyDL", t, 0, null, 1));
+        //        report.totalRentalsToday = 1;
+        //endregion
+
+        Timestamp now = TimePeriod.getNow();
+        Timestamp todayMidnight = new Timestamp(now.getYear(), now.getMonth(), now.getDate(),0, 0, 0, 0);
+        Timestamp today1159 = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), 23, 59, 59, 0);
+        TimePeriod today = new TimePeriod(todayMidnight, today1159);
+        List<Rental> rentals = db.getRentalsStartedToday(today);
+        List<Reservation> reservations = db.getReservationsWith(null, null, null);
+
+        List<Pair<Reservation, Rental>> rentalsStartedToday = new ArrayList<>();
+
+        for (Rental rental : rentals) {
+            for (Reservation reservation: reservations) {
+                if (rental.confNo == reservation.confNum){
+                    rentalsStartedToday.add(new Pair<>(reservation, rental));
+                }
+            }
+        }
+
+        Collections.sort(rentalsStartedToday, new Comparator<Pair<Reservation, Rental>>() {
+            @Override
+            public int compare(Pair<Reservation, Rental> o1, Pair<Reservation, Rental> o2) {
+                //Compare the locations
+                int locationComparison = o1.getKey().location.toString().compareTo(o2.getKey().location.toString());
+                //If the locations are not the same, return the location comparison
+                if (locationComparison != 0) return locationComparison;
+
+                //If the locations are the same, compare by vehicle
+                int vtTypeComparison = o1.getKey().vtName.compareTo(o2.getKey().vtName);
+                return vtTypeComparison;
+            }
+        });
+
+        Map<String, Integer> countOfRentalsByVT = new HashMap<>();
+        Map<Location, Integer> countOfRentalsByLocation = new HashMap<>();
+        for (Pair<Reservation, Rental> RR : rentalsStartedToday){
+            if (countOfRentalsByVT.get(RR.getKey().vtName) != null) {
+                countOfRentalsByVT.put(RR.getKey().vtName , countOfRentalsByVT.get(RR.getKey().vtName) + 1);
+            } else {
+                countOfRentalsByVT.put(RR.getKey().vtName , 0);
+            }
+
+            if (countOfRentalsByLocation.get(new Location(RR.getKey().location.city, RR.getKey().location.location)) != null) {
+                countOfRentalsByLocation.put(new Location(RR.getKey().location.city, RR.getKey().location.location),
+                        countOfRentalsByLocation.get(new Location(RR.getKey().location.city, RR.getKey().location.location)) + 1);
+            } else {
+                countOfRentalsByLocation.put(new Location(RR.getKey().location.city, RR.getKey().location.location), 0);
+            }
+        }
+
+        Integer totalRentalsToday = rentalsStartedToday.size();
+
         RentalReport report = new RentalReport();
-        report.countOfRentalsByLocation = new HashMap<>();
-        report.countOfRentalsByLocation.put(L1, 0);
-        report.countOfRentalsByLocation.put(L2, 5);
-        report.countOfRentalsByVT = new HashMap<>();
-        report.countOfRentalsByVT.put(VT1, 1);
-        report.countOfRentalsByVT.put(VT2, 3);
-        report.rentalsStartedToday = new HashMap<>();
-        report.rentalsStartedToday.put(new Reservation(1, "dummyvt", t, L1, "dummyDL" ),
-                new Rental(1, "dummyplates", "dummyDL", t, 0, null, 1));
-        report.totalRentalsToday = 1;
+        report.rentalsStartedToday = rentalsStartedToday;
+        report.countOfRentalsByVT = countOfRentalsByVT;
+        report.countOfRentalsByLocation = countOfRentalsByLocation;
+        report.totalRentalsToday = totalRentalsToday;
+
         return report;
     }
 
     public ReturnReport getDailyReturnReport(Location l) {
         // TODO
+        //region Sample Data
+//        ReturnReport report = new ReturnReport();
+//        report.breakDownByLocation = new HashMap<>();
+//        report.breakDownByLocation.put(L1, new Pair<>(0, 0.0));
+//        report.breakDownByLocation.put(L3, new Pair<>(5, 100.6));
+//        report.breakDownByVT = new HashMap<>();
+//        report.breakDownByVT.put(VT1, new Pair<>(1, 0.0));
+//        report.breakDownByVT.put(VT2, new Pair<>(4, 5.0));
+//        report.returnsCreatedToday = new HashMap<>();
+//        report.returnsCreatedToday.put( new Rental(1, "dummyplates", "dummyDL", t, 0, null, 1),
+//                                        new Return(1, new Timestamp(System.currentTimeMillis()), 1, Return.TankStatus.FULL_TANK, 566));
+//        report.totalReturnsRevenueToday = 200.5;
+//        report.totalReturnsToday = 1;
+        //endregion
+
+        Timestamp now = TimePeriod.getNow();
+        Timestamp todayMidnight = new Timestamp(now.getYear(), now.getMonth(), now.getDate(),0, 0, 0, 0);
+        Timestamp today1159 = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), 23, 59, 59, 0);
+        TimePeriod today = new TimePeriod(todayMidnight, today1159);
+
+
+
         ReturnReport report = new ReturnReport();
-        report.breakDownByLocation = new HashMap<>();
-        report.breakDownByLocation.put(L1, new Pair<>(0, 0.0));
-        report.breakDownByLocation.put(L3, new Pair<>(5, 100.6));
-        report.breakDownByVT = new HashMap<>();
-        report.breakDownByVT.put(VT1, new Pair<>(1, 0.0));
-        report.breakDownByVT.put(VT2, new Pair<>(4, 5.0));
-        report.returnsCreatedToday = new HashMap<>();
-        report.returnsCreatedToday.put( new Rental(1, "dummyplates", "dummyDL", t, 0, null, 1),
-                                        new Return(1, new Timestamp(System.currentTimeMillis()), 1, Return.TankStatus.FULL_TANK, 566));
-        report.totalReturnsRevenueToday = 200.5;
-        report.totalReturnsToday = 1;
+
         return report;
     }
 }

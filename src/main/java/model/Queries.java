@@ -123,7 +123,7 @@ public class Queries {
         //query to update reservations
         public static String UPDATE_RESERVATION =
                 "UPDATE Reservations " +
-                        "SET vtname = ?, dlicense = ?, fromDateTime = ?, toDatetime = ?, city = ?, location = ? " +
+                        "SET vtname = ?, dLicense = ?, fromDateTime = ?, toDatetime = ?, city = ?, location = ? " +
                         "WHERE confNo = ?";
 
         //query to delete reservations
@@ -132,11 +132,18 @@ public class Queries {
                         "WHERE confNo = ?";
 
         //get reservations matching
-        public static String GET_RESERVATIONS_MATCHING =
-                "";
+        public static String GET_RESERVATION =
+                "SELECT * " +
+                        "FROM Reservation " +
+                        "WHERE confNo = ?";
+
+        public static String GET_ACTIVE_RESERVATIONS =
+                "SELECT * " +
+                        "FROM Reservations " +
+                        "WHERE confNo = ? AND dLicense = ? AND ? BETWEEN fromDateTime AND toDateTime";
 
     }
-    //the diving bell and the butterfly
+
     public static class Rent {
 
 
@@ -156,8 +163,18 @@ public class Queries {
 
         public static String GET_RENTAL =
                 "SELECT * " +
-                        "FROM RENT " +
+                        "FROM Rent " +
                         "WHERE rId = ?";
+
+        public static String GET_ACTIVE_RENTALS =
+                "SELECT * " +
+                        "FROM Rent " +
+                        "WHERE rId = ? AND dLicense = ? AND ? BETWEEN fromDateTime AND toDateTime";
+
+        public static String GET_RENTALS_TODAY =
+                "SELECT * " +
+                        "FROM Rent R " +
+                        "WHERE ? <= R.fromDateTime AND ? >= R.toDateTime";
 
         }
 

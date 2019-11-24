@@ -7,6 +7,7 @@ public class Queries {
 
     public static class Create {
 
+        //TODO: Autoincrement confNo in Reservations table
         public static String CREATE_TABLE_RESERVATIONS = "CREATE TABLE IF NOT EXISTS Reservations(" +
                 "confNo INT, " +
                 "vtName CHAR(50) NOT NULL, " +
@@ -20,6 +21,7 @@ public class Queries {
                 "FOREIGN KEY (vtName) REFERENCES VehicleType(vtName) ON DELETE CASCADE, " +
                 "FOREIGN KEY (dLicense) REFERENCES Customer(dLicense) ON DELETE CASCADE)";
 
+        //TODO: Autoincrement rId in Reservation table
         public static String CREATE_TABLE_RENT = "CREATE TABLE IF NOT EXISTS Rent(" +
                 "rId INT, " +
                 "vLicense CHAR(10) NOT NULL, " +
@@ -120,7 +122,7 @@ public class Queries {
         //query to update reservations
         public static String UPDATE_RESERVATION =
                 "UPDATE Reservations " +
-                        "SET vtname = ?, dlicense = ?, fromDateTime = ?, toDatetime = ?, city = ?, location = ? " +
+                        "SET vtname = ?, dLicense = ?, fromDateTime = ?, toDatetime = ?, city = ?, location = ? " +
                         "WHERE confNo = ?";
 
         //query to delete reservations
@@ -129,8 +131,15 @@ public class Queries {
                         "WHERE confNo = ?";
 
         //get reservations matching
-        public static String GET_RESERVATIONS_MATCHING =
-                "";
+        public static String GET_RESERVATION =
+                "SELECT * " +
+                        "FROM Reservation " +
+                        "WHERE confNo = ?";
+
+        public static String GET_ACTIVE_RESERVATIONS =
+                "SELECT * " +
+                        "FROM Reservations " +
+                        "WHERE confNo = ? AND dLicense = ? AND ? BETWEEN fromDateTime AND toDateTime";
 
     }
     //the diving bell and the butterfly
@@ -155,6 +164,16 @@ public class Queries {
                 "SELECT * " +
                         "FROM Rent " +
                         "WHERE rId = ?";
+
+        public static String GET_ACTIVE_RENTALS =
+                "SELECT * " +
+                        "FROM Rent " +
+                        "WHERE rId = ? AND dLicense = ? AND ? BETWEEN fromDateTime AND toDateTime";
+
+        public static String GET_RENTALS_TODAY =
+                "SELECT * " +
+                        "FROM Rent R " +
+                        "WHERE ? <= R.fromDateTime AND ? >= R.toDateTime";
 
         }
 
@@ -282,6 +301,10 @@ public class Queries {
                 "SELECT * " +
                         "FROM Branch " +
                         "WHERE city = ? AND location = ?";
+
+        public static String GET_ALL_BRANCHS =
+                "SELECT * " +
+                        "FROM Branch ";
     }
 
     public static class CustomerTransactions {

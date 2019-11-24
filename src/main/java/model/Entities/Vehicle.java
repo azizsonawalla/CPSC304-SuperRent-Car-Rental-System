@@ -20,6 +20,10 @@ public class Vehicle {
         this.location = location;
     }
 
+    public Vehicle(String vlicense){
+        this.vlicense = vlicense;
+    }
+
     public Vehicle(){
 
     }

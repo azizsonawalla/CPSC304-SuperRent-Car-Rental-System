@@ -21,7 +21,7 @@
          </font>
       </Label>
       <Button layoutX="245.0" layoutY="26.0" mnemonicParsing="false" onAction="#switchToCustomer" prefHeight="61.0" prefWidth="211.0" text="Switch to Customer User" />
-       <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="29.0" layoutY="117.0" prefHeight="31.0" prefWidth="211.0" text="Car Search Results" textAlignment="RIGHT">
+       <Label contentDisplay="RIGHT" layoutX="29.0" layoutY="117.0" prefHeight="31.0" prefWidth="634.0" text="Vehicle Types and Locations Available:" textAlignment="RIGHT">
            <font>
                <Font name="Arial" size="24.0" />
            </font>
@@ -47,12 +47,12 @@
                <Font name="Arial" size="14.0" />
            </font>
        </Label>
-       <Label contentDisplay="CENTER" layoutX="706.0" layoutY="392.0" prefHeight="22.0" prefWidth="260.0" text="Select Reservation End Date">
+       <Label contentDisplay="CENTER" layoutX="706.0" layoutY="392.0" prefHeight="22.0" prefWidth="260.0" text="Select Rental End Date">
            <font>
                <Font name="Arial" size="14.0" />
            </font>
        </Label>
-       <Label contentDisplay="CENTER" layoutX="703.0" layoutY="471.0" prefHeight="22.0" prefWidth="260.0" text="Select Reservation End Time">
+       <Label contentDisplay="CENTER" layoutX="703.0" layoutY="471.0" prefHeight="22.0" prefWidth="260.0" text="Select Rental End Time">
            <font>
                <Font name="Arial" size="14.0" />
            </font>
@@ -71,7 +71,7 @@
        <ComboBox fx:id="endMinute" layoutX="815.0" layoutY="510.0" prefHeight="25.0" prefWidth="63.0" />
        <ComboBox fx:id="endAM" layoutX="891.0" layoutY="510.0" prefHeight="25.0" prefWidth="70.0" />
        <Button fx:id="searchButton" layoutX="702.0" layoutY="561.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="260.0" text="Search" />
-       <Label contentDisplay="RIGHT" layoutX="33.0" layoutY="462.0" prefHeight="31.0" prefWidth="428.0" text="Select option from above to see details:" textAlignment="RIGHT">
+       <Label contentDisplay="RIGHT" layoutX="33.0" layoutY="455.0" prefHeight="31.0" prefWidth="428.0" text="Select option from above to see details:" textAlignment="RIGHT">
            <font>
                <Font name="Arial" size="24.0" />
            </font>
@@ -91,16 +91,16 @@
        <ComboBox fx:id="endMonth" layoutX="816.0" layoutY="428.0" prefHeight="25.0" prefWidth="63.0" />
        <ComboBox fx:id="endYear" layoutX="892.0" layoutY="428.0" prefHeight="25.0" prefWidth="70.0" />
        <ComboBox fx:id="startResWithOption" layoutX="703.0" layoutY="658.0" prefHeight="38.0" prefWidth="59.0" />
-       <Button fx:id="startReservationButton" layoutX="778.0" layoutY="658.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="187.0" text="Start Reservation &gt;" />
+       <Button fx:id="startReservationButton" layoutX="778.0" layoutY="658.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="187.0" text="Start Rental &gt;" />
        <Label contentDisplay="CENTER" layoutX="703.0" layoutY="625.0" prefHeight="22.0" prefWidth="260.0" text="Choose option from results to continue:">
            <font>
                <Font name="Arial" size="14.0" />
            </font>
        </Label>
-       <ComboBox fx:id="seeDetailsForOption" layoutX="471.0" layoutY="459.0" prefHeight="38.0" prefWidth="59.0" />
+       <ComboBox fx:id="seeDetailsForOption" layoutX="471.0" layoutY="452.0" prefHeight="38.0" prefWidth="59.0" />
       <TableView fx:id="searchResults" layoutX="28.0" layoutY="168.0" prefHeight="249.0" prefWidth="634.0" />
       <TableView fx:id="searchResultDetails" layoutX="28.0" layoutY="507.0" prefHeight="249.0" prefWidth="634.0" />
-      <Label fx:id="rentalStartTime" contentDisplay="CENTER" layoutX="706.0" layoutY="348.0" prefHeight="22.0" prefWidth="260.0" text="Select Reservation End Date">
+      <Label fx:id="rentalStartTime" contentDisplay="CENTER" layoutX="706.0" layoutY="348.0" prefHeight="22.0" prefWidth="260.0" text="DD/MM/YY 00:00:00">
          <font>
             <Font name="Arial" size="14.0" />
          </font>

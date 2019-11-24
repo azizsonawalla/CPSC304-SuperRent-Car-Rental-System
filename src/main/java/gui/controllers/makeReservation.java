@@ -15,12 +15,10 @@ import java.util.ResourceBundle;
 
 public abstract class makeReservation extends Controller implements Initializable {
 
-    // TODO: replace error result with show error
-
     private String currentDLInput = "";
 
     @FXML private Button backToSearchButton, makeResButton;
-    @FXML private Label existingCustomer, resultLine, invalidDL, vtlabel, locationlabel, startlabel, endlabel;
+    @FXML private Label existingCustomer, resultLine, vtlabel, locationlabel, startlabel, endlabel;
     @FXML private TextField dlField, nameField, cellField, addField;
 
     public makeReservation(Main main) {
@@ -39,25 +37,64 @@ public abstract class makeReservation extends Controller implements Initializabl
         Platform.runLater(fillReservationDetails);
         Platform.runLater(clearAllFields);
         resultLine.setVisible(false);
-        invalidDL.setVisible(false);
         existingCustomer.setVisible(false);
         makeResButton.setDisable(false);
     }
 
-    private boolean validateDL() {
-        return dlField.getText().matches("[a-zA-Z0-9]{0,50}");
+    private boolean validateDL(boolean enforceNonZero) {
+        boolean res = dlField.getText().matches("[a-zA-Z0-9]{0,50}")
+                        && (!enforceNonZero || dlField.getText().trim().length() > 0);
+        if (!res) showError("Invalid input for driver's license. Must be 1-50 alphanumric chars only.");
+        return res;
     }
 
     private boolean validateCell() {
-        return cellField.getText().matches("[0-9]{10}");
+        boolean res = cellField.getText().matches("[0-9]{10}");
+        if (!res) showError("Invalid input for cellphone. Must be 10 digits.");
+        return res;
     }
 
     private boolean validateName() {
-        return nameField.getText().matches("[a-zA-Z\\s]{0,255}");
+        boolean res = nameField.getText().matches("[a-zA-Z\\s]{0,255}");
+        if (!res) showError("Invalid input for name. Must be up to 255 chars with uppercase/lowercase alphabets and spaces only.");
+        return res;
     }
 
     private boolean validateAdd() {
-        return addField.getText().matches("[a-zA-Z0-9\\\\s:#,.]{0,255}");
+        boolean res = addField.getText().matches("[a-zA-Z0-9\\s:#,.]{0,255}");
+        if (!res) showError("Invalid input for address. Must be up to 255 chars with uppercase/lowercase alphabets, spaces, and symbols :,#. only");
+        return res;
+    }
+
+    private Customer getCurrentCustomer() {
+        Customer customer = null;
+        try {
+            customer = qo.getCustomer(dlField.getText().trim());
+        } catch (Exception e) {
+            // do nothing here
+        }
+        return customer;
+    }
+
+    private Customer addCurrentCustomerEntryIfNotExists() {
+        Customer c = getCurrentCustomer();
+        if (getCurrentCustomer() == null) {
+            if (!(validateCell() && validateDL(true) && validateName() && validateAdd())) {
+                return c;
+            }
+            c = new Customer();
+            c.dlicense = dlField.getText().trim();
+            c.cellphone = Long.valueOf(cellField.getText());
+            c.name = nameField.getText().trim();
+            c.address = addField.getText().trim();
+            try {
+                qo.addCustomer(c);
+            } catch (Exception e) {
+                showError("Failed to add Customer as new Customer: " + e.getMessage());
+                return null;
+            }
+        }
+        return c;
     }
 
     abstract void postSuccessRes(Reservation r);
@@ -97,24 +134,25 @@ public abstract class makeReservation extends Controller implements Initializabl
         if(currentDLInput.equals(dlField.getText().trim())) return;
         currentDLInput = dlField.getText().trim();
 
+        cellField.setDisable(false);
+        nameField.setDisable(false);
+        addField.setDisable(false);
         existingCustomer.setVisible(false);
-        invalidDL.setVisible(false);
-        if (!validateDL()) {
-            invalidDL.setVisible(true);
+
+        if (!validateDL(false)) {
             Platform.runLater(clearAllButDL);
             return;
         }
-        Customer customer = null;
-        try {
-            customer = qo.getCustomer(dlField.getText().trim());
-        } catch (Exception e) {
-            // do nothing here
-        }
+
+        Customer customer = getCurrentCustomer();
         if (customer != null) {
             existingCustomer.setVisible(true);
             cellField.setText(Long.toString(customer.cellphone));
+            cellField.setDisable(true);
             nameField.setText(customer.name);
+            nameField.setDisable(true);
             addField.setText(customer.address);
+            addField.setDisable(true);
         } else {
             Platform.runLater(clearAllButDL);
         }
@@ -122,26 +160,18 @@ public abstract class makeReservation extends Controller implements Initializabl
 
     private Runnable makeReservation = () -> {
         String result = "Success! Your confirmation number is %d";
-        if (dlField.getText().length() == 0 || !validateDL()) {
-            result = "Please enter valid driver's license number";
-        } else if (cellField.getText().length() == 0 || !validateCell()) {
-            result = "Please enter valid cellphone number";
-        } else if (addField.getText().length() == 0 || !validateAdd()) {
-            result = "Please enter valid address";
-        } else if (nameField.getText().length() == 0 || !validateName()) {
-            result = "Please enter valid name";
-        } else {
-            makeResButton.setDisable(true);
-            Reservation r = getResInProgress();
-            r.dlicense = dlField.getText().trim();
-            try {
-                r = qo.makeReservation(r);
-                result = String.format(result, r.confNum);
-                setResInProgressTo(null);
-                postSuccessRes(r);
-            } catch (Exception e) {
-                result = "Failed to make reservation: " + e.getMessage();
-            }
+        Customer c = addCurrentCustomerEntryIfNotExists();
+        if (c == null) return;
+        makeResButton.setDisable(true);
+        Reservation r = getResInProgress();
+        r.dlicense = c.dlicense;
+        try {
+            r = qo.makeReservation(r);
+            result = String.format(result, r.confNum);
+            setResInProgressTo(null);
+            postSuccessRes(r);
+        } catch (Exception e) {
+           showError("There was an error creating your reservation: " + e.getMessage());
         }
         resultLine.setText(result);
         resultLine.setVisible(true);

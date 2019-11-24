@@ -240,31 +240,44 @@ public class QueryOrchestrator {
         return report;
     }
 
-    public ReturnReport getDailyReturnReport(Location l) {
+    public ReturnReport getDailyReturnReport(Location l) throws Exception {
         // TODO
         //region Sample Data
-        ReturnReport report = new ReturnReport();
-        report.breakDownByLocation = new HashMap<>();
-        report.breakDownByLocation.put(L1, new Pair<>(0, 0.0));
-        report.breakDownByLocation.put(L3, new Pair<>(5, 100.6));
-        report.breakDownByVT = new HashMap<>();
-        report.breakDownByVT.put(VT1, new Pair<>(1, 0.0));
-        report.breakDownByVT.put(VT2, new Pair<>(4, 5.0));
-        report.returnsCreatedToday = new HashMap<>();
-        report.returnsCreatedToday.put( new Rental(1, "dummyplates", "dummyDL", t, 0, null, 1),
-                                        new Return(1, new Timestamp(System.currentTimeMillis()), 1, Return.TankStatus.FULL_TANK, 566));
-        report.totalReturnsRevenueToday = 200.5;
-        report.totalReturnsToday = 1;
+//        ReturnReport report = new ReturnReport();
+//        report.breakDownByLocation = new HashMap<>();
+//        report.breakDownByLocation.put(L1, new Pair<>(0, 0.0));
+//        report.breakDownByLocation.put(L3, new Pair<>(5, 100.6));
+//        report.breakDownByVT = new HashMap<>();
+//        report.breakDownByVT.put(VT1, new Pair<>(1, 0.0));
+//        report.breakDownByVT.put(VT2, new Pair<>(4, 5.0));
+//        report.returnsCreatedToday = new HashMap<>();
+//        report.returnsCreatedToday.put( new Rental(1, "dummyplates", "dummyDL", t, 0, null, 1),
+//                                        new Return(1, new Timestamp(System.currentTimeMillis()), 1, Return.TankStatus.FULL_TANK, 566));
+//        report.totalReturnsRevenueToday = 200.5;
+//        report.totalReturnsToday = 1;
         //endregion
 
-//        Timestamp now = TimePeriod.getNow();
-//        Timestamp todayMidnight = new Timestamp(now.getYear(), now.getMonth(), now.getDate(),0, 0, 0, 0);
-//        Timestamp today1159 = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), 23, 59, 59, 0);
-//        TimePeriod today = new TimePeriod(todayMidnight, today1159);
-//        List<Return> returns = db.getReturnsWith(today, );
-//
-//
-//        ReturnReport report = new ReturnReport();
+        Timestamp now = TimePeriod.getNow();
+        Timestamp todayMidnight = new Timestamp(now.getYear(), now.getMonth(), now.getDate(),0, 0, 0, 0);
+        Timestamp today1159 = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), 23, 59, 59, 0);
+        TimePeriod today = new TimePeriod(todayMidnight, today1159);
+        List<Return> returns = db.getReturnsWith(today, null, null);
+        List<Rental> rentals = db.getRentalsWith(null, null, null);
+        List<Reservation> reservations = db.getReservationsWith(null, null, null);
+
+        List<ReturnReport> returnsCreatedToday = new ArrayList<>();
+
+        for (Return ret : returns) {
+            for (Reservation reservation: reservations) {
+                for (Rental rental : rentals) {
+                    if (ret.rid == rental.rid && rental.confNo == reservation.confNum) {
+                        returnsCreatedToday.add();
+                    }
+                }
+            }
+        }
+
+        ReturnReport report = new ReturnReport();
 
         return report;
     }

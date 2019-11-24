@@ -7,8 +7,6 @@
 
 Bugs George found
 
-//TODO: Display vtName in type column
-//TODO: Display search results when filtering by branch (Clerk and Customer view)
 //TODO: Debug selecting available reservations
 //TODO: Filter out the search results with 0 available
 //TODO: Clerk make reservation without rental should not be able to choose start time date. Should default to current

@@ -48,7 +48,7 @@ public class carSearch extends Controller implements Initializable {
         }
 
         columnHeaders = Arrays.asList("Make", "Model", "Type", "Colour", "Year", "License Plate", "Current Location");
-        propertyName = Arrays.asList("make", "model", "vtName", "color", "year", "vlicense", "location");
+        propertyName = Arrays.asList("make", "model", "vtname", "color", "year", "vlicense", "location");
         for (int i = 0; i < columnHeaders.size(); i++) {
             TableColumn<String, Vehicle> column = new TableColumn<>(columnHeaders.get(i));
             column.setCellValueFactory(new PropertyValueFactory<>(propertyName.get(i)));

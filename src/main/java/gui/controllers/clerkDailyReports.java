@@ -116,7 +116,7 @@ public class clerkDailyReports extends Controller implements Initializable {
             List<String> columnHeaders2 = Arrays.asList("Vehicle Type", "Rentals Today");
             List<String> propertyName2 = Arrays.asList("vtName", "count");
             for (int i = 0; i < columnHeaders2.size(); i++) {
-                TableColumn<String, RentalEntry> column = new TableColumn<>(columnHeaders2.get(i));
+                TableColumn<String, Breakdown> column = new TableColumn<>(columnHeaders2.get(i));
                 column.setCellValueFactory(new PropertyValueFactory<>(propertyName2.get(i)));
                 byVT.getColumns().add(column);
             }
@@ -131,7 +131,7 @@ public class clerkDailyReports extends Controller implements Initializable {
             List<String> columnHeaders3 = Arrays.asList("Location", "Rentals Today");
             List<String> propertyName3 = Arrays.asList("location", "count");
             for (int i = 0; i < columnHeaders3.size(); i++) {
-                TableColumn<String, RentalEntry> column = new TableColumn<>(columnHeaders3.get(i));
+                TableColumn<String, Breakdown> column = new TableColumn<>(columnHeaders3.get(i));
                 column.setCellValueFactory(new PropertyValueFactory<>(propertyName3.get(i)));
                 byLocation.getColumns().add(column);
             }
@@ -184,7 +184,7 @@ public class clerkDailyReports extends Controller implements Initializable {
             List<String> columnHeaders2 = Arrays.asList("Vehicle Type", "Rentals Today", "Revenue Today");
             List<String> propertyName2 = Arrays.asList("vtName", "count", "revenue");
             for (int i = 0; i < columnHeaders2.size(); i++) {
-                TableColumn<String, RentalEntry> column = new TableColumn<>(columnHeaders2.get(i));
+                TableColumn<String, Breakdown> column = new TableColumn<>(columnHeaders2.get(i));
                 column.setCellValueFactory(new PropertyValueFactory<>(propertyName2.get(i)));
                 byVT.getColumns().add(column);
             }
@@ -201,7 +201,7 @@ public class clerkDailyReports extends Controller implements Initializable {
             List<String> columnHeaders3 = Arrays.asList("Location", "Rentals Today", "Revenue Today");
             List<String> propertyName3 = Arrays.asList("location", "count", "revenue");
             for (int i = 0; i < columnHeaders3.size(); i++) {
-                TableColumn<String, RentalEntry> column = new TableColumn<>(columnHeaders3.get(i));
+                TableColumn<String, Breakdown> column = new TableColumn<>(columnHeaders3.get(i));
                 column.setCellValueFactory(new PropertyValueFactory<>(propertyName3.get(i)));
                 byLocation.getColumns().add(column);
             }

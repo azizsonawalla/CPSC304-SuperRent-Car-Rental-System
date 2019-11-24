@@ -4,8 +4,8 @@ import gui.Main;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import model.Entities.*;
@@ -22,14 +22,12 @@ public class carSearch extends Controller implements Initializable {
 
     // TODO: Replace text flow with tables
 
-    private String SEARCH_RESULT_TEMPLATE = "Option %d:  Vehicle Type = %-30s  Location = %-10s, %-10s  Number Available = %d\n";
     private String RESULT_DETAILS_TEMPLATE = "Make = %s,   Model = %s,  Year = %d,  Colour = %s,  License plate = %s";
 
     List<VTSearchResult> currentResults;
     Lock lock = new ReentrantLock();
 
-    private @FXML TextFlow searchResults;
-    private @FXML TextFlow searchResultDetails;
+    private @FXML TableView searchResults, searchResultDetails;
     private @FXML Button searchButton, startReservationButton;
     private @FXML ComboBox<String> branchSelector, vtSelector, startAM, endAM;
     protected @FXML ComboBox<Integer> startResWithOption, seeDetailsForOption, startDate, endDate, startMonth,
@@ -55,6 +53,8 @@ public class carSearch extends Controller implements Initializable {
         Platform.runLater(refreshVehicleTypeList);
         // Update VT Search Result table with selection
         Platform.runLater(refreshVehicleTypeSearchResultTable);
+        searchResultDetails.setPlaceholder(new Text("No vehicles in this category"));
+        searchResults.setPlaceholder(new Text("No vehicles in this category"));
     }
 
     private Location getCurrentLocationSelection() throws Exception {
@@ -192,8 +192,12 @@ public class carSearch extends Controller implements Initializable {
         public void run() {
             try {
                 lock.lock();
-                searchResults.getChildren().clear();
-                searchResultDetails.getChildren().clear();
+                searchResults.getItems().clear();
+                searchResults.getColumns().clear();
+
+                searchResultDetails.getItems().clear();
+                searchResults.getColumns().clear();
+
                 startResWithOption.getItems().clear();
                 seeDetailsForOption.getItems().clear();
 
@@ -201,25 +205,33 @@ public class carSearch extends Controller implements Initializable {
                 VehicleType vt = getCurrentVTSelection();
                 TimePeriod t = getCurrentTimePeriodSelection();
                 currentResults = t == null ? new ArrayList<>() : qo.getVTSearchResultsFor(l, vt, t);
+
                 if (currentResults.size() > 0) {
+                    List<String> columnHeaders = Arrays.asList("Option No.", "Vehicle Type", "Current Location", "Number Available");
+                    List<String> propertyName = Arrays.asList("option", "vtName", "location", "numAvail");
+                    for (int i = 0; i < columnHeaders.size(); i++) {
+                        TableColumn<String, SearchResult> column = new TableColumn<>(columnHeaders.get(i));
+                        column.setCellValueFactory(new PropertyValueFactory<>(propertyName.get(i)));
+                        searchResults.getColumns().add(column);
+                    }
+
+                    // Add items
                     int count = 1;
-                    for (VTSearchResult r : currentResults) {
-                        String str = String.format(SEARCH_RESULT_TEMPLATE, count, r.vt.vtname,
-                                r.location.location, r.location.city, r.numAvail);
-                        Text text = new Text(str);
-                        searchResults.getChildren().add(text);
+                    for (VTSearchResult r: currentResults) {
+                        SearchResult entry = new SearchResult(String.valueOf(count), r.vt.vtname,
+                                                                r.location.toString(), String.valueOf(r.numAvail));
+                        searchResults.getItems().add(entry);
                         count++;
                     }
-                    seeDetailsForOption.getItems().clear();
-                    startResWithOption.getItems().clear();
                     for (int i = 1; i <= currentResults.size(); i++) {
                         seeDetailsForOption.getItems().add(i);
                         startResWithOption.getItems().add(i);
                     }
                     seeDetailsForOption.setValue(1);
                     startResWithOption.setValue(1);
+                    Platform.runLater(showVehicleDetails);
                 } else {
-                    searchResults.getChildren().add(new Text("No results matched your search..."));
+                    searchResults.setPlaceholder(new Label("No results matched your search"));
                 }
             } catch (Exception e) {
                 Log.log("Error refreshing search results in table: " + e.getMessage());
@@ -240,15 +252,23 @@ public class carSearch extends Controller implements Initializable {
             }
             VTSearchResult correspondingOption = currentResults.get(optionSelected);
             List<Vehicle> vehicles = qo.getVehiclesFor(correspondingOption);
-            searchResultDetails.getChildren().clear();
+            searchResultDetails.getColumns().clear();
+            searchResultDetails.getItems().clear();
             if (vehicles.size() > 0) {
+                List<String> columnHeaders = Arrays.asList("Make", "Model", "Type", "Colour", "Year", "License Plate", "Current Location");
+                List<String> propertyName = Arrays.asList("make", "model", "vtName", "color", "year", "vlicense", "location");
+                for (int i = 0; i < columnHeaders.size(); i++) {
+                    TableColumn<String, Vehicle> column = new TableColumn<>(columnHeaders.get(i));
+                    column.setCellValueFactory(new PropertyValueFactory<>(propertyName.get(i)));
+                    searchResultDetails.getColumns().add(column);
+                }
+
+                // Add items
                 for (Vehicle v : vehicles) {
-                    String str = String.format(RESULT_DETAILS_TEMPLATE, v.make, v.model, v.year, v.color, v.vlicense);
-                    Text text = new Text(str);
-                    searchResultDetails.getChildren().add(text);
+                    searchResultDetails.getItems().add(v);
                 }
             } else {
-                searchResultDetails.getChildren().add(new Text("No vehicles in this category"));
+                searchResultDetails.setPlaceholder(new Text("No vehicles in this category"));
             }
         } catch (Exception e) {
             Log.log("Error showing vehicle details: " + e.getMessage());
@@ -258,4 +278,33 @@ public class carSearch extends Controller implements Initializable {
     };
 
     protected Runnable startReservation;
+
+    // Table models
+
+    public class SearchResult {
+        String option, vtName, location, numAvail;
+
+        public SearchResult(String option, String vtName, String location, String numAvail) {
+            this.option = option;
+            this.vtName = vtName;
+            this.location = location;
+            this.numAvail = numAvail;
+        }
+
+        public String getOption() {
+            return option;
+        }
+
+        public String getVtName() {
+            return vtName;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+
+        public String getNumAvail() {
+            return numAvail;
+        }
+    }
 }

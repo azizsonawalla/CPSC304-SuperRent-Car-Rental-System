@@ -127,7 +127,7 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
             }
             for (int i=1; i <= currRentalSearchRes.size(); i++) rentalOptions.getItems().add(i);
             rentalOptions.setValue(rentalOptions.getItems().get(0));
-            startReturnButton.setDisable(true);
+            startReturnButton.setDisable(false);
         }
     };
 

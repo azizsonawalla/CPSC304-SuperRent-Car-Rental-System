@@ -41,16 +41,7 @@ public class QueryOrchestrator {
      * Customer car search top table
      */
     public List<VTSearchResult> getVTSearchResultsFor(Location l, VehicleType vt, TimePeriod t) throws Exception {
-        //region Instructions/Placeholder code
-        // this is just placeholder code
-        ArrayList<VTSearchResult> list = new ArrayList<>();
-        list.add(new VTSearchResult(VT1, L1, 10));
-        list.add(new VTSearchResult(VT2, L1, 0));
-        list.add(new VTSearchResult(VT3, L3, 15));
-        list.add(new VTSearchResult(VT1, L4, 200));
-        list.add(new VTSearchResult(VT2, L1, 25));
-        list.add(new VTSearchResult(VT2, L4, 15));
-
+        // TODO: Filter results with 0 available out
         /*
         List<Reservation> reservations = db.getReservationsWith(t, vt, l);
          */
@@ -196,18 +187,15 @@ public class QueryOrchestrator {
             }
         }
 
-        Collections.sort(rentalsStartedToday, new Comparator<Pair<Reservation, Rental>>() {
-            @Override
-            public int compare(Pair<Reservation, Rental> o1, Pair<Reservation, Rental> o2) {
-                //Compare the locations
-                int locationComparison = o1.getKey().location.toString().compareTo(o2.getKey().location.toString());
-                //If the locations are not the same, return the location comparison
-                if (locationComparison != 0) return locationComparison;
+        Collections.sort(rentalsStartedToday, (o1, o2) -> {
+            //Compare the locations
+            int locationComparison = o1.getKey().location.toString().compareTo(o2.getKey().location.toString());
+            //If the locations are not the same, return the location comparison
+            if (locationComparison != 0) return locationComparison;
 
-                //If the locations are the same, compare by vehicle
-                int vtTypeComparison = o1.getKey().vtName.compareTo(o2.getKey().vtName);
-                return vtTypeComparison;
-            }
+            //If the locations are the same, compare by vehicle
+            int vtTypeComparison = o1.getKey().vtName.compareTo(o2.getKey().vtName);
+            return vtTypeComparison;
         });
 
         Map<String, Integer> countOfRentalsByVT = new HashMap<>();
@@ -239,20 +227,6 @@ public class QueryOrchestrator {
     }
 
     public ReturnReport getDailyReturnReport(Location l) throws Exception {
-        //region Sample Data
-//        ReturnReport report = new ReturnReport();
-//        report.breakDownByLocation = new HashMap<>();
-//        report.breakDownByLocation.put(L1, new Pair<>(0, 0.0));
-//        report.breakDownByLocation.put(L3, new Pair<>(5, 100.6));
-//        report.breakDownByVT = new HashMap<>();
-//        report.breakDownByVT.put(VT1, new Pair<>(1, 0.0));
-//        report.breakDownByVT.put(VT2, new Pair<>(4, 5.0));
-//        report.returnsCreatedToday = new HashMap<>();
-//        report.returnsCreatedToday.put( new Rental(1, "dummyplates", "dummyDL", t, 0, null, 1),
-//                                        new Return(1, new Timestamp(System.currentTimeMillis()), 1, Return.TankStatus.FULL_TANK, 566));
-//        report.totalReturnsRevenueToday = 200.5;
-//        report.totalReturnsToday = 1;
-        //endregion
 
         Timestamp now = TimePeriod.getNow();
         Timestamp todayMidnight = new Timestamp(now.getYear(), now.getMonth(), now.getDate(),0, 0, 0, 0);
@@ -274,18 +248,15 @@ public class QueryOrchestrator {
             }
         }
 
-        Collections.sort(returnsCreatedToday, new Comparator<ReturnReportEntry>() {
-            @Override
-            public int compare(ReturnReportEntry o1, ReturnReportEntry o2) {
-                //Compare the locations
-                int locationComparison = o1.res.location.toString().compareTo(o2.res.location.toString());
-                //If the locations are not the same, return the location comparison
-                if (locationComparison != 0) return locationComparison;
+        Collections.sort(returnsCreatedToday, (o1, o2) -> {
+            //Compare the locations
+            int locationComparison = o1.res.location.toString().compareTo(o2.res.location.toString());
+            //If the locations are not the same, return the location comparison
+            if (locationComparison != 0) return locationComparison;
 
-                //If the locations are the same, compare by vehicle
-                int vtTypeComparison = o1.res.vtName.compareTo(o2.res.vtName);
-                return vtTypeComparison;
-            }
+            //If the locations are the same, compare by vehicle
+            int vtTypeComparison = o1.res.vtName.compareTo(o2.res.vtName);
+            return vtTypeComparison;
         });
 
         Map<String, Pair<Integer, Double>> breakDownByVT = new HashMap<>();

@@ -11,6 +11,7 @@ import javafx.util.Pair;
 import model.Entities.*;
 import model.Orchestrator.RentalReport;
 import model.Orchestrator.ReturnReport;
+import model.Orchestrator.ReturnReportEntry;
 import model.Util.Log;
 
 import java.net.URL;
@@ -155,7 +156,13 @@ public class clerkDailyReports extends Controller implements Initializable {
             entriesTitle.setText("Returns Completed Today:");
             totalRevenue.setVisible(true);
 
-            ReturnReport returnReport = qo.getDailyReturnReport(location);
+            ReturnReport returnReport = null;
+            try {
+                returnReport = qo.getDailyReturnReport(location);
+            } catch (Exception e) {
+                showError("Failed to get returns data for today. Please restart the application.");
+                return;
+            }
             if (returnReport.totalReturnsToday == 0) {
                 entries.setPlaceholder(new Label("No returns were completed today"));
                 return;
@@ -170,18 +177,13 @@ public class clerkDailyReports extends Controller implements Initializable {
             }
 
             // Generate all rental entries
-            for (Rental rental: returnReport.returnsCreatedToday.keySet()) {
-                Return r = returnReport.returnsCreatedToday.get(rental);
-                Reservation res = null;
-                try {
-                    res = qo.getReservationsWith(rental.confNo, null).get(0);
-                } catch (Exception e) {
-                    showError("Error getting rental entries for today. Please restart the application");
-                    return;
-                }
-                ReturnEntry entry = new ReturnEntry(String.valueOf(r.rid), TimePeriod.getTimestampAsTimeDateString(r.returnDateTime),
+            for (ReturnReportEntry entry: returnReport.returnsCreatedToday) {
+                Rental rental = entry.rent;
+                Return r = entry.ret;
+                Reservation res = entry.res;
+                ReturnEntry tableEntry = new ReturnEntry(String.valueOf(r.rid), TimePeriod.getTimestampAsTimeDateString(r.returnDateTime),
                                                     rental.dlicense, rental.vlicense, res.vtName, res.location.toString());
-                entries.getItems().add(entry);
+                entries.getItems().add(tableEntry);
             }
 
             totalCount.setText(String.format("Total Returns Today at %s = %d", selectedLocation, returnReport.totalReturnsToday));
@@ -196,11 +198,11 @@ public class clerkDailyReports extends Controller implements Initializable {
                 byVT.getColumns().add(column);
             }
 
-            for (VehicleType vt: returnReport.breakDownByVT.keySet()) {
+            for (String vt: returnReport.breakDownByVT.keySet()) {
                 Pair<Integer, Double> countRevenue = returnReport.breakDownByVT.get(vt);
                 Integer count = countRevenue.getKey();
                 Double revenue = countRevenue.getValue();
-                Breakdown b = new Breakdown(vt.vtname, "", Integer.toString(count), Double.toString(revenue));
+                Breakdown b = new Breakdown(vt, "", Integer.toString(count), Double.toString(revenue));
                 byVT.getItems().add(b);
             }
 

@@ -7,6 +7,7 @@ import model.Util.Log;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 /**
  * Interface for the SuperRent database
@@ -85,7 +86,7 @@ public class Database {
      * @throws Exception if there is an error adding the reservation, for example if the values don't meet constraints
      */
     public Reservation addReservation(Reservation r) throws Exception {
-        PreparedStatement ps = conn.prepareStatement(Queries.Reservation.ADD_RESERVATION);
+        PreparedStatement ps = conn.prepareStatement(Queries.Reservation.ADD_RESERVATION, Statement.RETURN_GENERATED_KEYS);
 
         //Set values for parameters in ps
         ps.setString(1, r.vtName);
@@ -97,36 +98,20 @@ public class Database {
 
         //execute the update
         ps.executeUpdate();
-
+        int confNo;
+        ResultSet rs = ps.getGeneratedKeys();
+        if (rs.next()) {
+            confNo = rs.getInt(1);
+        } else {
+            throw new Exception("There was an error retrieving the confNo of the reservation created");
+        }
+        r.confNum = confNo;
         //commit changes (automatic) and close prepared statement
         ps.close();
 
         Log.log("Reservation successfully added");
 
-        return getReservationJustAdded();
-    }
-
-    /**
-     * Find and return the Reservation object that was just added
-     * @return
-     */
-    public Reservation getReservationJustAdded() throws SQLException {
-        ResultSet rs = conn.prepareStatement(Queries.Reservation.GET_RECENT_RESERVATIONS).executeQuery();
-        Reservation res = new Reservation();
-        res.confNum = rs.getInt(1);
-        res.vtName = rs.getString(2);
-        res.dlicense = rs.getString(3);
-
-        TimePeriod tm = new TimePeriod();
-        tm.startDateAndTime = rs.getTimestamp(4);
-        tm.endDateAndTime = rs.getTimestamp(5);
-        res.timePeriod = tm;
-
-        Location loc = new Location("Vancouver", "UBC");
-        loc.city = rs.getString(6);
-        loc.location = rs.getString(7);
-        res.location = loc;
-        return res;
+        return r;
     }
 
     /**
@@ -345,7 +330,7 @@ public class Database {
      */
     public Rental addRental(Rental r) throws Exception {
 
-        PreparedStatement ps = conn.prepareStatement(Queries.Rent.ADD_RENTAL);
+        PreparedStatement ps = conn.prepareStatement(Queries.Rent.ADD_RENTAL, Statement.RETURN_GENERATED_KEYS);
 
         //Set values for parameters in ps
         ps.setString(1, r.vlicense);
@@ -359,32 +344,21 @@ public class Database {
         //execute the update
         ps.executeUpdate();
 
+        ResultSet rs = ps.getGeneratedKeys();
+        int rid;
+        if (rs.next()) {
+            rid = rs.getInt(1);
+        } else {
+            throw new Exception("Failed to retrieve id of return created");
+        }
+        r.rid = rid;
+
         //commit changes (automatic) and close prepared statement
         ps.close();
 
         //Log.log("Rental with rent id " + r.rid + " successfully added");
+        return r;
 
-        return getRentalJustAdded();
-
-    }
-
-    public Rental getRentalJustAdded() throws Exception {
-        ResultSet rs = conn.prepareStatement(Queries.Rent.GET_RECENT_RENTALS).executeQuery();
-
-        int rid = rs.getInt("rId");
-        String vlicense = rs.getString("vLicense");
-        String dlicense = rs.getString("dLicense");
-
-        TimePeriod tm = new TimePeriod();
-        tm.startDateAndTime = rs.getTimestamp("fromDateTime");
-        tm.endDateAndTime = rs.getTimestamp("toDateTime");
-
-        int startOdometer = rs.getInt("odometer");
-
-        Card card = getCardMatching(new Card(rs.getLong("cardNo"), "", null));
-        int confNo = rs.getInt("confNo");
-
-        return new Rental(rid, vlicense, dlicense, tm, startOdometer, card, confNo);
     }
 
     /**

@@ -218,14 +218,14 @@ public class QueryOrchestrator {
             if (countOfRentalsByVT.get(RR.getKey().vtName) != null) {
                 countOfRentalsByVT.put(RR.getKey().vtName , countOfRentalsByVT.get(RR.getKey().vtName) + 1);
             } else {
-                countOfRentalsByVT.put(RR.getKey().vtName , 0);
+                countOfRentalsByVT.put(RR.getKey().vtName , 1);
             }
 
             if (countOfRentalsByLocation.get(new Location(RR.getKey().location.city, RR.getKey().location.location)) != null) {
                 countOfRentalsByLocation.put(new Location(RR.getKey().location.city, RR.getKey().location.location),
                         countOfRentalsByLocation.get(new Location(RR.getKey().location.city, RR.getKey().location.location)) + 1);
             } else {
-                countOfRentalsByLocation.put(new Location(RR.getKey().location.city, RR.getKey().location.location), 0);
+                countOfRentalsByLocation.put(new Location(RR.getKey().location.city, RR.getKey().location.location), 1);
             }
         }
 
@@ -241,7 +241,6 @@ public class QueryOrchestrator {
     }
 
     public ReturnReport getDailyReturnReport(Location l) throws Exception {
-        // TODO
         //region Sample Data
 //        ReturnReport report = new ReturnReport();
 //        report.breakDownByLocation = new HashMap<>();
@@ -265,19 +264,68 @@ public class QueryOrchestrator {
         List<Rental> rentals = db.getRentalsWith(null, null, null);
         List<Reservation> reservations = db.getReservationsWith(null, null, null);
 
-        List<ReturnReport> returnsCreatedToday = new ArrayList<>();
+        List<ReturnReportEntry> returnsCreatedToday = new ArrayList<>();
 
         for (Return ret : returns) {
             for (Reservation reservation: reservations) {
                 for (Rental rental : rentals) {
                     if (ret.rid == rental.rid && rental.confNo == reservation.confNum) {
-                        returnsCreatedToday.add();
+                        returnsCreatedToday.add(new ReturnReportEntry(rental, reservation, ret));
                     }
                 }
             }
         }
 
+        Collections.sort(returnsCreatedToday, new Comparator<ReturnReportEntry>() {
+            @Override
+            public int compare(ReturnReportEntry o1, ReturnReportEntry o2) {
+                //Compare the locations
+                int locationComparison = o1.res.location.toString().compareTo(o2.res.location.toString());
+                //If the locations are not the same, return the location comparison
+                if (locationComparison != 0) return locationComparison;
+
+                //If the locations are the same, compare by vehicle
+                int vtTypeComparison = o1.res.vtName.compareTo(o2.res.vtName);
+                return vtTypeComparison;
+            }
+        });
+
+        Map<String, Pair<Integer, Double>> breakDownByVT = new HashMap<>();
+        Map<Location, Pair<Integer, Double>> breakDownByLocation = new HashMap<>();
+        Double totalReturnsRevenueToday = (double)0;
+
+        for (ReturnReportEntry rre: returnsCreatedToday) {
+            String vtname = rre.res.vtName;
+            Pair<Integer, Double> value = breakDownByVT.get(vtname);
+            if (value != null) {
+                Integer i = value.getKey() + 1;
+                Double d = value.getValue() + rre.ret.cost;
+                breakDownByVT.put(vtname, new Pair<>(i, d));
+            } else {
+                breakDownByVT.put(vtname, new Pair<>(1, (double) rre.ret.cost));
+            }
+
+            Location location = new Location(rre.res.location.city, rre.res.location.location);
+            Pair<Integer, Double> value1 = breakDownByLocation.get(location);
+            if (value1 != null) {
+                Integer i = value.getKey() + 1;
+                Double d = value.getValue() + rre.ret.cost;
+                breakDownByLocation.put(location, new Pair<>(i, d));
+            } else {
+                breakDownByLocation.put(location, new Pair<>(1, (double) rre.ret.cost));
+            }
+
+            totalReturnsRevenueToday += (double) rre.ret.cost;
+        }
+
+        Integer totalReturnsToday = returnsCreatedToday.size();
+
         ReturnReport report = new ReturnReport();
+        report.returnsCreatedToday = returnsCreatedToday;
+        report.breakDownByVT = breakDownByVT;
+        report.breakDownByLocation = breakDownByLocation;
+        report.totalReturnsToday = totalReturnsToday;
+        report.totalReturnsRevenueToday = totalReturnsRevenueToday;
 
         return report;
     }

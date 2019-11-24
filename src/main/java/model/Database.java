@@ -1303,7 +1303,7 @@ public class Database {
      * @throws Exception
      */
     public List<Location> getAllLocations() throws Exception {
-        PreparedStatement ps = conn.prepareStatement(Queries.Branch.GET_BRANCH);
+        PreparedStatement ps = conn.prepareStatement(Queries.Branch.GET_ALL_BRANCHES);
         ResultSet rs = ps.executeQuery();
         List<Location> locations = new ArrayList<>();
 

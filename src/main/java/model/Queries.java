@@ -304,7 +304,7 @@ public class Queries {
 
         public static String GET_BRANCH =
                 "SELECT * " +
-                        "FROM BRANCH";
+                        "FROM Branch";
     }
 
     public static class CustomerTransactions {

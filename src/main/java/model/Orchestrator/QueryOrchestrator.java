@@ -120,7 +120,6 @@ public class QueryOrchestrator {
     }
 
     public List<Location> getAllLocationNames() throws Exception {
-        // ArrayList<Location> list = new ArrayList<Location>(Arrays.asList(L1, L2, L3, L4));
         return db.getAllLocations();
     }
 
@@ -132,14 +131,16 @@ public class QueryOrchestrator {
     public List<Reservation> getReservationsWith(int confNum, String customerDL) throws Exception{
         // if confNum == -1, then don't filter by confNum
         // if customerDL == "", then don't filer by customerDL
-        return db.getReservationsWithHelper(new TimePeriod(TimePeriod.getNow(), TimePeriod.getNow()),
+        Timestamp now = TimePeriod.getNow();
+        return db.getReservationsWithHelper(new TimePeriod(now, now),
                 new Reservation(confNum, null, null, null, customerDL));
     }
 
     public List<Rental> getRentalsWith(int rentalId, String customerDL) throws Exception {
         // if rentalId == -1, then don't filter by confNum
         // if customerDL == "", then don't filer by customerDL
-        return db.getRentalsWithHelper(new TimePeriod(TimePeriod.getNow(), TimePeriod.getNow()),
+        Timestamp now = TimePeriod.getNow();
+        return db.getRentalsWithHelper(new TimePeriod(now, now),
                 new Rental(rentalId, null, customerDL, null, -1, null, -1));
     }
 
@@ -179,19 +180,6 @@ public class QueryOrchestrator {
     }
 
     public RentalReport getDailyRentalReport(Location l) throws Exception {
-        //region Sample Data
-        //        RentalReport report = new RentalReport();
-        //        report.countOfRentalsByLocation = new HashMap<>();
-        //        report.countOfRentalsByLocation.put(L1, 0);
-        //        report.countOfRentalsByLocation.put(L2, 5);
-        //        report.countOfRentalsByVT = new HashMap<>();
-        //        report.countOfRentalsByVT.put(VT1, 1);
-        //        report.countOfRentalsByVT.put(VT2, 3);
-        //        report.rentalsStartedToday = new HashMap<>();
-        //        report.rentalsStartedToday.put(new Reservation(1, "dummyvt", t, L1, "dummyDL" ),
-        //                new Rental(1, "dummyplates", "dummyDL", t, 0, null, 1));
-        //        report.totalRentalsToday = 1;
-        //endregion
 
         Timestamp now = TimePeriod.getNow();
         Timestamp todayMidnight = new Timestamp(now.getYear(), now.getMonth(), now.getDate(),0, 0, 0, 0);
@@ -273,7 +261,7 @@ public class QueryOrchestrator {
 //        Timestamp todayMidnight = new Timestamp(now.getYear(), now.getMonth(), now.getDate(),0, 0, 0, 0);
 //        Timestamp today1159 = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), 23, 59, 59, 0);
 //        TimePeriod today = new TimePeriod(todayMidnight, today1159);
-//
+//        List<Return> returns = db.getReturnsWith(today, );
 //
 //
 //        ReturnReport report = new ReturnReport();

@@ -7,7 +7,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import model.Entities.*;
 import model.Orchestrator.VTSearchResult;
 import model.Util.Log;
@@ -19,8 +18,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class carSearch extends Controller implements Initializable {
-
-    // TODO: Replace text flow with tables
 
     private String RESULT_DETAILS_TEMPLATE = "Make = %s,   Model = %s,  Year = %d,  Colour = %s,  License plate = %s";
 
@@ -42,6 +39,23 @@ public class carSearch extends Controller implements Initializable {
         searchButton.setOnAction(event -> Platform.runLater(refreshVehicleTypeSearchResultTable));
         seeDetailsForOption.setOnAction(event -> Platform.runLater(showVehicleDetails));
         startReservationButton.setOnAction(event -> Platform.runLater(startReservation));
+
+
+        List<String> columnHeaders = Arrays.asList("Option No.", "Vehicle Type", "Current Location", "Number Available");
+        List<String> propertyName = Arrays.asList("option", "vtName", "location", "numAvail");
+        for (int i = 0; i < columnHeaders.size(); i++) {
+            TableColumn<String, SearchResult> column = new TableColumn<>(columnHeaders.get(i));
+            column.setCellValueFactory(new PropertyValueFactory<>(propertyName.get(i)));
+            searchResults.getColumns().add(column);
+        }
+
+        columnHeaders = Arrays.asList("Make", "Model", "Type", "Colour", "Year", "License Plate", "Current Location");
+        propertyName = Arrays.asList("make", "model", "vtName", "color", "year", "vlicense", "location");
+        for (int i = 0; i < columnHeaders.size(); i++) {
+            TableColumn<String, Vehicle> column = new TableColumn<>(columnHeaders.get(i));
+            column.setCellValueFactory(new PropertyValueFactory<>(propertyName.get(i)));
+            searchResultDetails.getColumns().add(column);
+        }
     }
 
     public void refreshAll() {
@@ -193,10 +207,7 @@ public class carSearch extends Controller implements Initializable {
             try {
                 lock.lock();
                 searchResults.getItems().clear();
-                searchResults.getColumns().clear();
-
                 searchResultDetails.getItems().clear();
-                searchResults.getColumns().clear();
 
                 startResWithOption.getItems().clear();
                 seeDetailsForOption.getItems().clear();
@@ -207,14 +218,6 @@ public class carSearch extends Controller implements Initializable {
                 currentResults = t == null ? new ArrayList<>() : qo.getVTSearchResultsFor(l, vt, t);
 
                 if (currentResults.size() > 0) {
-                    List<String> columnHeaders = Arrays.asList("Option No.", "Vehicle Type", "Current Location", "Number Available");
-                    List<String> propertyName = Arrays.asList("option", "vtName", "location", "numAvail");
-                    for (int i = 0; i < columnHeaders.size(); i++) {
-                        TableColumn<String, SearchResult> column = new TableColumn<>(columnHeaders.get(i));
-                        column.setCellValueFactory(new PropertyValueFactory<>(propertyName.get(i)));
-                        searchResults.getColumns().add(column);
-                    }
-
                     // Add items
                     int count = 1;
                     for (VTSearchResult r: currentResults) {
@@ -252,17 +255,8 @@ public class carSearch extends Controller implements Initializable {
             }
             VTSearchResult correspondingOption = currentResults.get(optionSelected);
             List<Vehicle> vehicles = qo.getVehiclesFor(correspondingOption);
-            searchResultDetails.getColumns().clear();
             searchResultDetails.getItems().clear();
             if (vehicles.size() > 0) {
-                List<String> columnHeaders = Arrays.asList("Make", "Model", "Type", "Colour", "Year", "License Plate", "Current Location");
-                List<String> propertyName = Arrays.asList("make", "model", "vtName", "color", "year", "vlicense", "location");
-                for (int i = 0; i < columnHeaders.size(); i++) {
-                    TableColumn<String, Vehicle> column = new TableColumn<>(columnHeaders.get(i));
-                    column.setCellValueFactory(new PropertyValueFactory<>(propertyName.get(i)));
-                    searchResultDetails.getColumns().add(column);
-                }
-
                 // Add items
                 for (Vehicle v : vehicles) {
                     searchResultDetails.getItems().add(v);

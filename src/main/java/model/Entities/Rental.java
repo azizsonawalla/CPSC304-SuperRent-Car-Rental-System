@@ -31,4 +31,36 @@ public class Rental {
         this.card = card;
         this.confNo = confNo;
     }
+
+    public int getRid() {
+        return rid;
+    }
+
+    public String getVlicense() {
+        return vlicense;
+    }
+
+    public String getDlicense() {
+        return dlicense;
+    }
+
+    public String getStart() {
+        return timePeriod.getStartAsTimeDateString();
+    }
+
+    public String getEnd() {
+        return timePeriod.getEndAsTimeDateString();
+    }
+
+    public int getStartOdometer() {
+        return startOdometer;
+    }
+
+    public Card getCard() {
+        return card;
+    }
+
+    public int getConfNo() {
+        return confNo;
+    }
 }

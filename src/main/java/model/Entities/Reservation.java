@@ -24,4 +24,27 @@ public class Reservation {
     //identifies the Customer that is involved with a Reservation
     public String dlicense;
 
+    public int getConfNum() {
+        return confNum;
+    }
+
+    public String getVtName() {
+        return vtName;
+    }
+
+    public String getStart() {
+        return timePeriod.getStartAsTimeDateString();
+    }
+
+    public String getEnd() {
+        return timePeriod.getEndAsTimeDateString();
+    }
+
+    public String getLocationString() {
+        return location.toString();
+    }
+
+    public String getDlicense() {
+        return dlicense;
+    }
 }

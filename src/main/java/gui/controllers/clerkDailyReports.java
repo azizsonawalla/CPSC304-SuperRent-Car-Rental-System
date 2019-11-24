@@ -87,7 +87,13 @@ public class clerkDailyReports extends Controller implements Initializable {
         if (rentalsBox.isSelected()) {
             entriesTitle.setText("Rentals Started Today:");
             totalRevenue.setVisible(false);
-            RentalReport rentalReport = qo.getDailyRentalReport(location);
+            RentalReport rentalReport;
+            try {
+                rentalReport = qo.getDailyRentalReport(location);
+            } catch (Exception e) {
+                showError("Failed to get data for Daily Rental Report. Please restart the application");
+                return;
+            }
             if (rentalReport.totalRentalsToday == 0) {
                 entries.setPlaceholder(new Label("No rentals were started today"));
                 return;
@@ -102,8 +108,9 @@ public class clerkDailyReports extends Controller implements Initializable {
             }
 
             // Generate all rental entries
-            for (Reservation res: rentalReport.rentalsStartedToday.keySet()) {
-                Rental rental = rentalReport.rentalsStartedToday.get(res);
+            for(Pair<Reservation, Rental> p: rentalReport.rentalsStartedToday) {
+                Reservation res = p.getKey();
+                Rental rental = p.getValue();
                 RentalEntry entry = new RentalEntry(String.valueOf(rental.rid), rental.vlicense, rental.dlicense,
                                                     rental.timePeriod.getStartAsTimeDateString(), rental.timePeriod.getEndAsTimeDateString(),
                                                     res.vtName, res.location.toString());
@@ -121,9 +128,9 @@ public class clerkDailyReports extends Controller implements Initializable {
                 byVT.getColumns().add(column);
             }
 
-            for (VehicleType vt: rentalReport.countOfRentalsByVT.keySet()) {
+            for (String vt: rentalReport.countOfRentalsByVT.keySet()) {
                 Integer count = rentalReport.countOfRentalsByVT.get(vt);
-                Breakdown b = new Breakdown(vt.vtname, "", Integer.toString(count), "");
+                Breakdown b = new Breakdown(vt, "", Integer.toString(count), "");
                 byVT.getItems().add(b);
             }
 

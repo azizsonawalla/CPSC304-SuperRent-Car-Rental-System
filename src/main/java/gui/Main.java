@@ -65,34 +65,34 @@ public class Main extends Application {
         c = new customerCarSearch(this);
         scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
 
-        fxml = Config.CUSTOMER_MAKE_RES;
-        c = new customerMakeReservation(this);
-        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
-
-        // Clerk
-        fxml = Config.CLERK_RESERVATION_RENTAL_SEARCH;
-        c = new clerkReservationRentalSearch(this);
-        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
-
-        fxml = Config.CLERK_CAR_SEARCH;
-        c = new clerkCarSearch(this);
-        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
-
-        fxml = Config.CLERK_DAILY_REPORTS;
-        c = new clerkDailyReports(this);
-        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
-
-        fxml = Config.CLERK_MAKE_RESERVATION;
-        c = new clerkMakeReservation(this);
-        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
-
-        fxml = Config.CLERK_START_RENTAL;
-        c = new clerkStartRental(this);
-        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
-
-        fxml = Config.CLERK_SUBMIT_RETURN;
-        c = new clerkSubmitReturn(this);
-        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
+//        fxml = Config.CUSTOMER_MAKE_RES;
+//        c = new customerMakeReservation(this);
+//        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
+//
+//        // Clerk
+//        fxml = Config.CLERK_RESERVATION_RENTAL_SEARCH;
+//        c = new clerkReservationRentalSearch(this);
+//        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
+//
+//        fxml = Config.CLERK_CAR_SEARCH;
+//        c = new clerkCarSearch(this);
+//        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
+//
+//        fxml = Config.CLERK_DAILY_REPORTS;
+//        c = new clerkDailyReports(this);
+//        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
+//
+//        fxml = Config.CLERK_MAKE_RESERVATION;
+//        c = new clerkMakeReservation(this);
+//        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
+//
+//        fxml = Config.CLERK_START_RENTAL;
+//        c = new clerkStartRental(this);
+//        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
+//
+//        fxml = Config.CLERK_SUBMIT_RETURN;
+//        c = new clerkSubmitReturn(this);
+//        scenePanes.put(fxml, new Pair<>(getPane(fxml, c), c));
     }
 
     private Pane getPane(String fxml, Controller c) throws Exception {

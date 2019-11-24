@@ -17,6 +17,8 @@ import java.util.List;
  */
 public class QueryOrchestratorDummy {
 
+    private QueryOrchestrator qo = new QueryOrchestrator();
+
     // Some dummy results for testing. Remove later
     Location L1 = new Location("Vancouver", "Downtown");
     Location L2 = new Location("Calgary", "Downtown");
@@ -137,20 +139,8 @@ public class QueryOrchestratorDummy {
         // TODO: update vehicle odometer
     }
 
-    public RentalReport getDailyRentalReport(Location l) {
-        // TODO
-        RentalReport report = new RentalReport();
-        report.countOfRentalsByLocation = new HashMap<>();
-        report.countOfRentalsByLocation.put(L1, 0);
-        report.countOfRentalsByLocation.put(L2, 5);
-        report.countOfRentalsByVT = new HashMap<>();
-        report.countOfRentalsByVT.put(VT1, 1);
-        report.countOfRentalsByVT.put(VT2, 3);
-        report.rentalsStartedToday = new HashMap<>();
-        report.rentalsStartedToday.put(new Reservation(1, "dummyvt", t, L1, "dummyDL" ),
-                new Rental(1, "dummyplates", "dummyDL", t, 0, null, 1));
-        report.totalRentalsToday = 1;
-        return report;
+    public RentalReport getDailyRentalReport(Location l) throws Exception {
+        return qo.getDailyRentalReport(l);
     }
 
     public ReturnReport getDailyReturnReport(Location l) {

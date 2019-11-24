@@ -7,7 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import model.Orchestrator.QueryOrchestrator;
-import model.Orchestrator.QueryOrchestratorDummy;
+import model.Util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,7 +18,7 @@ public abstract class Controller {
     public Main main;
     String ALL_BRANCHES = "All Branches";
     String ALL_VT = "All Types";
-    QueryOrchestratorDummy qo;
+    QueryOrchestrator qo;
 
     // Global datetime arrays
     List<Integer> DATES = new ArrayList<>();
@@ -31,9 +31,10 @@ public abstract class Controller {
     Controller(Main main) {
         this.main = main;
         try {
-            qo = new QueryOrchestratorDummy(); // TODO: Change this back
+            qo = new QueryOrchestrator();
         } catch (Exception e) {
             showError("Could not connect to cloud database. Please restart the application");
+            Log.log("Error creating QueryOrchestrator object: " + e.getMessage());
         }
         initializeDateTimeArrays();
     }
@@ -45,7 +46,7 @@ public abstract class Controller {
         for (int i = 1; i <= 12; i++) MONTHS.add(i);
         for (int i = 2019; i <= 2025; i++) YEARS.add(i);
         for (int i = 1; i <= 12; i++) HOURS.add(i);
-        for (int i = 0; i <= 55; i++) MINUTES.add(i);
+        for (int i = 0; i <= 59; i++) MINUTES.add(i);
     }
 
     @FXML private void switchToClerk(ActionEvent event) throws Exception {

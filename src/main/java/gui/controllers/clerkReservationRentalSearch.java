@@ -132,7 +132,12 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
             }
         }
         if (dl.equals("")) dl = null;
-        currRentalSearchRes = qo.getRentalsWith(rentalId, dl);
+        try {
+            currRentalSearchRes = qo.getRentalsWith(rentalId, dl);
+        } catch (Exception e) {
+            showError("Failed to load active rentals. Please restart application.");
+            return;
+        }
         if (currRentalSearchRes.size() == 0) {
             rentalResults.setPlaceholder(NO_RESULTS_FOUND);
         } else {

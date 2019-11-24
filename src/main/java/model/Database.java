@@ -7,14 +7,14 @@ import model.Util.Log;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Interface for the SuperRent database
  */
 public class Database {
 
-    private String HOST = "jdbc:mysql://35.247.80.246/superrent"; // TODO: (low priority) move constants to config
+    private String HOST = "jdbc:mysql://35.247.80.246/superrent";
+    private String TEST_HOST = "jdbc:mysql://35.247.80.246/superrenttest";
     private String USERNAME = "root";
     private String PASSWORD = "bobobobo";
 
@@ -24,16 +24,20 @@ public class Database {
      * Constructor for Database class. Establishes a connection to the database and initializes the connection field.
      * @throws Exception if there was an error connecting to the database
      */
-    public Database() throws Exception {
+    public Database(boolean testmode) throws Exception {
         Log.log("Establishing connection to database...");
         try {
-            this.conn = DriverManager.getConnection(HOST, USERNAME, PASSWORD);
+            this.conn = DriverManager.getConnection(testmode ? TEST_HOST : HOST, USERNAME, PASSWORD);
             if (this.conn == null) throw new Exception("Connection object is null");
             createTables();
         } catch (Exception e) {
-            throw new Exception("Error getting connection to database", e);
+            throw new Exception(e);
         }
         Log.log("Successfully connected to database!");
+    }
+
+    public Database() throws Exception {
+        this(false);
     }
 
     //region CreateDropTables
@@ -179,7 +183,7 @@ public class Database {
                 //Given start time (from t) is at the same time or after R.startDateAndTime AND is before R.endDateAndTime
                 //Given end time (from t) is at the same time before R.endDateAndTime AND is after R.startDateAndTime
                 query += "((R.fromDateTime <= ? AND R.toDateTime > ?) OR " +
-                        "(R.toDateTime >= ? AND R.fromDateTime < ?)) "; // TODO: George double-check this
+                        "(R.toDateTime >= ? AND R.fromDateTime < ?)) ";
                 marker = true;
             } if (vt != null && vt.vtname != "All Types") {
                 query += marker? "AND R.vtname = '" + vt.vtname + "' " :
@@ -232,14 +236,54 @@ public class Database {
      * attributes of the given object may be null. If no reservation found, returns null
      * @throws Exception if there is any error getting results
      */
-    public List<Reservation> getReservationMatching(Reservation r) throws Exception {
-        PreparedStatement ps;
-        List<Reservation> reservations = new ArrayList<>();
-        if(r.confNum != -1) ps = conn.prepareStatement("SELECT * FROM Reservations WHERE confNo = " + Integer.toString(r.confNum));
-        else if (!Objects.equals(r.dlicense, "")) ps = conn.prepareStatement("SELECT * FROM Reservations WHERE dLicense = '" + r.dlicense + "'");
-        else ps = conn.prepareStatement("SELECT * FROM Reservations");
-        //else throw new Exception("[WARNING}: You must provide either a confirmation number or a customer drivers license");
+    public Reservation getReservationMatching(Reservation r) throws Exception {
+        PreparedStatement ps = conn.prepareStatement(Queries.Reservation.GET_RESERVATION);
+        ps.setInt(1, r.confNum);
         ResultSet rs = ps.executeQuery();
+
+        if (!rs.next()) {
+            System.out.println("NOTE: Reservation " + r.confNum + " does not exist");
+            ps.close();
+            return null;
+        }
+
+        Reservation res = new Reservation();
+        res.confNum = rs.getInt(1);
+        res.vtName = rs.getString(2);
+        res.dlicense = rs.getString(3);
+
+        TimePeriod tm = new TimePeriod();
+        tm.startDateAndTime = rs.getTimestamp(4);
+        tm.endDateAndTime = rs.getTimestamp(5);
+        res.timePeriod = tm;
+
+        Location loc = new Location("Vancouver", "UBC");
+        loc.city = rs.getString(6);
+        loc.location = rs.getString(7);
+        res.location = loc;
+
+        ps.close();
+        return res;
+    }
+
+    /**
+     * Helper method for QueryOrchestrator.getReservationsWith. Finds all active reservations with r.confNum and
+     * r.dlicense.
+     */
+    public List<Reservation> getReservationsWithHelper(TimePeriod t, Reservation r) throws Exception {
+        String query = Queries.Reservation.GET_ACTIVE_RESERVATIONS;
+
+        if (r.confNum == -1) query.replace("confNo = ? AND ", "");
+        else query.replace("confNo = ? AND", "confNo = " + r.confNum + " AND");
+
+        if (r.dlicense == null) query.replace("dLicense = ? AND ", "");
+        else query.replace("dLicense = ? AND ", "dLicense = " + r.dlicense + " AND ");
+
+        PreparedStatement ps = conn.prepareStatement(query);
+        ps.setTimestamp(1, t.startDateAndTime);
+        ResultSet rs = ps.executeQuery();
+
+        List<Reservation> reservations = new ArrayList<>();
 
         while (rs.next()){
             Reservation res = new Reservation();
@@ -252,14 +296,13 @@ public class Database {
             tm.endDateAndTime = rs.getTimestamp(5);
             res.timePeriod = tm;
 
-            Location loc = new Location();
+            Location loc = new Location("Vancouver", "UBC");
             loc.city = rs.getString(6);
             loc.location = rs.getString(7);
             res.location = loc;
-
             reservations.add(res);
         }
-        ps.close();
+
         return reservations;
     }
 
@@ -450,8 +493,72 @@ public class Database {
 
     }
 
-    /* Rental */
+    public List<Rental> getRentalsWithHelper(TimePeriod timePeriod, Rental rental) throws Exception {
+        String query = Queries.Rent.GET_ACTIVE_RENTALS;
 
+        if (rental.rid == -1) query.replace("rId = ? AND ", "");
+        else query.replace("rId = ? AND", "rId = " + rental.rid + " AND");
+
+        if (rental.dlicense == null) query.replace("dLicense = ? AND ", "");
+        else query.replace("dLicense = ? AND ", "dLicense = " + rental.dlicense + " AND ");
+
+        PreparedStatement ps = conn.prepareStatement(query);
+        ps.setTimestamp(1, timePeriod.startDateAndTime);
+        ResultSet rs = ps.executeQuery();
+
+        List<Rental> rentals = new ArrayList<>();
+
+        while (rs.next()){
+            int rid = rs.getInt("rId");
+            String vlicense = rs.getString("vLicense");
+            String dlicense = rs.getString("dLicense");
+
+            TimePeriod tm = new TimePeriod();
+            tm.startDateAndTime = rs.getTimestamp("fromDateTime");
+            tm.endDateAndTime = rs.getTimestamp("toDateTime");
+
+            int startOdometer = rs.getInt("odometer");
+
+            Card card = getCardMatching(rs.getLong("cardNo"));
+            int confNo = rs.getInt("'confNo");
+
+            rentals.add(new Rental(rid, vlicense, dlicense, tm, startOdometer, card, confNo));
+        }
+
+        return rentals;
+    }
+
+    public List<Rental> getRentalsStartedToday(TimePeriod today) throws Exception {
+        PreparedStatement ps = conn.prepareStatement(Queries.Rent.GET_RENTALS_TODAY);
+        ps.setTimestamp(1, today.startDateAndTime);
+        ps.setTimestamp(2, today.endDateAndTime);
+        ResultSet rs = ps.executeQuery();
+
+        List<Rental> rentals = new ArrayList<>();
+
+        while (rs.next()){
+            int rid = rs.getInt("rId");
+            String vlicense = rs.getString("vLicense");
+            String dlicense = rs.getString("dLicense");
+
+            TimePeriod tm = new TimePeriod();
+            tm.startDateAndTime = rs.getTimestamp("fromDateTime");
+            tm.endDateAndTime = rs.getTimestamp("toDateTime");
+
+            int startOdometer = rs.getInt("odometer");
+
+            Card card = getCardMatching(rs.getLong("cardNo"));
+            int confNo = rs.getInt("'confNo");
+
+            rentals.add(new Rental(rid, vlicense, dlicense, tm, startOdometer, card, confNo));
+        }
+
+        return rentals;
+    }
+
+    //endregion
+
+    //region Return
     /**
      * Add the given Return object to the return table in the database
      * @param r return object to add
@@ -565,6 +672,14 @@ public class Database {
         ps.close();
         return ret;
 
+    }
+
+    public String getReturnedVehicle(Return r) throws SQLException {
+        PreparedStatement ps = conn.prepareStatement(Queries.Returns.JOIN_RENTAL);
+        ps.setInt(1, r.rid);
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+        return rs.getString("vLicense");
     }
 
     //endregion
@@ -1026,8 +1141,7 @@ public class Database {
 
     //endregion
 
-
-    /* Card */
+    //region Card
 
     /**
      * Add the given Card object to the Card table in the database
@@ -1135,8 +1249,9 @@ public class Database {
         return c;
     }
 
+    //endregion
 
-    /* Location */
+    //region Location
 
     /**
      * Add the given Location object to the Location table in the database
@@ -1187,11 +1302,25 @@ public class Database {
         Log.log("Branch at " + l.city +  ", " + l.location + " successfully deleted");
     }
 
-//    public void generateLocationCardData() throws Exception {
-//        PreparedStatement ps = conn.prepareStatement(Queries.Location.ADD_LOCATION);
-//
-//        //Set values for parameters in ps
-//        ps.setString(1, "Vancouver");
-//        ps.setString(2, "");
-//    }
+    /**
+     * Returns all Location in the database
+     * @return
+     * @throws Exception
+     */
+    public List<Location> getAllLocations() throws Exception {
+        PreparedStatement ps = conn.prepareStatement(Queries.Branch.GET_BRANCH);
+        ResultSet rs = ps.executeQuery();
+        List<Location> locations = new ArrayList<>();
+
+        while (rs.next()){
+            locations.add(new Location(rs.getString("city"), rs.getString("location")));
+        }
+
+        ps.close();
+        return locations;
+    }
+
+
+    //endregion
+
 }

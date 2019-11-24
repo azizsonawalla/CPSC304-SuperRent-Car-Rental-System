@@ -86,5 +86,8 @@ public class Vehicle {
 
     }
 
+    public Vehicle(String vlicense){
+        this.vlicense = vlicense;
+    }
 
 }

@@ -97,8 +97,7 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
             this.currReservationSearchRes = qo.getReservationsWith(confNum, dl);
         } catch (Exception e) {
             showError("Error getting active reservation entries. Please restart the application.");
-            throw new RuntimeException(e);
-//            return;
+            return;
         }
         if (currReservationSearchRes.size() == 0) {
             reservationResults.setPlaceholder(NO_RESULTS_FOUND);
@@ -108,7 +107,9 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
                 reservationResults.getItems().add(r);
             }
 
-            for (int i=1; i <= currReservationSearchRes.size(); i++) reservationOptions.getItems().add(i);
+            for (Reservation r: currReservationSearchRes) {
+                reservationOptions.getItems().add(r.confNum);
+            }
             reservationOptions.setValue(reservationOptions.getItems().get(0));
             rentalWithReservationButton.setDisable(false);
         }
@@ -137,7 +138,8 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
             currRentalSearchRes = qo.getRentalsWith(rentalId, dl);
         } catch (Exception e) {
             showError("Failed to load active rentals. Please restart application.");
-            return;
+            throw new RuntimeException(e);
+//            return;
         }
         if (currRentalSearchRes.size() == 0) {
             rentalResults.setPlaceholder(NO_RESULTS_FOUND);
@@ -147,7 +149,9 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
                 rentalResults.getItems().add(r);
             }
 
-            for (int i=1; i <= currRentalSearchRes.size(); i++) rentalOptions.getItems().add(i);
+            for (Rental r: currRentalSearchRes) {
+                rentalOptions.getItems().add(r.rid);
+            }
             rentalOptions.setValue(rentalOptions.getItems().get(0));
             startReturnButton.setDisable(false);
         }

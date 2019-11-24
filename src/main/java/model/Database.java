@@ -283,7 +283,6 @@ public class Database {
         } else {
             query = query.replace("dLicense = ? AND ", "dLicense = '" + r.dlicense + "' AND ");
         }
-        Log.log(query);
 
         PreparedStatement ps = conn.prepareStatement(query);
         ps.setTimestamp(1, t.startDateAndTime);
@@ -308,7 +307,6 @@ public class Database {
             res.location = loc;
             reservations.add(res);
         }
-        Log.log(reservations.toString());
         return reservations;
     }
 
@@ -533,7 +531,7 @@ public class Database {
             int startOdometer = rs.getInt("odometer");
 
             Card card = getCardMatching(new Card(rs.getLong("cardNo"), "", null));
-            int confNo = rs.getInt("'confNo");
+            int confNo = rs.getInt("confNo");
 
             rentals.add(new Rental(rid, vlicense, dlicense, tm, startOdometer, card, confNo));
         }

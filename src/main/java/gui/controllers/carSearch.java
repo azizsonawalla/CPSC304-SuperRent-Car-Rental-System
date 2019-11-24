@@ -24,7 +24,7 @@ public class carSearch extends Controller implements Initializable {
 
     private @FXML TableView searchResults, searchResultDetails;
     private @FXML Button searchButton, startReservationButton;
-    private @FXML ComboBox<String> branchSelector, vtSelector, startAM, endAM;
+    protected @FXML ComboBox<String> branchSelector, vtSelector, startAM, endAM;
     protected @FXML ComboBox<Integer> startResWithOption, seeDetailsForOption, startDate, endDate, startMonth,
             endMonth, startYear, endYear, startHour, startMinute, endHour, endMinute;
 
@@ -65,33 +65,8 @@ public class carSearch extends Controller implements Initializable {
     }
 
     protected TimePeriod getCurrentTimePeriodSelection() {
-        Integer startDateValue = startDate.getValue();
-        Integer endDateValue = endDate.getValue();
-        Integer startMonthValue = startMonth.getValue();
-        Integer endMonthValue = endMonth.getValue();
-        Integer startYearValue = startYear.getValue();
-        Integer endYearValue = endYear.getValue();
-        Integer startHourValue = startHour.getValue();
-        Integer startMinuteValue = startMinute.getValue();
-        String startAmValue = startAM.getValue();
-        Integer endHourValue = endHour.getValue();
-        Integer endMinuteValue = endMinute.getValue();
-        String endAmValue = endAM.getValue();
-
-        if (startAmValue.equals("PM")) startHourValue = (startHourValue + 12) % 24;
-        if (endAmValue.equals("PM")) endHourValue += (endHourValue + 12) % 24;
-
-        if ((startDateValue == 31 && !Arrays.asList(1, 3, 5, 7, 8, 10, 12).contains(startMonthValue))
-            || (startDateValue > 28 && startMonthValue == 2)) {
-            showError("Invalid month and date combination");
-        }
-        if ((endDateValue == 31 && !Arrays.asList(1, 3, 5, 7, 8, 10, 12).contains(endMonthValue))
-                || (endDateValue > 28 && endMonthValue == 2)) {
-            showError("Invalid month and date combination");
-        }
-
-        Timestamp start = new Timestamp(startYearValue-1900, startMonthValue-1, startDateValue, startHourValue, startMinuteValue, 0, 0);
-        Timestamp end = new Timestamp(endYearValue-1900, endMonthValue-1, endDateValue, endHourValue, endMinuteValue, 0, 0);
+        Timestamp start = getCurrentStartTimeSelection();
+        Timestamp end = getCurrentEndTimeSelection();
 
         if (start.getTime() > end.getTime()) {
             showError("Start time must be before end time");
@@ -102,6 +77,41 @@ public class carSearch extends Controller implements Initializable {
         }
 
         return new TimePeriod(start, end);
+    }
+
+    private Timestamp getCurrentEndTimeSelection() {
+        Integer endDateValue = endDate.getValue();
+        Integer endMonthValue = endMonth.getValue();
+        Integer endYearValue = endYear.getValue();
+        Integer endHourValue = endHour.getValue();
+        Integer endMinuteValue = endMinute.getValue();
+        String endAmValue = endAM.getValue();
+
+        if (endAmValue.equals("PM")) endHourValue += (endHourValue + 12) % 24;
+
+        if ((endDateValue == 31 && !Arrays.asList(1, 3, 5, 7, 8, 10, 12).contains(endMonthValue))
+                || (endDateValue > 28 && endMonthValue == 2)) {
+            showError("Invalid month and date combination");
+        }
+
+        return new Timestamp(endYearValue-1900, endMonthValue-1, endDateValue, endHourValue, endMinuteValue, 0, 0);
+    }
+
+    Timestamp getCurrentStartTimeSelection() {
+        Integer startDateValue = startDate.getValue();
+        Integer startMonthValue = startMonth.getValue();
+        Integer startYearValue = startYear.getValue();
+        Integer startHourValue = startHour.getValue();
+        Integer startMinuteValue = startMinute.getValue();
+        String startAmValue = startAM.getValue();
+
+        if (startAmValue.equals("PM")) startHourValue = (startHourValue + 12) % 24;
+        if ((startDateValue == 31 && !Arrays.asList(1, 3, 5, 7, 8, 10, 12).contains(startMonthValue))
+                || (startDateValue > 28 && startMonthValue == 2)) {
+            showError("Invalid month and date combination");
+        }
+
+        return new Timestamp(startYearValue-1900, startMonthValue-1, startDateValue, startHourValue, startMinuteValue, 0, 0);
     }
 
     // Gets all locations from DB and puts it in branch selector
@@ -144,7 +154,7 @@ public class carSearch extends Controller implements Initializable {
     };
 
     // Sets default time period values
-    private Runnable resetTimePeriod = () -> {
+    Runnable resetTimePeriod = () -> {
         try {
             lock.lock();
             List<ComboBox> allDateTimeComboBox = Arrays.asList(startDate, endDate, startMonth, endMonth,
@@ -202,8 +212,8 @@ public class carSearch extends Controller implements Initializable {
                 currentResults = t == null ? new ArrayList<>() : qo.getVTSearchResultsFor(l, vt, t);
 
                 if (currentResults.size() > 0) {
-                    List<String> columnHeaders = Arrays.asList("Option No.", "Vehicle Type", "Current Location", "Number Available");
-                    List<String> propertyName = Arrays.asList("option", "vtName", "location", "numAvail");
+                    List<String> columnHeaders = Arrays.asList("Option No.", "Vehicle Type", "Features", "Current Location", "No. Avail.", "$/week", "$/day", "$/hr", "$/km", "$ ins./week", "$ ins./day", "$ ins./hour");
+                    List<String> propertyName = Arrays.asList("option", "vtName", "features", "location", "numAvail", "wrate", "drate", "hrate", "krate", "wirate", "dirate", "hirate");
                     for (int i = 0; i < columnHeaders.size(); i++) {
                         TableColumn<String, SearchResult> column = new TableColumn<>(columnHeaders.get(i));
                         column.setCellValueFactory(new PropertyValueFactory<>(propertyName.get(i)));
@@ -213,8 +223,7 @@ public class carSearch extends Controller implements Initializable {
                     // Add items
                     int count = 1;
                     for (VTSearchResult r: currentResults) {
-                        SearchResult entry = new SearchResult(String.valueOf(count), r.vt.vtname,
-                                                                r.location.toString(), String.valueOf(r.numAvail));
+                        SearchResult entry = new SearchResult(count, r.vt, r.location.toString(), r.numAvail);
                         searchResults.getItems().add(entry);
                         count++;
                     }
@@ -280,13 +289,16 @@ public class carSearch extends Controller implements Initializable {
     // Table models
 
     public class SearchResult {
-        String option, vtName, location, numAvail;
+        String option;
+        VehicleType vt;
+        String location;
+        String numAvail;
 
-        public SearchResult(String option, String vtName, String location, String numAvail) {
-            this.option = option;
-            this.vtName = vtName;
+        public SearchResult(int option, VehicleType vt, String location, int numAvail) {
+            this.option = String.valueOf(option);
+            this.vt = vt;
             this.location = location;
-            this.numAvail = numAvail;
+            this.numAvail = String.valueOf(numAvail);
         }
 
         public String getOption() {
@@ -294,7 +306,7 @@ public class carSearch extends Controller implements Initializable {
         }
 
         public String getVtName() {
-            return vtName;
+            return vt.vtname;
         }
 
         public String getLocation() {
@@ -303,6 +315,38 @@ public class carSearch extends Controller implements Initializable {
 
         public String getNumAvail() {
             return numAvail;
+        }
+
+        public String getFeatures() {
+            return vt.features;
+        }
+
+        public String getWrate() {
+            return "$" + vt.wrate;
+        }
+
+        public String getWirate() {
+            return "$" + vt.wirate;
+        }
+
+        public String getHrate() {
+            return "$" + vt.hrate;
+        }
+
+        public String getHirate() {
+            return "$" + vt.hirate;
+        }
+
+        public String getDrate() {
+            return "$" + vt.drate;
+        }
+
+        public String getDirate() {
+            return "$" + vt.dirate;
+        }
+
+        public String getKrate() {
+            return "$" + vt.krate;
         }
     }
 }

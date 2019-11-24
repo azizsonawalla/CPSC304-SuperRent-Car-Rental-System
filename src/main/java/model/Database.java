@@ -520,7 +520,7 @@ public class Database {
 
             int startOdometer = rs.getInt("odometer");
 
-            Card card = getCardMatching(rs.getLong("cardNo"));
+            Card card = getCardMatching(new Card(rs.getLong("cardNo"), "", null));
             int confNo = rs.getInt("'confNo");
 
             rentals.add(new Rental(rid, vlicense, dlicense, tm, startOdometer, card, confNo));
@@ -548,7 +548,7 @@ public class Database {
 
             int startOdometer = rs.getInt("odometer");
 
-            Card card = getCardMatching(rs.getLong("cardNo"));
+            Card card = getCardMatching(new Card(rs.getLong("cardNo"), "", null));
             int confNo = rs.getInt("'confNo");
 
             rentals.add(new Rental(rid, vlicense, dlicense, tm, startOdometer, card, confNo));

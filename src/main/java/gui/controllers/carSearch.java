@@ -133,7 +133,9 @@ public class carSearch extends Controller implements Initializable {
             branchSelector.getItems().add(ALL_BRANCHES);
             branchSelector.setValue(ALL_BRANCHES);
         } catch (Exception e) {
+            // TODO: show error
             Log.log("Error refreshing branch list on customer car search screen: " + e.getMessage());
+            throw new RuntimeException(e);
         } finally {
             lock.unlock();
         }

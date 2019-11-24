@@ -259,6 +259,10 @@ public class Queries {
                         "FROM Returns " +
                         "WHERE rId = ?";
 
+        public static String JOIN_RENTAL =
+                "SELECT * " +
+                        "FROM Return RT, Rent R " +
+                        "WHERE RT.rId = R.rId AND RT.rId = ?";
     }
 
     public static class Card {

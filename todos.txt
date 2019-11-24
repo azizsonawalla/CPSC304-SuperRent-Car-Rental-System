@@ -4,3 +4,15 @@
 // TODO: Make Database class into a singleton that uses a connection pool
 
 // TODO: Show error at beginning if screen size of device is too small
+
+Bugs George found
+
+//TODO: Display vtName in type column
+//TODO: Display search results when filtering by branch (Clerk and Customer view)
+//TODO: Debug selecting available reservations
+//TODO: Filter out the search results with 0 available
+//TODO: Clerk make reservation without rental should not be able to choose start time date. Should default to current
+//TODO: Option selector in car search should be the same
+//TODO: Once Rental is started for a Reservation, do not show it in the Active Reservations (Clerk view)
+//TODO: When a vehicle is returned, do not show it in the Ongoing Rentals (Clerk view)
+//TODO: Debug Branch filter for daily report

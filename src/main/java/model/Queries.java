@@ -140,11 +140,18 @@ public class Queries {
                         "WHERE confNo = ? AND dLicense = ? AND ? <= toDateTime " +
                         "AND confNo NOT IN (SELECT r.confNo FROM Rent r)";
 
-        public static String GET_RECENT_RESERVATIONS =
-                        "SELECT * " +
+        //Get reservations that overlap with the given time period at a given location for a given vehicle type
+        public static String GET_RESERVATIONS_WITH =
+                "SELECT * " +
                         "FROM Reservations " +
-                        "WHERE confNo = (SELECT MAX(confNo) " +
-                                        "FROM Reservations)";
+                        "WHERE ((R.fromDateTime <= ? AND R.toDateTime > ?) OR (R.toDateTime >= ? AND R.fromDateTime < ?)) " +
+                        "AND R.vtName = ? AND R.location = ? AND R.city = ?";
+
+//        public static String GET_RECENT_RESERVATIONS =
+//                        "SELECT * " +
+//                        "FROM Reservations " +
+//                        "WHERE confNo = (SELECT MAX(confNo) " +
+//                                        "FROM Reservations)";
 
     }
 
@@ -223,11 +230,18 @@ public class Queries {
                         "FROM Vehicle " +
                         "WHERE vtName = ? AND location = ? AND city = ? AND status = ?";
 
+        //Get the total number of vehicles at a given location that are a given vehicle type
         public static String GET_NUM_VEHICLES_WITH =
                 "SELECT V.vtName, V.location, V.city, COUNT(*) " +
                         "FROM Vehicle V " +
                         "WHERE vtName = ? AND location = ? AND city = ? " +
                         "GROUP BY V.vtName, V.location, V.city";
+
+        public static String GET_VEHICLE =
+                "SELECT * " +
+                        "FROM Vehicle " +
+                        "WHERE vLicense = ?";
+
 
     }
 
@@ -249,6 +263,7 @@ public class Queries {
 
         public static String QUERY_ALL =
                 "SELECT * FROM VehicleType";
+
     }
 
     public static class Returns {

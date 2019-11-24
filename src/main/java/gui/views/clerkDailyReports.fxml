@@ -14,22 +14,22 @@
       <Button fx:id="backToReservations" layoutX="33.0" layoutY="26.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="189.0" text="&lt; Back to Reservations" />
       <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="484.0" layoutY="26.0" prefHeight="61.0" prefWidth="367.0" text="SuperRent" textAlignment="RIGHT">
          <font>
-            <Font name="HelveticaLTStd-Bold" size="43.0" />
+            <Font name="Arial Bold" size="43.0" />
          </font>
       </Label>
       <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="863.0" layoutY="26.0" prefHeight="61.0" prefWidth="102.0" text="Clerk" textAlignment="RIGHT">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="43.0" />
+            <Font name="Arial" size="43.0" />
          </font>
       </Label>
       <Label alignment="CENTER" contentDisplay="CENTER" layoutX="705.0" layoutY="117.0" prefHeight="31.0" prefWidth="260.0" text="Generate Daily Report" textAlignment="CENTER">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="24.0" />
+            <Font name="Arial" size="24.0" />
          </font>
       </Label>
       <Label contentDisplay="CENTER" layoutX="705.0" layoutY="171.0" prefHeight="22.0" prefWidth="260.0" text="Select Branch">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="14.0" />
+            <Font name="Arial" size="14.0" />
          </font>
       </Label>
       <Button fx:id="generateReport" layoutX="705.0" layoutY="333.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="260.0" text="Generate Report" />
@@ -39,29 +39,29 @@
       <ComboBox fx:id="branchSelector" layoutX="705.0" layoutY="206.0" prefHeight="25.0" prefWidth="260.0" />
       <Label fx:id="entriesTitle" contentDisplay="CENTER" layoutX="33.0" layoutY="117.0" prefHeight="31.0" prefWidth="500.0" text="Rentals/Returns Today" textAlignment="CENTER">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="24.0" />
+            <Font name="Arial" size="24.0" />
          </font>
       </Label>
       <TableView fx:id="byVT" layoutX="33.0" layoutY="431.0" prefHeight="197.0" prefWidth="301.0" />
       <Label contentDisplay="CENTER" layoutX="33.0" layoutY="388.0" prefHeight="31.0" prefWidth="310.0" text="Subtotal by Vehicle Type" textAlignment="CENTER">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="24.0" />
+            <Font name="Arial" size="24.0" />
          </font>
       </Label>
       <TableView fx:id="byLocation" layoutX="367.0" layoutY="431.0" prefHeight="197.0" prefWidth="301.0" />
       <Label contentDisplay="CENTER" layoutX="367.0" layoutY="388.0" prefHeight="31.0" prefWidth="310.0" text="Subtotal by Location" textAlignment="CENTER">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="24.0" />
+            <Font name="Arial" size="24.0" />
          </font>
       </Label>
       <Label fx:id="totalCount" contentDisplay="CENTER" layoutX="33.0" layoutY="660.0" prefHeight="31.0" prefWidth="900.0" text="Total Rentals Today = " textAlignment="CENTER">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="24.0" />
+            <Font name="Arial" size="24.0" />
          </font>
       </Label>
       <Label fx:id="totalRevenue" contentDisplay="CENTER" layoutX="33.0" layoutY="706.0" prefHeight="31.0" prefWidth="900.0" text="Total Revenue from Returns Today = " textAlignment="CENTER">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="24.0" />
+            <Font name="Arial" size="24.0" />
          </font>
       </Label>
    </children>

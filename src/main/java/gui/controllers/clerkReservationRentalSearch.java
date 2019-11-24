@@ -19,8 +19,6 @@ import java.util.ResourceBundle;
 public class clerkReservationRentalSearch extends Controller implements Initializable {
 
     private Text NO_RESULTS_FOUND = new Text("No results found for your search");
-    private String RESERVATION_RESULT_TEMPLATE = "Confirmation No = %d, Customer DL = %s, Vehicle Type = %s, Start = %s, End = %s, Pickup = %s";
-    private String RENTAL_RESULT_TEMPLATE = "Rental ID = %d, Vehicle License = %s, Customer DL = %s, Start = %s, End = %s";
 
     private List<Reservation> currReservationSearchRes;
     private List<Rental> currRentalSearchRes;

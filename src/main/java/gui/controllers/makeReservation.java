@@ -15,9 +15,6 @@ import java.util.ResourceBundle;
 
 public abstract class makeReservation extends Controller implements Initializable {
 
-    String LOCATION_INFO_TEMPLATE = "%s, %s";
-    String TIME_INFO_TEMPLATE = "On %02d/%02d/%02d at %02d:%02d";
-
     private String currentDLInput = "";
 
     @FXML private Button backToSearchButton, makeResButton;

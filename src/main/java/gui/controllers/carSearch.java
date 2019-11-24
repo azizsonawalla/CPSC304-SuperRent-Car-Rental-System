@@ -19,8 +19,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class carSearch extends Controller implements Initializable {
 
-    private String RESULT_DETAILS_TEMPLATE = "Make = %s,   Model = %s,  Year = %d,  Colour = %s,  License plate = %s";
-
     List<VTSearchResult> currentResults;
     Lock lock = new ReentrantLock();
 

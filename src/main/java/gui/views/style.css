@@ -30,6 +30,7 @@ TextFlow {
 ComboBox {
     -fx-font-size: 10px;
 }
+
 /**
 Label {
     -fx-font-size: 14px;

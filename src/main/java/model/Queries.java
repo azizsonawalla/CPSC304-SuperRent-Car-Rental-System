@@ -306,7 +306,7 @@ public class Queries {
                         "FROM Branch " +
                         "WHERE city = ? AND location = ?";
 
-        public static String GET_ALL_BRANCHS =
+        public static String GET_ALL_BRANCHES =
                 "SELECT * " +
                         "FROM Branch ";
     }

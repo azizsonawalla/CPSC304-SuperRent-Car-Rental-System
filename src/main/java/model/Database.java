@@ -185,7 +185,7 @@ public class Database {
                 query += "((R.fromDateTime <= ? AND R.toDateTime > ?) OR " +
                         "(R.toDateTime >= ? AND R.fromDateTime < ?)) ";
                 marker = true;
-            } if (vt != null && vt.vtname != "All Types") {
+            } if (vt != null) {
                 query += marker? "AND R.vtname = '" + vt.vtname + "' " :
                         "R.vtname = '" + vt.vtname + "' ";
                 marker = true;
@@ -194,7 +194,6 @@ public class Database {
                         "R.location = '" + l.location + "' " + "AND R.city = '" + l.city + "'";
             }
         }
-        Log.log("getReservationsWith Query: " + query);
         PreparedStatement ps = conn.prepareStatement(query);
         //Insert Timestamp values to prepared statement
         if (t != null){
@@ -273,11 +272,17 @@ public class Database {
     public List<Reservation> getReservationsWithHelper(TimePeriod t, Reservation r) throws Exception {
         String query = Queries.Reservation.GET_ACTIVE_RESERVATIONS;
 
-        if (r.confNum == -1) query.replace("confNo = ? AND ", "");
-        else query.replace("confNo = ? AND", "confNo = " + r.confNum + " AND");
+        if (r.confNum == -1) {
+            query = query.replace("confNo = ? AND ", "");
+        } else {
+            query = query.replace("confNo = ? AND", "confNo = " + r.confNum + " AND");
+        }
 
-        if (r.dlicense == null) query.replace("dLicense = ? AND ", "");
-        else query.replace("dLicense = ? AND ", "dLicense = " + r.dlicense + " AND ");
+        if (r.dlicense == null) {
+            query = query.replace("dLicense = ? AND ", "");
+        } else {
+            query = query.replace("dLicense = ? AND ", "dLicense = '" + r.dlicense + "' AND ");
+        }
 
         PreparedStatement ps = conn.prepareStatement(query);
         ps.setTimestamp(1, t.startDateAndTime);
@@ -302,7 +307,6 @@ public class Database {
             res.location = loc;
             reservations.add(res);
         }
-
         return reservations;
     }
 
@@ -497,11 +501,17 @@ public class Database {
     public List<Rental> getRentalsWithHelper(TimePeriod timePeriod, Rental rental) throws Exception {
         String query = Queries.Rent.GET_ACTIVE_RENTALS;
 
-        if (rental.rid == -1) query.replace("rId = ? AND ", "");
-        else query.replace("rId = ? AND", "rId = " + rental.rid + " AND");
+        if (rental.rid == -1) {
+            query = query.replace("rId = ? AND ", "");
+        } else {
+            query = query.replace("rId = ? AND", "rId = " + rental.rid + " AND");
+        }
 
-        if (rental.dlicense == null) query.replace("dLicense = ? AND ", "");
-        else query.replace("dLicense = ? AND ", "dLicense = " + rental.dlicense + " AND ");
+        if (rental.dlicense == null) {
+            query = query.replace("dLicense = ? AND ", "");
+        } else {
+            query = query.replace("dLicense = ? AND ", "dLicense = '" + rental.dlicense + "' AND ");
+        }
 
         PreparedStatement ps = conn.prepareStatement(query);
         ps.setTimestamp(1, timePeriod.startDateAndTime);
@@ -521,7 +531,7 @@ public class Database {
             int startOdometer = rs.getInt("odometer");
 
             Card card = getCardMatching(new Card(rs.getLong("cardNo"), "", null));
-            int confNo = rs.getInt("'confNo");
+            int confNo = rs.getInt("confNo");
 
             rentals.add(new Rental(rid, vlicense, dlicense, tm, startOdometer, card, confNo));
         }
@@ -759,8 +769,6 @@ public class Database {
 
         //commit changes and close prepared statement
         ps.close();
-
-        Log.log("Customer with dlicense " + c.dlicense + " successfully added");
     }
 
     /**
@@ -792,8 +800,6 @@ public class Database {
 
         //commit changes and close prepared statement
         ps.close();
-
-        Log.log("Customer with dlicense " + c.dlicense + " successfully updated");
     }
 
     /**
@@ -816,8 +822,6 @@ public class Database {
 
         //commit changes and close prepared statement
         ps.close();
-
-        Log.log("Customer with dlicense " + c.dlicense + " successfully deleted");
     }
 
     public Customer getCustomerMatching(Customer c) throws Exception {
@@ -832,7 +836,6 @@ public class Database {
 
         Customer res = new Customer(rs.getLong(1), rs.getString(2), rs.getString(3),
                 rs.getString(4));
-        System.out.println("Customer with dLicense " + c.dlicense + " successfully retrieved");
         ps.close();
         return res;
     }
@@ -863,8 +866,6 @@ public class Database {
 
         //commit changes and close prepared statement
         ps.close();
-
-        Log.log("VehicleType with vtname " + vt.vtname + " successfully added");
     }
 
     /**
@@ -901,8 +902,6 @@ public class Database {
 
         //commit changes and close prepared statement
         ps.close();
-
-        Log.log("VehicleType with vtname " + vt.vtname + " successfully updated");
     }
 
     /**
@@ -925,8 +924,6 @@ public class Database {
 
         //commit changes and close prepared statement
         ps.close();
-
-        Log.log("VehicleType with vtname " + vt.vtname + " successfully deleted");
     }
 
     public VehicleType getVehicleTypeMatching(VehicleType vt) throws SQLException {
@@ -947,7 +944,6 @@ public class Database {
         //Handle situation where vehicle type does not have features
         if (res.features == null) res.features = "No features";
 
-        System.out.println("VehicleType with vtname " + vt.vtname + " successfully retrieved");
         ps.close();
         return res;
     }
@@ -1081,9 +1077,6 @@ public class Database {
             else query = query.replace("status = ?", "status = " + (availableNow == Vehicle.VehicleStatus.AVAILABLE));
         }
 
-        //For debugging purposes, prints what the final query looks like
-        Log.log("getVehicleWith query " + query);
-
         //Prepare statement and execute query
         PreparedStatement ps = conn.prepareStatement(query);
         ResultSet rs = ps.executeQuery();
@@ -1134,7 +1127,6 @@ public class Database {
                 (rs.getBoolean("status")) ? Vehicle.VehicleStatus.AVAILABLE: Vehicle.VehicleStatus.RENTED,
                 new Location(rs.getString("city"), rs.getString("location")));
 
-        System.out.println("Vehicle with vlicense " + v.vlicense + " successfully retrieved");
         ps.close();
         return res;
     }
@@ -1152,17 +1144,20 @@ public class Database {
         } else {
             //If no VehicleType is provided, remove VehicleType filter from WHERE clause.
             //If VehicleType provided, filter by vt.vtname
-            if (vt == null || vt.vtname.equals("All Types")) query = query.replace("vtName = ? AND ", "");
-            else query = query.replace("vtName = ?", "vtName = '" + vt.vtname + "'");
+            if (vt == null) {
+                query = query.replace("vtName = ? AND ", "");
+            } else {
+                query = query.replace("vtName = ?", "vtName = '" + vt.vtname + "'");
+            }
             //If no location is provided, remove location filter from WHERE clause.
             //If location provided, filter by l.location and l.city
-            if (l == null) query = query.replace("location = ? AND city = ? AND ", "");
-            else
+            if (l == null) {
+                query = query.replace("AND location = ? AND city = ?", "");
+            } else {
                 query = query.replace("location = ? AND city = ?", "location = '" + l.location +
                         "' AND city = '" + l.city + "'");
+            }
         }
-        //For debugging purposes, prints what the final query looks like
-        Log.log("getVTSearchResultsForHelper query " + query);
 
         //Prepare statement and execute query
         PreparedStatement ps = conn.prepareStatement(query);
@@ -1175,7 +1170,7 @@ public class Database {
             //Make a VTSearchResult object based on current tuple.
             VTSearchResult vtsr = new VTSearchResult(
                     getVehicleTypeMatching(new VehicleType(rs.getString("vtName"))),
-                    new Location(rs.getString("location"), rs.getString("city")),
+                    new Location(rs.getString("city"), rs.getString("location")),
                     rs.getInt(4));
 
             //Add the VTSearchResult object to vehicles
@@ -1377,7 +1372,7 @@ public class Database {
      * @throws Exception
      */
     public List<Location> getAllLocations() throws Exception {
-        PreparedStatement ps = conn.prepareStatement(Queries.Branch.GET_BRANCH);
+        PreparedStatement ps = conn.prepareStatement(Queries.Branch.GET_ALL_BRANCHES);
         ResultSet rs = ps.executeQuery();
         List<Location> locations = new ArrayList<>();
 

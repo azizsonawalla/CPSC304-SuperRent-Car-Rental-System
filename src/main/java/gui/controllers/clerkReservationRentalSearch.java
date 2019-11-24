@@ -164,13 +164,25 @@ public class clerkReservationRentalSearch extends Controller implements Initiali
 
     private Runnable startRentalFromReservation = () -> {
         Log.log("Starting rental from reservation");
-        this.main.clerkReservationToStart = currReservationSearchRes.get(reservationOptions.getValue() -1);
-        this.main.switchScene(Config.CLERK_START_RENTAL);
+        for (Reservation r : currReservationSearchRes) {
+            if (r.confNum == reservationOptions.getValue()) {
+                this.main.clerkReservationToStart = r;
+                this.main.switchScene(Config.CLERK_START_RENTAL);
+                return;
+            }
+        }
+        showError("Failed to parse reservation to start rental");
     };
 
     private Runnable startReturnForRental = () -> {
         Log.log("starting return for rental");
-        this.main.clerkRentalToBeReturned = currRentalSearchRes.get(rentalOptions.getValue() - 1);
-        this.main.switchScene(Config.CLERK_SUBMIT_RETURN);
+        for (Rental r : currRentalSearchRes) {
+            if (r.rid == rentalOptions.getValue()) {
+                this.main.clerkRentalToBeReturned = r;
+                this.main.switchScene(Config.CLERK_SUBMIT_RETURN);
+                return;
+            }
+        }
+        showError("Failed to parse rental to start return");
     };
 }

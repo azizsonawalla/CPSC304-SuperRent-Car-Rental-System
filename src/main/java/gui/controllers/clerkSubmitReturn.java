@@ -108,12 +108,12 @@ public class clerkSubmitReturn extends Controller implements Initializable {
         kmLimit.setText(String.format("Daily KM Limit: %d km", qo.getDailyKMLimit()));
 
         w.setText(String.format("Number of Weeks (W) = %d",wVal));
-        wr.setText(String.format("Weekly Rate (WR) = $%d (rental) + $%d (insurance)", vehicleType.wrate, vehicleType.wirate));
+        wr.setText(String.format("Weekly Rate (WR) = $%.2f (rental) + $%.2f (insurance)", vehicleType.wrate, vehicleType.wirate));
         d.setText(String.format("Number of Days (D) = %d",dVal));
-        dr.setText(String.format("Daily Rate (DR) = $%d (rental) + $%d (insurance)", vehicleType.drate, vehicleType.dirate));
+        dr.setText(String.format("Daily Rate (DR) = $%.2f (rental) + $%.2f (insurance)", vehicleType.drate, vehicleType.dirate));
         h.setText(String.format("Number of Hours (H) = %d",hVal));
-        hr.setText(String.format("Hourly Rate (HR) = $%d (rental) + $%d (insurance)", vehicleType.hrate, vehicleType.hirate));
-        kmr.setText(String.format("KM Overage Rate (KMR) = $%d/km", vehicleType.krate));
+        hr.setText(String.format("Hourly Rate (HR) = $%.2f (rental) + $%.2f (insurance)", vehicleType.hrate, vehicleType.hirate));
+        kmr.setText(String.format("KM Overage Rate (KMR) = $%.2f/km", vehicleType.krate));
 
         long endOdometerValue = getEndOdometer();
         if (endOdometerValue >= 0) {
@@ -124,7 +124,7 @@ public class clerkSubmitReturn extends Controller implements Initializable {
                         + (hVal * (vehicleType.hirate + vehicleType.hrate))
                         + (kmVal * vehicleType.krate);
             km.setText(String.format("Total KM over limit (KM) = %d", kmVal));
-            tc.setText(String.format("Total Cost = $%d.00", tcVal));
+            tc.setText(String.format("Total Cost = $%.2f", tcVal));
             currentCalculatedCost = tcVal;
         } else {
             km.setText("Total KM over limit (KM) = [Enter odometer value]");

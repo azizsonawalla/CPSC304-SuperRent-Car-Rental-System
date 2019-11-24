@@ -19,7 +19,13 @@ public class clerkCarSearch extends carSearch {
         super.startReservation = () -> {
             try {
                 lock.lock();
-                int optionSelected = seeDetailsForOption.getValue() -1;
+                int optionSelected;
+                try {
+                    optionSelected = seeDetailsForOption.getValue()-1;
+                } catch (Exception e) {
+                    showError("There is no option selected to start reservation for");
+                    return;
+                }
                 Reservation res = new Reservation();
                 res.location = currentResults.get(optionSelected).location;
                 res.vtName = currentResults.get(optionSelected).vt.vtname;

@@ -11,115 +11,115 @@
    <children>
        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="484.0" layoutY="26.0" prefHeight="61.0" prefWidth="367.0" text="SuperRent" textAlignment="RIGHT">
            <font>
-               <Font name="HelveticaLTStd-Bold" size="43.0" />
+               <Font name="Arial Bold" size="43.0" />
            </font>
        </Label>
        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="863.0" layoutY="26.0" prefHeight="61.0" prefWidth="102.0" text="Clerk" textAlignment="RIGHT">
            <font>
-               <Font name="HelveticaLTStd-Roman" size="43.0" />
+               <Font name="Arial" size="43.0" />
            </font>
        </Label>
        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="363.0" layoutX="33.0" layoutY="119.0" stroke="BLACK" strokeType="INSIDE" width="384.0" />
        <Button layoutX="230.0" layoutY="26.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="186.0" text="Switch to Customer User" />
        <Label contentDisplay="RIGHT" layoutX="55.0" layoutY="139.0" prefHeight="31.0" prefWidth="327.0" text="You are starting a rental for:" textAlignment="RIGHT">
            <font>
-               <Font name="HelveticaLTStd-Roman" size="24.0" />
+               <Font name="Arial" size="24.0" />
            </font>
        </Label>
        <Button fx:id="backToSearchButton" layoutX="33.0" layoutY="26.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="165.0" text="&lt; Back to Car Search" />
        <Label contentDisplay="CENTER" layoutX="55.0" layoutY="188.0" prefHeight="22.0" prefWidth="260.0" text="Vehicle Type:">
            <font>
-               <Font name="HelveticaLTStd-Bold" size="14.0" />
+               <Font name="Arial Bold" size="14.0" />
            </font>
        </Label>
        <Label fx:id="locationlabel" contentDisplay="CENTER" layoutX="55.0" layoutY="273.0" prefHeight="22.0" prefWidth="327.0" text="[]">
            <font>
-               <Font name="HelveticaLTStd-Roman" size="14.0" />
+               <Font name="Arial" size="14.0" />
            </font>
        </Label>
        <Label contentDisplay="CENTER" layoutX="55.0" layoutY="305.0" prefHeight="22.0" prefWidth="260.0" text="Start:">
            <font>
-               <Font name="HelveticaLTStd-Bold" size="14.0" />
+               <Font name="Arial Bold" size="14.0" />
            </font>
        </Label>
        <Label contentDisplay="CENTER" layoutX="55.0" layoutY="365.0" prefHeight="22.0" prefWidth="260.0" text="End:">
            <font>
-               <Font name="HelveticaLTStd-Bold" size="14.0" />
+               <Font name="Arial Bold" size="14.0" />
            </font>
        </Label>
        <Label contentDisplay="RIGHT" layoutX="494.0" layoutY="117.0" prefHeight="31.0" prefWidth="471.0" text="Enter Customer Information:" textAlignment="RIGHT">
            <font>
-               <Font name="HelveticaLTStd-Roman" size="24.0" />
+               <Font name="Arial" size="24.0" />
            </font>
        </Label>
        <Label contentDisplay="CENTER" layoutX="494.0" layoutY="166.0" prefHeight="22.0" prefWidth="462.0" text="If renter is an existing customer, simply enter their driver's license no.">
            <font>
-               <Font name="HelveticaLTStd-Roman" size="14.0" />
+               <Font name="Arial" size="14.0" />
            </font>
        </Label>
        <Label contentDisplay="CENTER" layoutX="494.0" layoutY="188.0" prefHeight="22.0" prefWidth="462.0" text="and the system will automatically fill their information.">
            <font>
-               <Font name="HelveticaLTStd-Roman" size="14.0" />
+               <Font name="Arial" size="14.0" />
            </font>
        </Label>
        <TextField fx:id="dlField" layoutX="494.0" layoutY="268.0" prefHeight="25.0" prefWidth="244.0" promptText="eg. DL1234A" />
        <Label contentDisplay="CENTER" layoutX="494.0" layoutY="231.0" prefHeight="22.0" prefWidth="462.0" text="Driver's License Number (alphanumeric only):">
            <font>
-               <Font name="HelveticaLTStd-Roman" size="14.0" />
+               <Font name="Arial" size="14.0" />
            </font>
        </Label>
        <Label contentDisplay="CENTER" layoutX="494.0" layoutY="339.0" prefHeight="22.0" prefWidth="462.0" text="Customer full name:">
            <font>
-               <Font name="HelveticaLTStd-Roman" size="14.0" />
+               <Font name="Arial" size="14.0" />
            </font>
        </Label>
        <TextField fx:id="nameField" layoutX="494.0" layoutY="375.0" prefHeight="25.0" prefWidth="365.0" promptText="eg. John Smith" />
        <Label contentDisplay="CENTER" layoutX="494.0" layoutY="422.0" prefHeight="22.0" prefWidth="462.0" text="Customer Cellphone Number (10 digits):">
            <font>
-               <Font name="HelveticaLTStd-Roman" size="14.0" />
+               <Font name="Arial" size="14.0" />
            </font>
        </Label>
        <TextField fx:id="cellField" layoutX="494.0" layoutY="460.0" prefHeight="25.0" prefWidth="244.0" promptText="eg. 7780003250" />
        <Label contentDisplay="CENTER" layoutX="494.0" layoutY="509.0" prefHeight="22.0" prefWidth="462.0" text="Customer address:">
            <font>
-               <Font name="HelveticaLTStd-Roman" size="14.0" />
+               <Font name="Arial" size="14.0" />
            </font>
        </Label>
        <TextField fx:id="addField" layoutX="494.0" layoutY="546.0" prefHeight="58.0" prefWidth="365.0" promptText="eg. 5959 West Mall" />
        <Button fx:id="makeResButton" layoutX="494.0" layoutY="641.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="277.0" text="Continue with rental &gt;" />
        <Label fx:id="resultLine" contentDisplay="CENTER" layoutX="494.0" layoutY="710.0" prefHeight="22.0" prefWidth="462.0" text="Success!">
            <font>
-               <Font name="HelveticaLTStd-Roman" size="14.0" />
+               <Font name="Arial" size="14.0" />
            </font>
        </Label>
        <Label fx:id="vtlabel" contentDisplay="CENTER" layoutX="55.0" layoutY="215.0" prefHeight="22.0" prefWidth="333.0" text="[]">
            <font>
-               <Font name="HelveticaLTStd-Roman" size="14.0" />
+               <Font name="Arial" size="14.0" />
            </font>
        </Label>
        <Label contentDisplay="CENTER" layoutX="55.0" layoutY="247.0" prefHeight="22.0" prefWidth="260.0" text="Pickup Location: ">
            <font>
-               <Font name="HelveticaLTStd-Bold" size="14.0" />
+               <Font name="Arial Bold" size="14.0" />
            </font>
        </Label>
        <Label fx:id="startlabel" contentDisplay="CENTER" layoutX="55.0" layoutY="333.0" prefHeight="22.0" prefWidth="331.0" text="[]">
            <font>
-               <Font name="HelveticaLTStd-Roman" size="14.0" />
+               <Font name="Arial" size="14.0" />
            </font>
        </Label>
        <Label fx:id="endlabel" contentDisplay="CENTER" layoutX="55.0" layoutY="394.0" prefHeight="22.0" prefWidth="327.0" text="[]">
            <font>
-               <Font name="HelveticaLTStd-Roman" size="14.0" />
+               <Font name="Arial" size="14.0" />
            </font>
        </Label>
        <Label fx:id="invalidDL" contentDisplay="CENTER" layoutX="752.0" layoutY="270.0" prefHeight="22.0" prefWidth="85.0" text="Invalid input" textFill="RED">
            <font>
-               <Font name="HelveticaLTStd-Roman" size="14.0" />
+               <Font name="Arial" size="14.0" />
            </font>
        </Label>
        <Label fx:id="existingCustomer" contentDisplay="CENTER" layoutX="494.0" layoutY="300.0" prefHeight="22.0" prefWidth="279.0" text="Found existing customer!" textFill="#1dc325">
            <font>
-               <Font name="HelveticaLTStd-Roman" size="14.0" />
+               <Font name="Arial" size="14.0" />
            </font>
        </Label>
    </children>

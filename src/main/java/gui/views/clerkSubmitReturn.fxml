@@ -13,144 +13,144 @@
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="489.0" layoutX="544.0" layoutY="120.0" stroke="BLACK" strokeType="INSIDE" width="421.0" />
       <Label contentDisplay="RIGHT" layoutX="571.0" layoutY="146.0" prefHeight="31.0" prefWidth="367.0" text="Total rental cost:" textAlignment="RIGHT">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="24.0" />
+            <Font name="Arial" size="24.0" />
          </font>
       </Label>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="290.0" layoutX="33.0" layoutY="120.0" stroke="BLACK" strokeType="INSIDE" width="421.0" />
       <Button fx:id="backToReservations" layoutX="33.0" layoutY="26.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="189.0" text="&lt; Back to Reservations" />
       <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="484.0" layoutY="26.0" prefHeight="61.0" prefWidth="367.0" text="SuperRent" textAlignment="RIGHT">
          <font>
-            <Font name="HelveticaLTStd-Bold" size="43.0" />
+            <Font name="Arial Bold" size="43.0" />
          </font>
       </Label>
       <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="863.0" layoutY="26.0" prefHeight="61.0" prefWidth="102.0" text="Clerk" textAlignment="RIGHT">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="43.0" />
+            <Font name="Arial" size="43.0" />
          </font>
       </Label>
       <Label contentDisplay="RIGHT" layoutX="63.0" layoutY="148.0" prefHeight="31.0" prefWidth="367.0" text="You are processing return for:" textAlignment="RIGHT">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="24.0" />
+            <Font name="Arial" size="24.0" />
          </font>
       </Label>
       <Label fx:id="rentalNumber" contentDisplay="CENTER" layoutX="63.0" layoutY="201.0" prefHeight="22.0" prefWidth="260.0" text="Rental Number:">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="14.0" />
+            <Font name="Arial" size="14.0" />
          </font>
       </Label>
       <Button fx:id="submitReturn" layoutX="36.0" layoutY="630.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="260.0" text="Submit Return" />
       <Button layoutX="245.0" layoutY="26.0" mnemonicParsing="false" onAction="#switchToCustomer" prefHeight="61.0" prefWidth="211.0" text="Switch to Customer User" />
       <Label fx:id="start" contentDisplay="CENTER" layoutX="63.0" layoutY="232.0" prefHeight="22.0" prefWidth="260.0" text="Rental Start:">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="14.0" />
+            <Font name="Arial" size="14.0" />
          </font>
       </Label>
       <Label fx:id="dr" contentDisplay="CENTER" layoutX="571.0" layoutY="310.0" prefHeight="22.0" prefWidth="367.0" text="Daily rate (DR) = ">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="14.0" />
+            <Font name="Arial" size="14.0" />
          </font>
       </Label>
       <Label fx:id="h" contentDisplay="CENTER" layoutX="571.0" layoutY="338.0" prefHeight="22.0" prefWidth="371.0" text="Number of hours (H) = ">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="14.0" />
+            <Font name="Arial" size="14.0" />
          </font>
       </Label>
       <Label fx:id="hr" contentDisplay="CENTER" layoutX="571.0" layoutY="366.0" prefHeight="22.0" prefWidth="371.0" text="Hourly rate (HR) = ">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="14.0" />
+            <Font name="Arial" size="14.0" />
          </font>
       </Label>
       <Label fx:id="end" contentDisplay="CENTER" layoutX="63.0" layoutY="264.0" prefHeight="22.0" prefWidth="260.0" text="Rental End: ">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="14.0" />
+            <Font name="Arial" size="14.0" />
          </font>
       </Label>
       <Label fx:id="wr" contentDisplay="CENTER" layoutX="571.0" layoutY="255.0" prefHeight="22.0" prefWidth="371.0" text="Weekly rate (WR) = ">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="14.0" />
+            <Font name="Arial" size="14.0" />
          </font>
       </Label>
       <Label fx:id="d" contentDisplay="CENTER" layoutX="571.0" layoutY="283.0" prefHeight="22.0" prefWidth="371.0" text="Number of days (D) =">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="14.0" />
+            <Font name="Arial" size="14.0" />
          </font>
       </Label>
       <Label fx:id="w" contentDisplay="CENTER" layoutX="571.0" layoutY="230.0" prefHeight="22.0" prefWidth="371.0" text="Number of weeks (W) = ">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="14.0" />
+            <Font name="Arial" size="14.0" />
          </font>
       </Label>
       <Label contentDisplay="RIGHT" layoutX="36.0" layoutY="434.0" prefHeight="31.0" prefWidth="421.0" text="Enter return information:" textAlignment="RIGHT">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="24.0" />
+            <Font name="Arial" size="24.0" />
          </font>
       </Label>
       <Label contentDisplay="CENTER" layoutX="36.0" layoutY="478.0" prefHeight="22.0" prefWidth="260.0" text="Start odometer reading:">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="14.0" />
+            <Font name="Arial" size="14.0" />
          </font>
       </Label>
       <TextField fx:id="endOdometer" layoutX="36.0" layoutY="535.0" prefHeight="25.0" prefWidth="293.0" promptText="Integer value. Must be larger than starting reading" />
       <Label fx:id="result" contentDisplay="CENTER" layoutX="36.0" layoutY="704.0" prefHeight="22.0" prefWidth="481.0" text="Success! / Error!">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="14.0" />
+            <Font name="Arial" size="14.0" />
          </font>
       </Label>
       <Label fx:id="name" contentDisplay="CENTER" layoutX="63.0" layoutY="295.0" prefHeight="22.0" prefWidth="260.0" text="Customer Name:">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="14.0" />
+            <Font name="Arial" size="14.0" />
          </font>
       </Label>
       <Label fx:id="dlicense" contentDisplay="CENTER" layoutX="63.0" layoutY="327.0" prefHeight="22.0" prefWidth="260.0" text="Customer license number:">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="14.0" />
+            <Font name="Arial" size="14.0" />
          </font>
       </Label>
       <Label contentDisplay="CENTER" layoutX="36.0" layoutY="504.0" prefHeight="22.0" prefWidth="260.0" text="Enter current odometer reading:">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="14.0" />
+            <Font name="Arial" size="14.0" />
          </font>
       </Label>
       <CheckBox fx:id="tankFull" layoutX="36.0" layoutY="581.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="121.0" text="Tank is full" />
       <Label fx:id="km" contentDisplay="CENTER" layoutX="571.0" layoutY="422.0" prefHeight="22.0" prefWidth="371.0" text="Total KM over limit (KM) = ">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="14.0" />
+            <Font name="Arial" size="14.0" />
          </font>
       </Label>
       <Label fx:id="kmr" contentDisplay="CENTER" layoutX="571.0" layoutY="449.0" prefHeight="22.0" prefWidth="371.0" text="KM overage rate (KMR) = ">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="14.0" />
+            <Font name="Arial" size="14.0" />
          </font>
       </Label>
       <Label fx:id="kmLimit" contentDisplay="CENTER" layoutX="571.0" layoutY="394.0" prefHeight="22.0" prefWidth="371.0" text="Daily KM limit =">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="14.0" />
+            <Font name="Arial" size="14.0" />
          </font>
       </Label>
       <Label fx:id="vtname" contentDisplay="CENTER" layoutX="571.0" layoutY="197.0" prefHeight="22.0" prefWidth="371.0" text="Vehicle Type rented:">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="14.0" />
+            <Font name="Arial" size="14.0" />
          </font>
       </Label>
       <Label fx:id="tc" contentDisplay="CENTER" layoutX="571.0" layoutY="515.0" prefHeight="23.0" prefWidth="371.0" text="Total cost = ">
          <font>
-            <Font name="HelveticaLTStd-Bold" size="18.0" />
+            <Font name="Arial Bold" size="18.0" />
          </font>
       </Label>
       <Label contentDisplay="CENTER" layoutX="571.0" layoutY="478.0" prefHeight="22.0" prefWidth="388.0" text="Total cost = (W x WR) + (D x DR) + (H x HR) + (KM x KMR)">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="14.0" />
+            <Font name="Arial" size="14.0" />
          </font>
       </Label>
       <Label fx:id="startOdometer" contentDisplay="CENTER" layoutX="63.0" layoutY="358.0" prefHeight="22.0" prefWidth="260.0" text="Start odometer:">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="14.0" />
+            <Font name="Arial" size="14.0" />
          </font>
       </Label>
       <Button fx:id="refreshCost" layoutX="343.0" layoutY="530.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="109.0" text="Refresh Cost" />
       <Label fx:id="invalidOdometer" contentDisplay="CENTER" layoutX="343.0" layoutY="579.0" prefHeight="22.0" prefWidth="109.0" text="Invalid value" textFill="RED">
          <font>
-            <Font name="HelveticaLTStd-Roman" size="14.0" />
+            <Font name="Arial" size="14.0" />
          </font>
       </Label>
    </children>

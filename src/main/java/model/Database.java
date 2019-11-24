@@ -13,7 +13,8 @@ import java.util.List;
  */
 public class Database {
 
-    private String HOST = "jdbc:mysql://35.247.80.246/superrent"; // TODO: (low priority) move constants to config
+    private String HOST = "jdbc:mysql://35.247.80.246/superrent";
+    private String TEST_HOST = "jdbc:mysql://35.247.80.246/superrenttest";
     private String USERNAME = "root";
     private String PASSWORD = "bobobobo";
 
@@ -23,16 +24,20 @@ public class Database {
      * Constructor for Database class. Establishes a connection to the database and initializes the connection field.
      * @throws Exception if there was an error connecting to the database
      */
-    public Database() throws Exception {
+    public Database(boolean testmode) throws Exception {
         Log.log("Establishing connection to database...");
         try {
-            this.conn = DriverManager.getConnection(HOST, USERNAME, PASSWORD);
+            this.conn = DriverManager.getConnection(testmode ? TEST_HOST : HOST, USERNAME, PASSWORD);
             if (this.conn == null) throw new Exception("Connection object is null");
             createTables();
         } catch (Exception e) {
-            throw new Exception("Error getting connection to database", e);
+            throw new Exception(e);
         }
         Log.log("Successfully connected to database!");
+    }
+
+    public Database() throws Exception {
+        this(false);
     }
 
     //region CreateDropTables
@@ -41,17 +46,17 @@ public class Database {
      * Checks all the tables required for the system and creates them if they don't exist
      * @throws Exception if there was an error creating any of the tables
      */
-    public void createTables() throws Exception {
+    public void createTables() throws Exception{
         //Creates all the tables
         conn.prepareStatement(Queries.Create.CREATE_TABLE_CUSTOMER).executeUpdate();
         conn.prepareStatement(Queries.Create.CREATE_TABLE_VEHICLE_TYPE).executeUpdate();
         conn.prepareStatement(Queries.Create.CREATE_TABLE_BRANCH).executeUpdate();
-        conn.prepareStatement(Queries.Create.CREATE_TABLE_RESERVATIONS).executeUpdate();
-        conn.prepareStatement(Queries.Create.CREATE_TABLE_VEHICLE).executeUpdate();
         conn.prepareStatement(Queries.Create.CREATE_TABLE_CARD).executeUpdate();
-        conn.prepareStatement(Queries.Create.CREATE_TABLE_RETURNS).executeUpdate();
+        conn.prepareStatement(Queries.Create.CREATE_TABLE_VEHICLE).executeUpdate();
+        conn.prepareStatement(Queries.Create.CREATE_TABLE_RESERVATIONS).executeUpdate();
         conn.prepareStatement(Queries.Create.CREATE_TABLE_RENT).executeUpdate();
-    }
+        conn.prepareStatement(Queries.Create.CREATE_TABLE_RETURNS).executeUpdate();
+        }
 
     /**
      * Drops all the tables that have been created
@@ -180,7 +185,7 @@ public class Database {
                 query += "((R.fromDateTime <= ? AND R.toDateTime > ?) OR " +
                         "(R.toDateTime >= ? AND R.fromDateTime < ?)) ";
                 marker = true;
-            } if (vt != null && vt.vtname != "All Types") {
+            } if (vt != null) {
                 query += marker? "AND R.vtname = '" + vt.vtname + "' " :
                         "R.vtname = '" + vt.vtname + "' ";
                 marker = true;
@@ -189,7 +194,6 @@ public class Database {
                         "R.location = '" + l.location + "' " + "AND R.city = '" + l.city + "'";
             }
         }
-        Log.log("getReservationsWith Query: " + query);
         PreparedStatement ps = conn.prepareStatement(query);
         //Insert Timestamp values to prepared statement
         if (t != null){
@@ -268,11 +272,17 @@ public class Database {
     public List<Reservation> getReservationsWithHelper(TimePeriod t, Reservation r) throws Exception {
         String query = Queries.Reservation.GET_ACTIVE_RESERVATIONS;
 
-        if (r.confNum == -1) query.replace("confNo = ? AND ", "");
-        else query.replace("confNo = ? AND", "confNo = " + r.confNum + " AND");
+        if (r.confNum == -1) {
+            query = query.replace("confNo = ? AND ", "");
+        } else {
+            query = query.replace("confNo = ? AND", "confNo = " + r.confNum + " AND");
+        }
 
-        if (r.dlicense == null) query.replace("dLicense = ? AND ", "");
-        else query.replace("dLicense = ? AND ", "dLicense = " + r.dlicense + " AND ");
+        if (r.dlicense == null) {
+            query = query.replace("dLicense = ? AND ", "");
+        } else {
+            query = query.replace("dLicense = ? AND ", "dLicense = '" + r.dlicense + "' AND ");
+        }
 
         PreparedStatement ps = conn.prepareStatement(query);
         ps.setTimestamp(1, t.startDateAndTime);
@@ -297,7 +307,6 @@ public class Database {
             res.location = loc;
             reservations.add(res);
         }
-
         return reservations;
     }
 
@@ -403,9 +412,9 @@ public class Database {
 
         if (t == null && vt == null && l == null){
             //If no filters are provided, return all the results
-            query = "SELECT * FROM Rent";
+            query = "SELECT * FROM Rent ";
         } else {
-            query = "SELECT * FROM Rent R WHERE ";
+            query = "SELECT * FROM Rent R, Reservations V WHERE R.confNo = V.confNo AND ";
             if (t != null) {
                 //Given start time (from t) is at the same time or after R.startDateAndTime AND is before R.endDateAndTime
                 //Given end time (from t) is at the same time before R.endDateAndTime AND is after R.startDateAndTime
@@ -413,12 +422,12 @@ public class Database {
                         "(R.toDateTime >= ? AND R.toDateTime < ?)) ";
                 marker = true;
             } if (vt != null) {
-                query += marker? "AND R.vtname = '" + vt.vtname + "' " :
-                        "R.vtname = '" + vt.vtname + "' ";
+                query += marker? "AND V.vtName = '" + vt.vtname + "' " :
+                        "V.vtname = '" + vt.vtname + "' ";
                 marker = true;
             } if (l != null) {
-                query += marker? "AND R.location = '" + l.location + "' " + "AND R.city = '" + l.city + "'":
-                        "R.location = '" + l.location + "' " + "AND R.city = '" + l.city + "'";
+                query += marker? "AND V.location = '" + l.location + "' " + "AND V.city = '" + l.city + "'":
+                        "V.location = '" + l.location + "' " + "AND V.city = '" + l.city + "'";
             }
         }
         PreparedStatement ps = conn.prepareStatement(query);
@@ -445,8 +454,8 @@ public class Database {
 
             int startOdometer = rs.getInt("odometer");
 
-            Card card = getCardMatching(rs.getLong("cardNo"));
-            int confNo = rs.getInt("'confNo");
+            Card card = getCardMatching(new Card(rs.getLong("cardNo"), null, null));
+            int confNo = rs.getInt("confNo");
 
             Rental rental = new Rental(rid, vlicense, dlicense, tm, startOdometer, card, confNo);
 
@@ -478,8 +487,8 @@ public class Database {
 
         int startOdometer = rs.getInt("odometer");
 
-        Card card = getCardMatching(rs.getLong("cardNo"));
-        int confNo = rs.getInt("'confNo");
+        Card card = getCardMatching(new Card(rs.getLong("cardNo"), null, null));
+        int confNo = rs.getInt("confNo");
 
         Rental rental = new Rental(rid, vlicense, dlicense, tm, startOdometer, card, confNo);
 
@@ -488,14 +497,21 @@ public class Database {
 
     }
 
+    /* Return */
     public List<Rental> getRentalsWithHelper(TimePeriod timePeriod, Rental rental) throws Exception {
         String query = Queries.Rent.GET_ACTIVE_RENTALS;
 
-        if (rental.rid == -1) query.replace("rId = ? AND ", "");
-        else query.replace("rId = ? AND", "rId = " + rental.rid + " AND");
+        if (rental.rid == -1) {
+            query = query.replace("rId = ? AND ", "");
+        } else {
+            query = query.replace("rId = ? AND", "rId = " + rental.rid + " AND");
+        }
 
-        if (rental.dlicense == null) query.replace("dLicense = ? AND ", "");
-        else query.replace("dLicense = ? AND ", "dLicense = " + rental.dlicense + " AND ");
+        if (rental.dlicense == null) {
+            query = query.replace("dLicense = ? AND ", "");
+        } else {
+            query = query.replace("dLicense = ? AND ", "dLicense = '" + rental.dlicense + "' AND ");
+        }
 
         PreparedStatement ps = conn.prepareStatement(query);
         ps.setTimestamp(1, timePeriod.startDateAndTime);
@@ -514,8 +530,8 @@ public class Database {
 
             int startOdometer = rs.getInt("odometer");
 
-            Card card = getCardMatching(rs.getLong("cardNo"));
-            int confNo = rs.getInt("'confNo");
+            Card card = getCardMatching(new Card(rs.getLong("cardNo"), "", null));
+            int confNo = rs.getInt("confNo");
 
             rentals.add(new Rental(rid, vlicense, dlicense, tm, startOdometer, card, confNo));
         }
@@ -542,7 +558,7 @@ public class Database {
 
             int startOdometer = rs.getInt("odometer");
 
-            Card card = getCardMatching(rs.getLong("cardNo"));
+            Card card = getCardMatching(new Card(rs.getLong("cardNo"), "", null));
             int confNo = rs.getInt("'confNo");
 
             rentals.add(new Rental(rid, vlicense, dlicense, tm, startOdometer, card, confNo));
@@ -567,10 +583,8 @@ public class Database {
         ps.setInt(1, r.rid);
         ps.setTimestamp(2, r.returnDateTime);
         ps.setInt(3, r.endOdometer);
-        if (r.fullTank == Return.TankStatus.FULL_TANK) ps.setBoolean(4, true);
-        else ps.setBoolean(4, false);
-        ps.setInt(5, r.cost);
-
+        ps.setBoolean(4, r.fullTank == Return.TankStatus.FULL_TANK);
+        ps.setDouble(5, r.cost);
 
         //execute the update
         ps.executeUpdate();
@@ -582,13 +596,67 @@ public class Database {
 
     }
 
+    public List<Return> getReturnsWith(TimePeriod t, VehicleType vt, Location l) throws Exception {
+        //Empty string to build query
+        String query;
+        //marker to indicate if a condition has been added to the WHERE clause (and if AND needs to be used)
+        boolean marker = false;
+
+        if (t == null && vt == null && l == null){
+            //If no filters are provided, return all the results
+            query = "SELECT * FROM Returns R ";
+        } else {
+            query = "SELECT * FROM Returns R, Rent N, Reservations V WHERE R.rId = N.rId AND N.confNo = V.confNo AND ";
+            if (t != null) {
+                //Given start time (from t) is at the same time or after R.startDateAndTime AND is before R.endDateAndTime
+                //Given end time (from t) is at the same time before R.endDateAndTime AND is after R.startDateAndTime
+                query += "(R.dateTime <= ? ) AND (R.dateTime >= ? )";
+                marker = true;
+            } if (vt != null) {
+                query += marker? "AND V.vtName = '" + vt.vtname + "' " :
+                        "V.vtname = '" + vt.vtname + "' ";
+                marker = true;
+            } if (l != null) {
+                query += marker? "AND V.location = '" + l.location + "' " + "AND V.city = '" + l.city + "'":
+                        "V.location = '" + l.location + "' " + "AND V.city = '" + l.city + "'";
+            }
+        }
+        PreparedStatement ps = conn.prepareStatement(query);
+        //Insert Timestamp values to prepared statement
+        if (t != null){
+            ps.setTimestamp(1, t.startDateAndTime);
+            ps.setTimestamp(2, t.endDateAndTime);
+
+        }
+        ResultSet rs = ps.executeQuery();
+
+        List<Return> returnList = new ArrayList<>();
+
+        while (rs.next()){
+            //Make a Rental object corresponding to a tuple queried from the database
+            int rid = rs.getInt("rId");
+            Timestamp returnDateTime = rs.getTimestamp("dateTime");
+            int endOdometer = rs.getInt("R.odometer");
+            Return.TankStatus tank = rs.getBoolean("fullTank")? Return.TankStatus.FULL_TANK : Return.TankStatus.NOT_FULL_TANK;
+            double cost = rs.getDouble("value");
+
+            Return ret = new Return(rid, returnDateTime, endOdometer,tank, cost);
+
+            //Add the reservation object to r
+            returnList.add(ret);
+        }
+        ps.close();
+        return returnList;
+    }
+
+
     /**
      * Update the values of the Return entry in the Return table that has the same primary key as the given
      * Return object. New values of Rental entry are values in r.
      * @param r updated values for Return entry
      * @throws Exception if there is an error updating entry, for example if entry doesn't exist already
      */
-    public void updateReturn(Return r) throws Exception {
+    public void updateReturn(Return r) throws Exception { // TODO: FIX if we need to use.
         PreparedStatement ps = conn.prepareStatement(Queries.Returns.GET_RETURN);
         ps.setInt(1, r.rid);
         ResultSet rs = ps.executeQuery();
@@ -601,7 +669,7 @@ public class Database {
         if (r.fullTank == Return.TankStatus.FULL_TANK) ps.setBoolean(3, true);
         else if (r.fullTank == Return.TankStatus.NOT_FULL_TANK) ps.setBoolean(3, false);
         else ps.setBoolean(3, rs.getBoolean("status"));
-        ps.setInt(4,r.cost!= -1? r.cost : rs.getInt("value"));
+        ps.setDouble(4,r.cost!= -1.? r.cost : rs.getDouble("value"));
         ps.setInt(5, r.rid);
 
         //execute the update
@@ -669,6 +737,7 @@ public class Database {
 
     }
 
+    /* Customer */
     public String getReturnedVehicle(Return r) throws SQLException {
         PreparedStatement ps = conn.prepareStatement(Queries.Returns.JOIN_RENTAL);
         ps.setInt(1, r.rid);
@@ -700,8 +769,6 @@ public class Database {
 
         //commit changes and close prepared statement
         ps.close();
-
-        Log.log("Customer with dlicense " + c.dlicense + " successfully added");
     }
 
     /**
@@ -733,8 +800,6 @@ public class Database {
 
         //commit changes and close prepared statement
         ps.close();
-
-        Log.log("Customer with dlicense " + c.dlicense + " successfully updated");
     }
 
     /**
@@ -757,8 +822,6 @@ public class Database {
 
         //commit changes and close prepared statement
         ps.close();
-
-        Log.log("Customer with dlicense " + c.dlicense + " successfully deleted");
     }
 
     public Customer getCustomerMatching(Customer c) throws Exception {
@@ -773,14 +836,11 @@ public class Database {
 
         Customer res = new Customer(rs.getLong(1), rs.getString(2), rs.getString(3),
                 rs.getString(4));
-        System.out.println("Customer with dLicense " + c.dlicense + " successfully retrieved");
         ps.close();
         return res;
     }
 
-    //endregion
-
-    //region VehicleType
+    /* Vehicle Type */
 
     /**
      * Add the given VehicleType object to the VehicleType table in the database
@@ -793,21 +853,19 @@ public class Database {
         //Set values for parameters in ps
         ps.setString(1, vt.vtname);
         ps.setString(2, vt.features);
-        ps.setInt(3, vt.wrate);
-        ps.setInt(4, vt.drate);
-        ps.setInt(5, vt.hrate);
-        ps.setInt(6, vt.wirate);
-        ps.setInt(7, vt.dirate);
-        ps.setInt(8, vt.hirate);
-        ps.setInt(9, vt.krate);
+        ps.setDouble(3, vt.wrate);
+        ps.setDouble(4, vt.drate);
+        ps.setDouble(5, vt.hrate);
+        ps.setDouble(6, vt.wirate);
+        ps.setDouble(7, vt.dirate);
+        ps.setDouble(8, vt.hirate);
+        ps.setDouble(9, vt.krate);
 
         //execute the update
         ps.executeUpdate();
 
         //commit changes and close prepared statement
         ps.close();
-
-        Log.log("VehicleType with vtname " + vt.vtname + " successfully added");
     }
 
     /**
@@ -825,13 +883,13 @@ public class Database {
         //Set values for parameters in psUpdate. Update if corresponding value in Reservation r is null, otherwise, keep unchanged
         ps = conn.prepareStatement(Queries.VehicleType.UPDATE_VEHICLE_TYPE);
         ps.setString(1, vt.features != null? vt.features: rs.getString("features"));
-        ps.setInt(2, vt.wrate != -1? vt.wrate: rs.getInt("wRate"));
-        ps.setInt(3, vt.drate != -1? vt.drate: rs.getInt("dRate"));
-        ps.setInt(4, vt.hrate != -1? vt.hrate: rs.getInt("hRate"));
-        ps.setInt(5, vt.wirate != -1? vt.wirate: rs.getInt("wInsRate"));
-        ps.setInt(6, vt.dirate != -1? vt.dirate: rs.getInt("dInsRate"));
-        ps.setInt(7, vt.hirate != -1? vt.hirate: rs.getInt("hInsRate"));
-        ps.setInt(8, vt.krate != -1? vt.krate: rs.getInt("kRate"));
+        ps.setDouble(2, vt.wrate != -1? vt.wrate: rs.getInt("wRate"));
+        ps.setDouble(3, vt.drate != -1? vt.drate: rs.getInt("dRate"));
+        ps.setDouble(4, vt.hrate != -1? vt.hrate: rs.getInt("hRate"));
+        ps.setDouble(5, vt.wirate != -1? vt.wirate: rs.getInt("wInsRate"));
+        ps.setDouble(6, vt.dirate != -1? vt.dirate: rs.getInt("dInsRate"));
+        ps.setDouble(7, vt.hirate != -1? vt.hirate: rs.getInt("hInsRate"));
+        ps.setDouble(8, vt.krate != -1? vt.krate: rs.getInt("kRate"));
         ps.setString(9, vt.vtname);
 
         //execute the update
@@ -844,8 +902,6 @@ public class Database {
 
         //commit changes and close prepared statement
         ps.close();
-
-        Log.log("VehicleType with vtname " + vt.vtname + " successfully updated");
     }
 
     /**
@@ -868,8 +924,6 @@ public class Database {
 
         //commit changes and close prepared statement
         ps.close();
-
-        Log.log("VehicleType with vtname " + vt.vtname + " successfully deleted");
     }
 
     public VehicleType getVehicleTypeMatching(VehicleType vt) throws SQLException {
@@ -890,12 +944,11 @@ public class Database {
         //Handle situation where vehicle type does not have features
         if (res.features == null) res.features = "No features";
 
-        System.out.println("VehicleType with vtname " + vt.vtname + " successfully retrieved");
         ps.close();
         return res;
     }
 
-    public List<VehicleType> getAllVehicleTypes() throws SQLException {
+    public List<VehicleType> getAllVehicleTypes() throws SQLException {//TODO FIX TO BE GET ALL
         ResultSet rs = conn.prepareStatement(Queries.VehicleType.QUERY_ALL).executeQuery();
         List<VehicleType> vehicleTypes = new ArrayList<>();
         while (rs.next()){
@@ -962,13 +1015,8 @@ public class Database {
         ps.setInt(4, v.year != -1? v.year: rs.getInt("year"));
         ps.setString(5, v.color != null? v.color: rs.getString("color"));
         ps.setInt(6, v.odometer != -1? v.odometer: rs.getInt("odometer"));
-        ps.setString(7, v.vtname != null? v.vtname: rs.getString("vtName"));
-        if (v.status == Vehicle.VehicleStatus.AVAILABLE) ps.setBoolean(8, true);
-        else if (v.status == Vehicle.VehicleStatus.RENTED) ps.setBoolean(8, false);
-        else ps.setBoolean(8, rs.getBoolean("status"));
-        ps.setString(9, v.location != null? v.location.location: rs.getString("location"));
-        ps.setString(10, v.location != null? v.location.city: rs.getString("city"));
-        ps.setString(11, v.vlicense);
+        ps.setBoolean(7, v.status != null? v.status == Vehicle.VehicleStatus.AVAILABLE : rs.getBoolean("status"));
+        ps.setString(8, v.vlicense);
 
         //execute the update
         int rowCount = ps.executeUpdate();
@@ -1029,9 +1077,6 @@ public class Database {
             else query = query.replace("status = ?", "status = " + (availableNow == Vehicle.VehicleStatus.AVAILABLE));
         }
 
-        //For debugging purposes, prints what the final query looks like
-        Log.log("getVehicleWith query " + query);
-
         //Prepare statement and execute query
         PreparedStatement ps = conn.prepareStatement(query);
         ResultSet rs = ps.executeQuery();
@@ -1082,7 +1127,6 @@ public class Database {
                 (rs.getBoolean("status")) ? Vehicle.VehicleStatus.AVAILABLE: Vehicle.VehicleStatus.RENTED,
                 new Location(rs.getString("city"), rs.getString("location")));
 
-        System.out.println("Vehicle with vlicense " + v.vlicense + " successfully retrieved");
         ps.close();
         return res;
     }
@@ -1100,17 +1144,20 @@ public class Database {
         } else {
             //If no VehicleType is provided, remove VehicleType filter from WHERE clause.
             //If VehicleType provided, filter by vt.vtname
-            if (vt == null || vt.vtname.equals("All Types")) query = query.replace("vtName = ? AND ", "");
-            else query = query.replace("vtName = ?", "vtName = '" + vt.vtname + "'");
+            if (vt == null) {
+                query = query.replace("vtName = ? AND ", "");
+            } else {
+                query = query.replace("vtName = ?", "vtName = '" + vt.vtname + "'");
+            }
             //If no location is provided, remove location filter from WHERE clause.
             //If location provided, filter by l.location and l.city
-            if (l == null) query = query.replace("location = ? AND city = ? AND ", "");
-            else
+            if (l == null) {
+                query = query.replace("AND location = ? AND city = ?", "");
+            } else {
                 query = query.replace("location = ? AND city = ?", "location = '" + l.location +
                         "' AND city = '" + l.city + "'");
+            }
         }
-        //For debugging purposes, prints what the final query looks like
-        Log.log("getVTSearchResultsForHelper query " + query);
 
         //Prepare statement and execute query
         PreparedStatement ps = conn.prepareStatement(query);
@@ -1123,7 +1170,7 @@ public class Database {
             //Make a VTSearchResult object based on current tuple.
             VTSearchResult vtsr = new VTSearchResult(
                     getVehicleTypeMatching(new VehicleType(rs.getString("vtName"))),
-                    new Location(rs.getString("location"), rs.getString("city")),
+                    new Location(rs.getString("city"), rs.getString("location")),
                     rs.getInt(4));
 
             //Add the VTSearchResult object to vehicles
@@ -1136,7 +1183,8 @@ public class Database {
 
     //endregion
 
-    //region Card
+
+    /* Card */
 
     /**
      * Add the given Card object to the Card table in the database
@@ -1224,7 +1272,8 @@ public class Database {
      * attributes of the given object may be null. If no card found, returns null
      * @throws Exception if there is any error getting results
      */
-    public Card getCardMatching(long cardNo) throws Exception {
+    public Card getCardMatching(Card c) throws Exception {
+        long cardNo = c.CardNo;
         PreparedStatement ps = conn.prepareStatement(Queries.Card.GET_CARD);
         ps.setLong(1, cardNo);
         ResultSet rs = ps.executeQuery();
@@ -1238,15 +1287,14 @@ public class Database {
         long CardNo = rs.getLong("cardNo");
         String cardName = rs.getString("cardName");
         Timestamp expDate = rs.getTimestamp("expDate");
-        Card c = new Card(cardNo, cardName, expDate);
+        Card cardFound = new Card(CardNo, cardName, expDate);
 
         ps.close();
-        return c;
+        return cardFound;
     }
 
-    //endregion
 
-    //region Location
+    /* Location */
 
     /**
      * Add the given Location object to the Location table in the database
@@ -1267,8 +1315,29 @@ public class Database {
         ps.close();
 
         Log.log("Branch at " + l.city +  ", " + l.location + " successfully added");
+    }
 
+    /**
+     * Finds and returns the location entry with the same primary key as the card object given. Other
+     * attributes of the given object may be null. If no location found, returns null
+     * @throws Exception if there is any error getting results
+     */
+    public Location getLocationMatching(Location l) throws Exception {
+        PreparedStatement ps = conn.prepareStatement(Queries.Branch.GET_BRANCH);
+        ps.setString(1, l.city);
+        ps.setString(2, l.location);
+        ResultSet rs = ps.executeQuery();
 
+        if (!rs.next()) {
+            System.out.println("NOTE: Branch at" + l.toString() + " does not exist");
+            ps.close();
+            return null;
+        }
+
+        Location locationFound = new Location(rs.getString("city"), rs.getString("location"));
+
+        ps.close();
+        return locationFound;
     }
 
 
@@ -1318,4 +1387,13 @@ public class Database {
 
     //endregion
 
+
+
+//    public void generateLocationCardData() throws Exception {
+//        PreparedStatement ps = conn.prepareStatement(Queries.Location.ADD_LOCATION);
+//
+//        //Set values for parameters in ps
+//        ps.setString(1, "Vancouver");
+//        ps.setString(2, "");
+//    }
 }

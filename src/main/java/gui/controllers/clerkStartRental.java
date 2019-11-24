@@ -55,11 +55,19 @@ public class clerkStartRental extends Controller implements Initializable {
         if (main.clerkReservationToStart == null) return;
 
         res = main.clerkReservationToStart;
-        v = qo.getAutoSelectedVehicle(res);  // TODO: Handle null case (no vehicle avail)
+        try {
+            v = qo.getAutoSelectedVehicle(res);
+            if (v == null) throw new Exception();
+        } catch (Exception e) {
+            showError("Unfortunately we don't have any vehicles available for your rental at the moment.");
+            return;
+        }
+
         try {
             c = qo.getCustomer(res.dlicense);
+            if (c == null) throw new Exception();
         } catch (Exception e) {
-            // TODO: Show error
+            showError("There was an error retrieving your information. Please restart the application");
             return;
         }
 

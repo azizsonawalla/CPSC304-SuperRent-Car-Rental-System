@@ -87,7 +87,13 @@ public class clerkDailyReports extends Controller implements Initializable {
         if (rentalsBox.isSelected()) {
             entriesTitle.setText("Rentals Started Today:");
             totalRevenue.setVisible(false);
-            RentalReport rentalReport = qo.getDailyRentalReport(location);
+            RentalReport rentalReport;
+            try {
+                rentalReport = qo.getDailyRentalReport(location);
+            } catch (Exception e) {
+                showError("Failed to get data for Daily Rental Report. Please restart the application");
+                return;
+            }
             if (rentalReport.totalRentalsToday == 0) {
                 entries.setPlaceholder(new Label("No rentals were started today"));
                 return;
@@ -102,8 +108,9 @@ public class clerkDailyReports extends Controller implements Initializable {
             }
 
             // Generate all rental entries
-            for (Reservation res: rentalReport.rentalsStartedToday.keySet()) {
-                Rental rental = rentalReport.rentalsStartedToday.get(res);
+            for(Pair<Reservation, Rental> p: rentalReport.rentalsStartedToday) {
+                Reservation res = p.getKey();
+                Rental rental = p.getValue();
                 RentalEntry entry = new RentalEntry(String.valueOf(rental.rid), rental.vlicense, rental.dlicense,
                                                     rental.timePeriod.getStartAsTimeDateString(), rental.timePeriod.getEndAsTimeDateString(),
                                                     res.vtName, res.location.toString());
@@ -116,14 +123,14 @@ public class clerkDailyReports extends Controller implements Initializable {
             List<String> columnHeaders2 = Arrays.asList("Vehicle Type", "Rentals Today");
             List<String> propertyName2 = Arrays.asList("vtName", "count");
             for (int i = 0; i < columnHeaders2.size(); i++) {
-                TableColumn<String, RentalEntry> column = new TableColumn<>(columnHeaders2.get(i));
+                TableColumn<String, Breakdown> column = new TableColumn<>(columnHeaders2.get(i));
                 column.setCellValueFactory(new PropertyValueFactory<>(propertyName2.get(i)));
                 byVT.getColumns().add(column);
             }
 
-            for (VehicleType vt: rentalReport.countOfRentalsByVT.keySet()) {
+            for (String vt: rentalReport.countOfRentalsByVT.keySet()) {
                 Integer count = rentalReport.countOfRentalsByVT.get(vt);
-                Breakdown b = new Breakdown(vt.vtname, "", Integer.toString(count), "");
+                Breakdown b = new Breakdown(vt, "", Integer.toString(count), "");
                 byVT.getItems().add(b);
             }
 
@@ -131,7 +138,7 @@ public class clerkDailyReports extends Controller implements Initializable {
             List<String> columnHeaders3 = Arrays.asList("Location", "Rentals Today");
             List<String> propertyName3 = Arrays.asList("location", "count");
             for (int i = 0; i < columnHeaders3.size(); i++) {
-                TableColumn<String, RentalEntry> column = new TableColumn<>(columnHeaders3.get(i));
+                TableColumn<String, Breakdown> column = new TableColumn<>(columnHeaders3.get(i));
                 column.setCellValueFactory(new PropertyValueFactory<>(propertyName3.get(i)));
                 byLocation.getColumns().add(column);
             }
@@ -169,7 +176,7 @@ public class clerkDailyReports extends Controller implements Initializable {
                 try {
                     res = qo.getReservationsWith(rental.confNo, null).get(0);
                 } catch (Exception e) {
-                    // TODO: Show error
+                    showError("Error getting rental entries for today. Please restart the application");
                     return;
                 }
                 ReturnEntry entry = new ReturnEntry(String.valueOf(r.rid), TimePeriod.getTimestampAsTimeDateString(r.returnDateTime),
@@ -184,7 +191,7 @@ public class clerkDailyReports extends Controller implements Initializable {
             List<String> columnHeaders2 = Arrays.asList("Vehicle Type", "Rentals Today", "Revenue Today");
             List<String> propertyName2 = Arrays.asList("vtName", "count", "revenue");
             for (int i = 0; i < columnHeaders2.size(); i++) {
-                TableColumn<String, RentalEntry> column = new TableColumn<>(columnHeaders2.get(i));
+                TableColumn<String, Breakdown> column = new TableColumn<>(columnHeaders2.get(i));
                 column.setCellValueFactory(new PropertyValueFactory<>(propertyName2.get(i)));
                 byVT.getColumns().add(column);
             }
@@ -201,7 +208,7 @@ public class clerkDailyReports extends Controller implements Initializable {
             List<String> columnHeaders3 = Arrays.asList("Location", "Rentals Today", "Revenue Today");
             List<String> propertyName3 = Arrays.asList("location", "count", "revenue");
             for (int i = 0; i < columnHeaders3.size(); i++) {
-                TableColumn<String, RentalEntry> column = new TableColumn<>(columnHeaders3.get(i));
+                TableColumn<String, Breakdown> column = new TableColumn<>(columnHeaders3.get(i));
                 column.setCellValueFactory(new PropertyValueFactory<>(propertyName3.get(i)));
                 byLocation.getColumns().add(column);
             }

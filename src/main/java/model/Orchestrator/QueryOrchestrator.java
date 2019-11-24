@@ -30,7 +30,7 @@ public class QueryOrchestrator {
     private Database db;
 
     public QueryOrchestrator() throws Exception {
-        this.db = new Database();
+        this.db = new Database(false);
     }
 
     public Integer getDailyKMLimit() {

@@ -175,7 +175,7 @@ public class QueryOrchestrator {
         Timestamp today1159 = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), 23, 59, 59, 0);
         TimePeriod today = new TimePeriod(todayMidnight, today1159);
         List<Rental> rentals = db.getRentalsStartedToday(today);
-        List<Reservation> reservations = db.getReservationsWith(null, null, null);
+        List<Reservation> reservations = db.getReservationsWith(null, null, l);
 
         List<Pair<Reservation, Rental>> rentalsStartedToday = new ArrayList<>();
 
@@ -234,7 +234,7 @@ public class QueryOrchestrator {
         TimePeriod today = new TimePeriod(todayMidnight, today1159);
         List<Return> returns = db.getReturnsWith(today, null, null);
         List<Rental> rentals = db.getRentalsWith(null, null, null);
-        List<Reservation> reservations = db.getReservationsWith(null, null, null);
+        List<Reservation> reservations = db.getReservationsWith(null, null, l);
 
         List<ReturnReportEntry> returnsCreatedToday = new ArrayList<>();
 

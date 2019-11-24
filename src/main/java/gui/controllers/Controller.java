@@ -7,7 +7,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import model.Orchestrator.QueryOrchestrator;
-import model.Util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;

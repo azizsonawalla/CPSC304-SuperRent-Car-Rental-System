@@ -220,7 +220,6 @@ public class clerkDailyReports extends Controller implements Initializable {
                 Breakdown b = new Breakdown("", l.toString(), Integer.toString(count), Double.toString(revenue));
                 byLocation.getItems().add(b);
             }
-            return;
         }
     };
 

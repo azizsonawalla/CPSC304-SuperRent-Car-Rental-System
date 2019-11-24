@@ -60,6 +60,7 @@ public class clerkStartRental extends Controller implements Initializable {
             if (v == null) throw new Exception();
         } catch (Exception e) {
             showError("Unfortunately we don't have any vehicles available for your rental at the moment.");
+            startRental.setDisable(true);
             return;
         }
 

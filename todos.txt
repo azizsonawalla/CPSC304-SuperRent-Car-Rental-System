@@ -5,3 +5,5 @@
 Bugs George found
 
 //TODO: Option selector in car search should be the same
+//TODO: Fix Select Reservation Start Time (Customer view). Currently 12 AM  -> 12:00:00 and 12 PM -> 0:00:00
+//TODO: Fix Select Reservation End Time (Customer view). Currently, 1 PM -> 14:00:00, 2 PM --> 16:00:00 ...

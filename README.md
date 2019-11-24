@@ -4,7 +4,7 @@ A cloud-connected rental car management system
 
 Download the desktop application:  [Windows Executable]()   |   [JAR File]()  (Mac/Windows)     # TODO: Add links to .exe and .jar
 
->> NOTE! You need an internet connection to use this application since the database is hosted in the cloud.
+> NOTE! You need an internet connection to use this application since the database is hosted in the cloud.
 
 In this README:
 

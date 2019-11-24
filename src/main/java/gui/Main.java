@@ -15,8 +15,6 @@ import java.util.Map;
 
 public class Main extends Application {
 
-    // TODO: Attach fonts
-
     private Scene scene;
     public Map<String, Pair<Pane, Controller>> scenePanes;
 
@@ -101,7 +99,6 @@ public class Main extends Application {
     @Override
     public void stop() throws Exception {
         super.stop();
-        // TODO: Close all db connections
     }
 
     public static void main(String[] args) {

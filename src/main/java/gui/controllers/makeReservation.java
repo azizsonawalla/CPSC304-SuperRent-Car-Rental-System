@@ -57,7 +57,7 @@ public abstract class makeReservation extends Controller implements Initializabl
     }
 
     private boolean validateAdd() {
-        return addField.getText().matches("[a-zA-Z0-9\\s]{0,255}");
+        return addField.getText().matches("[a-zA-Z0-9\\\\s:#,.]{0,255}");
     }
 
     abstract void postSuccessRes(Reservation r);

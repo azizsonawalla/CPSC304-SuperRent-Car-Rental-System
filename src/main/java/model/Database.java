@@ -185,7 +185,7 @@ public class Database {
                 query += "((R.fromDateTime <= ? AND R.toDateTime > ?) OR " +
                         "(R.toDateTime >= ? AND R.fromDateTime < ?)) ";
                 marker = true;
-            } if (vt != null && vt.vtname != "All Types") {
+            } if (vt != null) {
                 query += marker? "AND R.vtname = '" + vt.vtname + "' " :
                         "R.vtname = '" + vt.vtname + "' ";
                 marker = true;
@@ -194,7 +194,6 @@ public class Database {
                         "R.location = '" + l.location + "' " + "AND R.city = '" + l.city + "'";
             }
         }
-        Log.log("getReservationsWith Query: " + query);
         PreparedStatement ps = conn.prepareStatement(query);
         //Insert Timestamp values to prepared statement
         if (t != null){
@@ -759,8 +758,6 @@ public class Database {
 
         //commit changes and close prepared statement
         ps.close();
-
-        Log.log("Customer with dlicense " + c.dlicense + " successfully added");
     }
 
     /**
@@ -792,8 +789,6 @@ public class Database {
 
         //commit changes and close prepared statement
         ps.close();
-
-        Log.log("Customer with dlicense " + c.dlicense + " successfully updated");
     }
 
     /**
@@ -816,8 +811,6 @@ public class Database {
 
         //commit changes and close prepared statement
         ps.close();
-
-        Log.log("Customer with dlicense " + c.dlicense + " successfully deleted");
     }
 
     public Customer getCustomerMatching(Customer c) throws Exception {
@@ -832,7 +825,6 @@ public class Database {
 
         Customer res = new Customer(rs.getLong(1), rs.getString(2), rs.getString(3),
                 rs.getString(4));
-        System.out.println("Customer with dLicense " + c.dlicense + " successfully retrieved");
         ps.close();
         return res;
     }
@@ -863,8 +855,6 @@ public class Database {
 
         //commit changes and close prepared statement
         ps.close();
-
-        Log.log("VehicleType with vtname " + vt.vtname + " successfully added");
     }
 
     /**
@@ -901,8 +891,6 @@ public class Database {
 
         //commit changes and close prepared statement
         ps.close();
-
-        Log.log("VehicleType with vtname " + vt.vtname + " successfully updated");
     }
 
     /**
@@ -925,8 +913,6 @@ public class Database {
 
         //commit changes and close prepared statement
         ps.close();
-
-        Log.log("VehicleType with vtname " + vt.vtname + " successfully deleted");
     }
 
     public VehicleType getVehicleTypeMatching(VehicleType vt) throws SQLException {
@@ -947,7 +933,6 @@ public class Database {
         //Handle situation where vehicle type does not have features
         if (res.features == null) res.features = "No features";
 
-        System.out.println("VehicleType with vtname " + vt.vtname + " successfully retrieved");
         ps.close();
         return res;
     }
@@ -1081,9 +1066,6 @@ public class Database {
             else query = query.replace("status = ?", "status = " + (availableNow == Vehicle.VehicleStatus.AVAILABLE));
         }
 
-        //For debugging purposes, prints what the final query looks like
-        Log.log("getVehicleWith query " + query);
-
         //Prepare statement and execute query
         PreparedStatement ps = conn.prepareStatement(query);
         ResultSet rs = ps.executeQuery();
@@ -1134,7 +1116,6 @@ public class Database {
                 (rs.getBoolean("status")) ? Vehicle.VehicleStatus.AVAILABLE: Vehicle.VehicleStatus.RENTED,
                 new Location(rs.getString("city"), rs.getString("location")));
 
-        System.out.println("Vehicle with vlicense " + v.vlicense + " successfully retrieved");
         ps.close();
         return res;
     }
@@ -1178,7 +1159,7 @@ public class Database {
             //Make a VTSearchResult object based on current tuple.
             VTSearchResult vtsr = new VTSearchResult(
                     getVehicleTypeMatching(new VehicleType(rs.getString("vtName"))),
-                    new Location(rs.getString("location"), rs.getString("city")),
+                    new Location(rs.getString("city"), rs.getString("location")),
                     rs.getInt(4));
 
             //Add the VTSearchResult object to vehicles
@@ -1186,7 +1167,6 @@ public class Database {
         }
         //close the prepared statement and return the results
         ps.close();
-        Log.log(vtSearchResults.toString());
         return vtSearchResults;
     }
 

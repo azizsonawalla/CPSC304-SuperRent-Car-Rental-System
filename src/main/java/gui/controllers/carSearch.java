@@ -77,7 +77,7 @@ public class carSearch extends Controller implements Initializable {
 
     private VehicleType getCurrentVTSelection() {
         String value = vtSelector.getValue();
-        if (value.equals(ALL_BRANCHES)) return null;
+        if (value.equals(ALL_VT)) return null;
         return new VehicleType(value.trim(), null, -1, -1, -1, -1, -1, -1, -1);
     }
 
@@ -135,7 +135,6 @@ public class carSearch extends Controller implements Initializable {
         } catch (Exception e) {
             // TODO: show error
             Log.log("Error refreshing branch list on customer car search screen: " + e.getMessage());
-            throw new RuntimeException(e);
         } finally {
             lock.unlock();
         }
@@ -153,7 +152,9 @@ public class carSearch extends Controller implements Initializable {
             vtSelector.getItems().add(ALL_VT);
             vtSelector.setValue(ALL_VT);
         } catch (Exception e) {
+            // TODO: Show error
             Log.log("Error refreshing vt list on customer car search screen: " + e.getMessage());
+            throw new RuntimeException(e);
         } finally {
             lock.unlock();
         }
@@ -237,7 +238,9 @@ public class carSearch extends Controller implements Initializable {
                     searchResults.setPlaceholder(new Label("No results matched your search"));
                 }
             } catch (Exception e) {
+                // TODO: Show error
                 Log.log("Error refreshing search results in table: " + e.getMessage());
+                throw new RuntimeException(e);
             } finally {
                 lock.unlock();
             }

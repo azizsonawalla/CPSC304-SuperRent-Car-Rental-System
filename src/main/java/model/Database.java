@@ -1152,17 +1152,20 @@ public class Database {
         } else {
             //If no VehicleType is provided, remove VehicleType filter from WHERE clause.
             //If VehicleType provided, filter by vt.vtname
-            if (vt == null || vt.vtname.equals("All Types")) query = query.replace("vtName = ? AND ", "");
-            else query = query.replace("vtName = ?", "vtName = '" + vt.vtname + "'");
+            if (vt == null) {
+                query = query.replace("vtName = ? AND ", "");
+            } else {
+                query = query.replace("vtName = ?", "vtName = '" + vt.vtname + "'");
+            }
             //If no location is provided, remove location filter from WHERE clause.
             //If location provided, filter by l.location and l.city
-            if (l == null) query = query.replace("location = ? AND city = ? AND ", "");
-            else
+            if (l == null) {
+                query = query.replace("AND location = ? AND city = ?", "");
+            } else {
                 query = query.replace("location = ? AND city = ?", "location = '" + l.location +
                         "' AND city = '" + l.city + "'");
+            }
         }
-        //For debugging purposes, prints what the final query looks like
-        Log.log("getVTSearchResultsForHelper query " + query);
 
         //Prepare statement and execute query
         PreparedStatement ps = conn.prepareStatement(query);
@@ -1183,6 +1186,7 @@ public class Database {
         }
         //close the prepared statement and return the results
         ps.close();
+        Log.log(vtSearchResults.toString());
         return vtSearchResults;
     }
 
@@ -1377,7 +1381,7 @@ public class Database {
      * @throws Exception
      */
     public List<Location> getAllLocations() throws Exception {
-        PreparedStatement ps = conn.prepareStatement(Queries.Branch.GET_BRANCH);
+        PreparedStatement ps = conn.prepareStatement(Queries.Branch.GET_ALL_BRANCHES);
         ResultSet rs = ps.executeQuery();
         List<Location> locations = new ArrayList<>();
 

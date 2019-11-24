@@ -51,8 +51,8 @@ public class clerkCarSearch extends carSearch {
         super.resetTimePeriod = () -> {
             try {
                 lock.lock();
-                List<ComboBox> allDateTimeComboBox = Arrays.asList(endDate, endMonth, endYear, endHour, endMinute, endAM);
-                List<ComboBox> allTimeComboBox = Arrays.asList(endHour, endMinute, endAM);
+                List<ComboBox> allDateTimeComboBox = Arrays.asList(endDate, endMonth, endYear, endHour, endMinute);
+                List<ComboBox> allTimeComboBox = Arrays.asList(endHour, endMinute);
 
                 for (ComboBox c: allDateTimeComboBox) c.getItems().clear();
 
@@ -61,7 +61,6 @@ public class clerkCarSearch extends carSearch {
                 endYear.getItems().addAll(YEARS);
                 endHour.getItems().addAll(HOURS);
                 endMinute.getItems().addAll(MINUTES);
-                endAM.getItems().addAll(AMPM);
 
                 for (ComboBox c: allTimeComboBox) c.setValue(c.getItems().get(0));
                 Date tomorrow = new Date(System.currentTimeMillis() + 24*60*60*1000);

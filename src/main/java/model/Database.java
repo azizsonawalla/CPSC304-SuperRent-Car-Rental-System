@@ -577,7 +577,7 @@ public class Database {
             int startOdometer = rs.getInt("odometer");
 
             Card card = getCardMatching(new Card(rs.getLong("cardNo"), "", null));
-            int confNo = rs.getInt("'confNo");
+            int confNo = rs.getInt("confNo");
 
             rentals.add(new Rental(rid, vlicense, dlicense, tm, startOdometer, card, confNo));
         }
@@ -628,7 +628,7 @@ public class Database {
             if (t != null) {
                 //Given start time (from t) is at the same time or after R.startDateAndTime AND is before R.endDateAndTime
                 //Given end time (from t) is at the same time before R.endDateAndTime AND is after R.startDateAndTime
-                query += "(R.dateTime <= ? ) AND (R.dateTime >= ? )";
+                query += "(R.dateTime >= ? ) AND (R.dateTime <= ? )";
                 marker = true;
             } if (vt != null) {
                 query += marker? "AND V.vtName = '" + vt.vtname + "' " :

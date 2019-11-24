@@ -271,7 +271,7 @@ public class QueryOrchestrator {
                 Double d = value.getValue() + rre.ret.cost;
                 breakDownByVT.put(vtname, new Pair<>(i, d));
             } else {
-                breakDownByVT.put(vtname, new Pair<>(1, (double) rre.ret.cost));
+                breakDownByVT.put(vtname, new Pair<>(1, rre.ret.cost));
             }
 
             Location location = new Location(rre.res.location.city, rre.res.location.location);
@@ -281,10 +281,10 @@ public class QueryOrchestrator {
                 Double d = value.getValue() + rre.ret.cost;
                 breakDownByLocation.put(location, new Pair<>(i, d));
             } else {
-                breakDownByLocation.put(location, new Pair<>(1, (double) rre.ret.cost));
+                breakDownByLocation.put(location, new Pair<>(1, rre.ret.cost));
             }
 
-            totalReturnsRevenueToday += (double) rre.ret.cost;
+            totalReturnsRevenueToday += rre.ret.cost;
         }
 
         Integer totalReturnsToday = returnsCreatedToday.size();

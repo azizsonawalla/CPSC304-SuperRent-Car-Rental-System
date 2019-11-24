@@ -93,7 +93,8 @@ public class clerkDailyReports extends Controller implements Initializable {
                 rentalReport = qo.getDailyRentalReport(location);
             } catch (Exception e) {
                 showError("Failed to get data for Daily Rental Report. Please restart the application");
-                return;
+                throw new RuntimeException(e);
+//                return;
             }
             if (rentalReport.totalRentalsToday == 0) {
                 entries.setPlaceholder(new Label("No rentals were started today"));

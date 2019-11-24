@@ -177,7 +177,7 @@ public class Queries {
         public static String GET_RENTALS_TODAY =
                 "SELECT * " +
                         "FROM Rent R " +
-                        "WHERE ? <= R.fromDateTime AND ? >= R.toDateTime";
+                        "WHERE ? <= R.fromDateTime AND ? >= R.fromDateTime";
 
         public static String GET_RECENT_RENTALS =
                 "SELECT * " +

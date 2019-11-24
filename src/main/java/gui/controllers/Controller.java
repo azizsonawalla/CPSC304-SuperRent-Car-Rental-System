@@ -34,7 +34,7 @@ public abstract class Controller {
             qo = new QueryOrchestrator();
         } catch (Exception e) {
             showError("Could not connect to cloud database. Please restart the application");
-            Log.log("Error creating QueryOrchestrator object: " + e.getMessage());
+            throw new RuntimeException(e);
         }
         initializeDateTimeArrays();
     }

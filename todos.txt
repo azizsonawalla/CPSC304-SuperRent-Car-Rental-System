@@ -5,10 +5,3 @@
 Bugs George found
 
 //TODO: Option selector in car search should be the same
-
-
-// Clerk Car Search
-
-// TODO: Add to error messages "what to do"
-
-// TODO: Bug in make res with new customer

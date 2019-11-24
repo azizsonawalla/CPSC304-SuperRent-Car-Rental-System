@@ -7,9 +7,8 @@ public class Queries {
 
     public static class Create {
 
-        //TODO: Autoincrement confNo in Reservations table
         public static String CREATE_TABLE_RESERVATIONS = "CREATE TABLE IF NOT EXISTS Reservations(" +
-                "confNo INT, " +
+                "confNo INT NOT NULL AUTO_INCREMENT, " +
                 "vtName CHAR(50) NOT NULL, " +
                 "dLicense CHAR(50) NOT NULL, " +
                 "fromDateTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
@@ -21,9 +20,8 @@ public class Queries {
                 "FOREIGN KEY (vtName) REFERENCES VehicleType(vtName) ON DELETE CASCADE, " +
                 "FOREIGN KEY (dLicense) REFERENCES Customer(dLicense) ON DELETE CASCADE)";
 
-        //TODO: Autoincrement rId in Reservation table
         public static String CREATE_TABLE_RENT = "CREATE TABLE IF NOT EXISTS Rent(" +
-                "rId INT, " +
+                "rId INT NOT NULL AUTO_INCREMENT, " +
                 "vLicense CHAR(10) NOT NULL, " +
                 "dLicense CHAR(50) NOT NULL, " +
                 "fromDateTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
@@ -116,8 +114,8 @@ public class Queries {
 
         //query to add reservations
         public static String ADD_RESERVATION =
-                "INSERT INTO Reservations(confNo, vtname, dLicense, fromDateTime, toDateTime, city, location) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?)";
+                "INSERT INTO Reservations(vtName, dLicense, fromDateTime, toDateTime, city, location) " +
+                        "VALUES (?, ?, ?, ?, ?, ?)";
 
         //query to update reservations
         public static String UPDATE_RESERVATION =
@@ -141,14 +139,20 @@ public class Queries {
                         "FROM Reservations " +
                         "WHERE confNo = ? AND dLicense = ? AND ? BETWEEN fromDateTime AND toDateTime";
 
+        public static String GET_RECENT_RESERVATIONS =
+                        "SELECT * " +
+                        "FROM Reservations " +
+                        "WHERE confNo = (SELECT MAX(confNo) " +
+                                        "FROM Reservations)";
+
     }
-    //the diving bell and the butterfly
+
     public static class Rent {
 
 
         public static String ADD_RENTAL =
-                "INSERT INTO Rent(rId, vLicense, dLicense, fromDateTime, toDateTime, odometer, cardNo, confNo)" +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                "INSERT INTO Rent(vLicense, dLicense, fromDateTime, toDateTime, odometer, cardNo, confNo)" +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         public static String UPDATE_RENTAL =
                 "UPDATE Rent" +
@@ -173,7 +177,13 @@ public class Queries {
         public static String GET_RENTALS_TODAY =
                 "SELECT * " +
                         "FROM Rent R " +
-                        "WHERE ? <= R.fromDateTime AND ? >= R.toDateTime";
+                        "WHERE ? <= R.fromDateTime AND ? >= R.fromDateTime";
+
+        public static String GET_RECENT_RENTALS =
+                "SELECT * " +
+                        "FROM Rent " +
+                        "WHERE rId = (SELECT MAX(rId) " +
+                                      "FROM Rent)";
 
         }
 
@@ -261,7 +271,7 @@ public class Queries {
 
         public static String JOIN_RENTAL =
                 "SELECT * " +
-                        "FROM Return RT, Rent R " +
+                        "FROM Returns RT, Rent R " +
                         "WHERE RT.rId = R.rId AND RT.rId = ?";
     }
 
@@ -302,13 +312,12 @@ public class Queries {
                         "WHERE city = ? AND location = ?";
 
         public static String GET_BRANCH =
-                "SELECT * " +
-                        "FROM Branch " +
+                        "SELECT * FROM Branch " +
                         "WHERE city = ? AND location = ?";
 
         public static String GET_ALL_BRANCHES =
                 "SELECT * " +
-                        "FROM Branch ";
+                        "FROM Branch";
     }
 
     public static class CustomerTransactions {

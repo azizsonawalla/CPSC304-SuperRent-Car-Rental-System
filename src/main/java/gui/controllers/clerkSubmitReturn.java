@@ -16,6 +16,8 @@ import java.util.ResourceBundle;
 
 public class clerkSubmitReturn extends Controller implements Initializable {
 
+    // TODO: replace invalid value message with error
+
     private Rental rental;
     private Vehicle vehicle;
     private VehicleType vehicleType;

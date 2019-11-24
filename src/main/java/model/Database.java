@@ -7,6 +7,7 @@ import model.Util.Log;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 /**
  * Interface for the SuperRent database
@@ -84,25 +85,33 @@ public class Database {
      * @param r reservation object to add
      * @throws Exception if there is an error adding the reservation, for example if the values don't meet constraints
      */
-    public void addReservation(Reservation r) throws Exception {
-        PreparedStatement ps = conn.prepareStatement(Queries.Reservation.ADD_RESERVATION);
+    public Reservation addReservation(Reservation r) throws Exception {
+        PreparedStatement ps = conn.prepareStatement(Queries.Reservation.ADD_RESERVATION, Statement.RETURN_GENERATED_KEYS);
 
         //Set values for parameters in ps
-        ps.setInt(1, r.confNum);
-        ps.setString(2, r.vtName);
-        ps.setString(3, r.dlicense);
-        ps.setTimestamp(4, r.timePeriod.startDateAndTime);
-        ps.setTimestamp(5, r.timePeriod.endDateAndTime);
-        ps.setString(6, r.location.city);
-        ps.setString(7, r.location.location);
+        ps.setString(1, r.vtName);
+        ps.setString(2, r.dlicense);
+        ps.setTimestamp(3, r.timePeriod.startDateAndTime);
+        ps.setTimestamp(4, r.timePeriod.endDateAndTime);
+        ps.setString(5, r.location.city);
+        ps.setString(6, r.location.location);
 
         //execute the update
         ps.executeUpdate();
-
+        int confNo;
+        ResultSet rs = ps.getGeneratedKeys();
+        if (rs.next()) {
+            confNo = rs.getInt(1);
+        } else {
+            throw new Exception("There was an error retrieving the confNo of the reservation created");
+        }
+        r.confNum = confNo;
         //commit changes (automatic) and close prepared statement
         ps.close();
 
-        Log.log("Reservation with confirmation number " + Integer.toString(r.confNum) + " successfully added");
+        Log.log("Reservation successfully added");
+
+        return r;
     }
 
     /**
@@ -319,27 +328,36 @@ public class Database {
      * @param r rental object to add
      * @throws Exception if there is an error adding the rental, for example if the values don't meet constraints
      */
-    public void addRental(Rental r) throws Exception {
+    public Rental addRental(Rental r) throws Exception {
 
-        PreparedStatement ps = conn.prepareStatement(Queries.Rent.ADD_RENTAL);
+        PreparedStatement ps = conn.prepareStatement(Queries.Rent.ADD_RENTAL, Statement.RETURN_GENERATED_KEYS);
 
         //Set values for parameters in ps
-        ps.setInt(1, r.rid);
-        ps.setString(2, r.vlicense);
-        ps.setString(3, r.dlicense);
-        ps.setTimestamp(4, r.timePeriod.startDateAndTime);
-        ps.setTimestamp(5, r.timePeriod.endDateAndTime);
-        ps.setInt(6, r.startOdometer);
-        ps.setLong(7, r.card.CardNo);
-        ps.setLong(8, r.confNo);
+        ps.setString(1, r.vlicense);
+        ps.setString(2, r.dlicense);
+        ps.setTimestamp(3, r.timePeriod.startDateAndTime);
+        ps.setTimestamp(4, r.timePeriod.endDateAndTime);
+        ps.setInt(5, r.startOdometer);
+        ps.setLong(6, r.card.CardNo);
+        ps.setLong(7, r.confNo);
 
         //execute the update
         ps.executeUpdate();
 
+        ResultSet rs = ps.getGeneratedKeys();
+        int rid;
+        if (rs.next()) {
+            rid = rs.getInt(1);
+        } else {
+            throw new Exception("Failed to retrieve id of return created");
+        }
+        r.rid = rid;
+
         //commit changes (automatic) and close prepared statement
         ps.close();
 
-        Log.log("Rental with rent id " + r.rid + " successfully added");
+        //Log.log("Rental with rent id " + r.rid + " successfully added");
+        return r;
 
     }
 
@@ -559,7 +577,7 @@ public class Database {
             int startOdometer = rs.getInt("odometer");
 
             Card card = getCardMatching(new Card(rs.getLong("cardNo"), "", null));
-            int confNo = rs.getInt("'confNo");
+            int confNo = rs.getInt("confNo");
 
             rentals.add(new Rental(rid, vlicense, dlicense, tm, startOdometer, card, confNo));
         }
@@ -610,7 +628,7 @@ public class Database {
             if (t != null) {
                 //Given start time (from t) is at the same time or after R.startDateAndTime AND is before R.endDateAndTime
                 //Given end time (from t) is at the same time before R.endDateAndTime AND is after R.startDateAndTime
-                query += "(R.dateTime <= ? ) AND (R.dateTime >= ? )";
+                query += "(R.dateTime >= ? ) AND (R.dateTime <= ? )";
                 marker = true;
             } if (vt != null) {
                 query += marker? "AND V.vtName = '" + vt.vtname + "' " :

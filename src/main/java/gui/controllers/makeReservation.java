@@ -15,6 +15,8 @@ import java.util.ResourceBundle;
 
 public abstract class makeReservation extends Controller implements Initializable {
 
+    // TODO: replace error result with show error
+
     private String currentDLInput = "";
 
     @FXML private Button backToSearchButton, makeResButton;

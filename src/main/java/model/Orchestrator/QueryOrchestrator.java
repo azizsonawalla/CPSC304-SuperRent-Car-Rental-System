@@ -41,16 +41,7 @@ public class QueryOrchestrator {
      * Customer car search top table
      */
     public List<VTSearchResult> getVTSearchResultsFor(Location l, VehicleType vt, TimePeriod t) throws Exception {
-        //region Instructions/Placeholder code
-        // this is just placeholder code
-        ArrayList<VTSearchResult> list = new ArrayList<>();
-        list.add(new VTSearchResult(VT1, L1, 10));
-        list.add(new VTSearchResult(VT2, L1, 0));
-        list.add(new VTSearchResult(VT3, L3, 15));
-        list.add(new VTSearchResult(VT1, L4, 200));
-        list.add(new VTSearchResult(VT2, L1, 25));
-        list.add(new VTSearchResult(VT2, L4, 15));
-
+        // TODO: Filter results with 0 available out
         /*
         List<Reservation> reservations = db.getReservationsWith(t, vt, l);
          */
@@ -111,12 +102,11 @@ public class QueryOrchestrator {
     }
 
     public Reservation makeReservation(Reservation r) throws Exception {
-        // TODO: Implement this
         // r param doesn't have a confirmation number
         // DB will have to auto-generate this number
         // Return new reservation object which contains the auto-generated conf number
-        // db.addReservation(r);
-        return r;
+        return db.addReservation(r);
+
     }
 
     public List<Location> getAllLocationNames() throws Exception {
@@ -156,11 +146,10 @@ public class QueryOrchestrator {
         else return vehicles.get(0);
     }
 
-    public Rental addRental(Rental r) {
-        // TODO;
+    public Rental addRental(Rental r) throws Exception{
         // DB will have to autogenerate primary key for r
         // return new rental object with the primary key in it
-        return r;
+        return db.addRental(r);
     }
 
     public Vehicle getVehicle(String vlicense) throws Exception {
@@ -198,18 +187,15 @@ public class QueryOrchestrator {
             }
         }
 
-        Collections.sort(rentalsStartedToday, new Comparator<Pair<Reservation, Rental>>() {
-            @Override
-            public int compare(Pair<Reservation, Rental> o1, Pair<Reservation, Rental> o2) {
-                //Compare the locations
-                int locationComparison = o1.getKey().location.toString().compareTo(o2.getKey().location.toString());
-                //If the locations are not the same, return the location comparison
-                if (locationComparison != 0) return locationComparison;
+        Collections.sort(rentalsStartedToday, (o1, o2) -> {
+            //Compare the locations
+            int locationComparison = o1.getKey().location.toString().compareTo(o2.getKey().location.toString());
+            //If the locations are not the same, return the location comparison
+            if (locationComparison != 0) return locationComparison;
 
-                //If the locations are the same, compare by vehicle
-                int vtTypeComparison = o1.getKey().vtName.compareTo(o2.getKey().vtName);
-                return vtTypeComparison;
-            }
+            //If the locations are the same, compare by vehicle
+            int vtTypeComparison = o1.getKey().vtName.compareTo(o2.getKey().vtName);
+            return vtTypeComparison;
         });
 
         Map<String, Integer> countOfRentalsByVT = new HashMap<>();
@@ -218,14 +204,14 @@ public class QueryOrchestrator {
             if (countOfRentalsByVT.get(RR.getKey().vtName) != null) {
                 countOfRentalsByVT.put(RR.getKey().vtName , countOfRentalsByVT.get(RR.getKey().vtName) + 1);
             } else {
-                countOfRentalsByVT.put(RR.getKey().vtName , 0);
+                countOfRentalsByVT.put(RR.getKey().vtName , 1);
             }
 
             if (countOfRentalsByLocation.get(new Location(RR.getKey().location.city, RR.getKey().location.location)) != null) {
                 countOfRentalsByLocation.put(new Location(RR.getKey().location.city, RR.getKey().location.location),
                         countOfRentalsByLocation.get(new Location(RR.getKey().location.city, RR.getKey().location.location)) + 1);
             } else {
-                countOfRentalsByLocation.put(new Location(RR.getKey().location.city, RR.getKey().location.location), 0);
+                countOfRentalsByLocation.put(new Location(RR.getKey().location.city, RR.getKey().location.location), 1);
             }
         }
 
@@ -240,31 +226,75 @@ public class QueryOrchestrator {
         return report;
     }
 
-    public ReturnReport getDailyReturnReport(Location l) {
-        // TODO
-        //region Sample Data
-        ReturnReport report = new ReturnReport();
-        report.breakDownByLocation = new HashMap<>();
-        report.breakDownByLocation.put(L1, new Pair<>(0, 0.0));
-        report.breakDownByLocation.put(L3, new Pair<>(5, 100.6));
-        report.breakDownByVT = new HashMap<>();
-        report.breakDownByVT.put(VT1, new Pair<>(1, 0.0));
-        report.breakDownByVT.put(VT2, new Pair<>(4, 5.0));
-        report.returnsCreatedToday = new HashMap<>();
-        report.returnsCreatedToday.put( new Rental(1, "dummyplates", "dummyDL", t, 0, null, 1),
-                                        new Return(1, new Timestamp(System.currentTimeMillis()), 1, Return.TankStatus.FULL_TANK, 566));
-        report.totalReturnsRevenueToday = 200.5;
-        report.totalReturnsToday = 1;
-        //endregion
+    public ReturnReport getDailyReturnReport(Location l) throws Exception {
 
-//        Timestamp now = TimePeriod.getNow();
-//        Timestamp todayMidnight = new Timestamp(now.getYear(), now.getMonth(), now.getDate(),0, 0, 0, 0);
-//        Timestamp today1159 = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), 23, 59, 59, 0);
-//        TimePeriod today = new TimePeriod(todayMidnight, today1159);
-//        List<Return> returns = db.getReturnsWith(today, );
-//
-//
-//        ReturnReport report = new ReturnReport();
+        Timestamp now = TimePeriod.getNow();
+        Timestamp todayMidnight = new Timestamp(now.getYear(), now.getMonth(), now.getDate(),0, 0, 0, 0);
+        Timestamp today1159 = new Timestamp(now.getYear(), now.getMonth(), now.getDate(), 23, 59, 59, 0);
+        TimePeriod today = new TimePeriod(todayMidnight, today1159);
+        List<Return> returns = db.getReturnsWith(today, null, null);
+        List<Rental> rentals = db.getRentalsWith(null, null, null);
+        List<Reservation> reservations = db.getReservationsWith(null, null, null);
+
+        List<ReturnReportEntry> returnsCreatedToday = new ArrayList<>();
+
+        for (Return ret : returns) {
+            for (Reservation reservation: reservations) {
+                for (Rental rental : rentals) {
+                    if (ret.rid == rental.rid && rental.confNo == reservation.confNum) {
+                        returnsCreatedToday.add(new ReturnReportEntry(rental, reservation, ret));
+                    }
+                }
+            }
+        }
+
+        Collections.sort(returnsCreatedToday, (o1, o2) -> {
+            //Compare the locations
+            int locationComparison = o1.res.location.toString().compareTo(o2.res.location.toString());
+            //If the locations are not the same, return the location comparison
+            if (locationComparison != 0) return locationComparison;
+
+            //If the locations are the same, compare by vehicle
+            int vtTypeComparison = o1.res.vtName.compareTo(o2.res.vtName);
+            return vtTypeComparison;
+        });
+
+        Map<String, Pair<Integer, Double>> breakDownByVT = new HashMap<>();
+        Map<Location, Pair<Integer, Double>> breakDownByLocation = new HashMap<>();
+        Double totalReturnsRevenueToday = (double)0;
+
+        for (ReturnReportEntry rre: returnsCreatedToday) {
+            String vtname = rre.res.vtName;
+            Pair<Integer, Double> value = breakDownByVT.get(vtname);
+            if (value != null) {
+                Integer i = value.getKey() + 1;
+                Double d = value.getValue() + rre.ret.cost;
+                breakDownByVT.put(vtname, new Pair<>(i, d));
+            } else {
+                breakDownByVT.put(vtname, new Pair<>(1, rre.ret.cost));
+            }
+
+            Location location = new Location(rre.res.location.city, rre.res.location.location);
+            Pair<Integer, Double> value1 = breakDownByLocation.get(location);
+            if (value1 != null) {
+                Integer i = value.getKey() + 1;
+                Double d = value.getValue() + rre.ret.cost;
+                breakDownByLocation.put(location, new Pair<>(i, d));
+            } else {
+                breakDownByLocation.put(location, new Pair<>(1, rre.ret.cost));
+            }
+
+            totalReturnsRevenueToday += rre.ret.cost;
+        }
+
+        Integer totalReturnsToday = returnsCreatedToday.size();
+
+        ReturnReport report = new ReturnReport();
+        report.returnsCreatedToday = returnsCreatedToday;
+        report.breakDownByVT = breakDownByVT;
+        report.breakDownByLocation = breakDownByLocation;
+        report.totalReturnsToday = totalReturnsToday;
+        report.totalReturnsRevenueToday = totalReturnsRevenueToday;
 
         return report;
     }

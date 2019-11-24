@@ -19,6 +19,8 @@ import java.util.ResourceBundle;
 
 public class clerkStartRental extends Controller implements Initializable {
 
+    // TODO: Replace error results with show error
+
     private List<String> CREDIT_CARD_TYPES = Arrays.asList("MasterCard", "Visa");
     private Reservation res;
     private Vehicle v;

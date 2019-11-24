@@ -2,7 +2,7 @@ package model.Entities;
 
 public class VehicleType {
 
-    public VehicleType(String vtname, String features, int wrate, int drate, int hrate, int wirate, int dirate, int hirate, int krate) {
+    public VehicleType(String vtname, String features, double wrate, double drate, double hrate, double wirate, double dirate, double hirate, double krate) {
         this.vtname = vtname;
         this.features = features;
         this.wrate = wrate;
@@ -25,17 +25,17 @@ public class VehicleType {
     public String features;
 
     //weekly, daily, and hourly rate for a VehicleType
-    public int wrate;
-    public int drate;
-    public int hrate;
+    public double wrate;
+    public double drate;
+    public double hrate;
 
     //weekly, daily, and hourly insurance rate for a VehicleType
-    public int wirate;
-    public int dirate;
-    public int hirate;
+    public double wirate;
+    public double dirate;
+    public double hirate;
 
     //km rate for a VehicleType
-    public int krate;
+    public double krate;
 
 
 }

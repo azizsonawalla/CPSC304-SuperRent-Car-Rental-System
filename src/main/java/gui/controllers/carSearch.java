@@ -24,7 +24,7 @@ public class carSearch extends Controller implements Initializable {
 
     private @FXML TableView searchResults, searchResultDetails;
     private @FXML Button searchButton, startReservationButton;
-    protected @FXML ComboBox<String> branchSelector, vtSelector, startAM, endAM;
+    protected @FXML ComboBox<String> branchSelector, vtSelector;
     protected @FXML ComboBox<Integer> startResWithOption, seeDetailsForOption, startDate, endDate, startMonth,
             endMonth, startYear, endYear, startHour, startMinute, endHour, endMinute;
 
@@ -48,8 +48,8 @@ public class carSearch extends Controller implements Initializable {
         Platform.runLater(refreshVehicleTypeList);
         // Update VT Search Result table with selection
         Platform.runLater(refreshVehicleTypeSearchResultTable);
-        searchResultDetails.setPlaceholder(new Text("No vehicles in this category"));
-        searchResults.setPlaceholder(new Text("No vehicles in this category"));
+        searchResultDetails.setPlaceholder(new Text("Loading..."));
+        searchResults.setPlaceholder(new Text("Loading..."));
     }
 
     private Location getCurrentLocationSelection() throws Exception {
@@ -68,6 +68,9 @@ public class carSearch extends Controller implements Initializable {
         Timestamp start = getCurrentStartTimeSelection();
         Timestamp end = getCurrentEndTimeSelection();
 
+        Log.log("start = " + start.toString());
+        Log.log("end = " + end.toString());
+
         if (start.getTime() > end.getTime()) {
             showError("Start time must be before end time");
             return null;
@@ -85,9 +88,6 @@ public class carSearch extends Controller implements Initializable {
         Integer endYearValue = endYear.getValue();
         Integer endHourValue = endHour.getValue();
         Integer endMinuteValue = endMinute.getValue();
-        String endAmValue = endAM.getValue();
-
-        if (endAmValue.equals("PM")) endHourValue += (endHourValue + 12) % 24;
 
         if ((endDateValue == 31 && !Arrays.asList(1, 3, 5, 7, 8, 10, 12).contains(endMonthValue))
                 || (endDateValue > 28 && endMonthValue == 2)) {
@@ -103,9 +103,7 @@ public class carSearch extends Controller implements Initializable {
         Integer startYearValue = startYear.getValue();
         Integer startHourValue = startHour.getValue();
         Integer startMinuteValue = startMinute.getValue();
-        String startAmValue = startAM.getValue();
 
-        if (startAmValue.equals("PM")) startHourValue = (startHourValue + 12) % 24;
         if ((startDateValue == 31 && !Arrays.asList(1, 3, 5, 7, 8, 10, 12).contains(startMonthValue))
                 || (startDateValue > 28 && startMonthValue == 2)) {
             showError("Invalid month and date combination for start date. Please change selection.");
@@ -159,8 +157,8 @@ public class carSearch extends Controller implements Initializable {
             lock.lock();
             List<ComboBox> allDateTimeComboBox = Arrays.asList(startDate, endDate, startMonth, endMonth,
                                                                 startYear, endYear, startHour, endHour,
-                                                                startMinute, endMinute, startAM, endAM);
-            List<ComboBox> allTimeComboBox = Arrays.asList(startHour, startMinute, endHour, endMinute, startAM, endAM);
+                                                                startMinute, endMinute);
+            List<ComboBox> allTimeComboBox = Arrays.asList(startHour, startMinute, endHour, endMinute);
 
             for (ComboBox c: allDateTimeComboBox) c.getItems().clear();
 
@@ -172,10 +170,8 @@ public class carSearch extends Controller implements Initializable {
             endYear.getItems().addAll(YEARS);
             startHour.getItems().addAll(HOURS);
             startMinute.getItems().addAll(MINUTES);
-            startAM.getItems().addAll(AMPM);
             endHour.getItems().addAll(HOURS);
             endMinute.getItems().addAll(MINUTES);
-            endAM.getItems().addAll(AMPM);
 
             for (ComboBox c: allTimeComboBox) c.setValue(c.getItems().get(0));
             Date tomorrow = new Date(System.currentTimeMillis() + 24*60*60*1000);

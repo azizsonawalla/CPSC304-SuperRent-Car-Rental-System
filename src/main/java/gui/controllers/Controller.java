@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import model.Orchestrator.QueryOrchestrator;
+import model.Util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +33,8 @@ public abstract class Controller {
         try {
             qo = new QueryOrchestrator();
         } catch (Exception e) {
-            // TODO: Show DB error
+            showError("Could not connect to cloud database. Please restart the application");
+            Log.log("Error creating QueryOrchestrator object: " + e.getMessage());
         }
         initializeDateTimeArrays();
     }
@@ -44,7 +46,7 @@ public abstract class Controller {
         for (int i = 1; i <= 12; i++) MONTHS.add(i);
         for (int i = 2019; i <= 2025; i++) YEARS.add(i);
         for (int i = 1; i <= 12; i++) HOURS.add(i);
-        for (int i = 0; i <= 55; i++) MINUTES.add(i);
+        for (int i = 0; i <= 59; i++) MINUTES.add(i);
     }
 
     @FXML private void switchToClerk(ActionEvent event) throws Exception {
@@ -58,7 +60,7 @@ public abstract class Controller {
 
     void showError(String msg) {
         Error e = new Error();
-        e.msg = msg;
+        e.msg = msg + "\n NOTE: This application requires an internet connection to work properly.";
         Platform.runLater(e);
     }
 

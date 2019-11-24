@@ -31,7 +31,7 @@ public class Database {
             if (this.conn == null) throw new Exception("Connection object is null");
             createTables();
         } catch (Exception e) {
-            throw new Exception("Error getting connection to database", e);
+            throw new Exception(e);
         }
         Log.log("Successfully connected to database!");
     }

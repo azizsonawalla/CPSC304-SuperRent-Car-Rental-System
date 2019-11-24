@@ -26,6 +26,11 @@ Button:hover {
 TextFlow {
     -fx-padding: 10px;
 }
+
+ComboBox {
+    -fx-font-size: 10px;
+}
+
 /**
 Label {
     -fx-font-size: 14px;

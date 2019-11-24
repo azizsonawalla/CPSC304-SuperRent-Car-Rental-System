@@ -52,12 +52,17 @@ public class clerkSubmitReturn extends Controller implements Initializable {
     private void initializeGlobals() {
         if (main.clerkRentalToBeReturned == null) return;
         rental = main.clerkRentalToBeReturned;
-        vehicle = qo.getVehicle(rental.vlicense);
-        vehicleType = qo.getVehicleType(vehicle.vtname);
+        try {
+            vehicle = qo.getVehicle(rental.vlicense);
+            vehicleType = qo.getVehicleType(vehicle.vtname);
+        } catch (Exception e) {
+            showError("Failed to retrieve vehicle information. Please restart the application.");
+        }
         try {
             customer = qo.getCustomer(rental.dlicense);
+            if (customer == null) throw new Exception();
         } catch (Exception e) {
-            // TODO: Show error
+            showError("Failed to retrieve customer information. Please restart the application");
             return;
         }
         t = TimePeriod.getStartToNow(rental.timePeriod);
@@ -112,7 +117,7 @@ public class clerkSubmitReturn extends Controller implements Initializable {
 
         long endOdometerValue = getEndOdometer();
         if (endOdometerValue >= 0) {
-            long limit = (qo.getDailyKMLimit() * t.getDays()); // TODO: double check formula and calculations
+            long limit = (qo.getDailyKMLimit() * t.getDays());
             long kmVal = Math.max(0, (endOdometerValue - rental.startOdometer) - limit);
             double tcVal = (wVal * (vehicleType.wirate + vehicleType.wrate))
                         + (dVal * (vehicleType.dirate + vehicleType.drate))
@@ -152,7 +157,12 @@ public class clerkSubmitReturn extends Controller implements Initializable {
                 resultString = "Error calculating cost of rental";
             } else {
                 Return r = new Return(rental.rid, t.endDateAndTime, (int) getEndOdometer(), Return.TankStatus.FULL_TANK, (int) currentCalculatedCost);
-                qo.submitReturn(r);
+                try {
+                    qo.submitReturn(r);
+                } catch (Exception e) {
+                    showError("There was an error submitting your return. Please restart the application");
+                    return;
+                }
                 submitReturn.setDisable(true);
             }
         }

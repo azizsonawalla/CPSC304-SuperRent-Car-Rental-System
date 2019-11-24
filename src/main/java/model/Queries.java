@@ -9,7 +9,7 @@ public class Queries {
 
         //TODO: Autoincrement confNo in Reservations table
         public static String CREATE_TABLE_RESERVATIONS = "CREATE TABLE IF NOT EXISTS Reservations(" +
-                "confNo INT, " +
+                "confNo INT NOT NULL AUTO_INCREMENT, " +
                 "vtName CHAR(50) NOT NULL, " +
                 "dLicense CHAR(50) NOT NULL, " +
                 "fromDateTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
@@ -23,7 +23,7 @@ public class Queries {
 
         //TODO: Autoincrement rId in Reservation table
         public static String CREATE_TABLE_RENT = "CREATE TABLE IF NOT EXISTS Rent(" +
-                "rId INT, " +
+                "rId INT NOT NULL AUTO_INCREMENT, " +
                 "vLicense CHAR(10) NOT NULL, " +
                 "dLicense CHAR(50) NOT NULL, " +
                 "fromDateTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
@@ -116,8 +116,8 @@ public class Queries {
 
         //query to add reservations
         public static String ADD_RESERVATION =
-                "INSERT INTO Reservations(confNo, vtname, dLicense, fromDateTime, toDateTime, city, location) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?)";
+                "INSERT INTO Reservations(vtName, dLicense, fromDateTime, toDateTime, city, location) " +
+                        "VALUES (?, ?, ?, ?, ?, ?)";
 
         //query to update reservations
         public static String UPDATE_RESERVATION =
@@ -141,14 +141,20 @@ public class Queries {
                         "FROM Reservations " +
                         "WHERE confNo = ? AND dLicense = ? AND ? BETWEEN fromDateTime AND toDateTime";
 
+        public static String GET_RECENT_RESERVATIONS =
+                        "SELECT * " +
+                        "FROM Reservations " +
+                        "WHERE confNo = (SELECT MAX(confNo) " +
+                                        "FROM Reservations)";
+
     }
-    //the diving bell and the butterfly
+
     public static class Rent {
 
 
         public static String ADD_RENTAL =
-                "INSERT INTO Rent(rId, vLicense, dLicense, fromDateTime, toDateTime, odometer, cardNo, confNo)" +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                "INSERT INTO Rent(vLicense, dLicense, fromDateTime, toDateTime, odometer, cardNo, confNo)" +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         public static String UPDATE_RENTAL =
                 "UPDATE Rent" +
@@ -174,6 +180,12 @@ public class Queries {
                 "SELECT * " +
                         "FROM Rent R " +
                         "WHERE ? <= R.fromDateTime AND ? >= R.toDateTime";
+
+        public static String GET_RECENT_RENTALS =
+                "SELECT * " +
+                        "FROM Rent " +
+                        "WHERE rId = (SELECT MAX(rId) " +
+                                      "FROM Rent)";
 
         }
 

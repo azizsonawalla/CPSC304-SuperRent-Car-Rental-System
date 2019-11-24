@@ -84,17 +84,16 @@ public class Database {
      * @param r reservation object to add
      * @throws Exception if there is an error adding the reservation, for example if the values don't meet constraints
      */
-    public void addReservation(Reservation r) throws Exception {
+    public Reservation addReservation(Reservation r) throws Exception {
         PreparedStatement ps = conn.prepareStatement(Queries.Reservation.ADD_RESERVATION);
 
         //Set values for parameters in ps
-        ps.setInt(1, r.confNum);
-        ps.setString(2, r.vtName);
-        ps.setString(3, r.dlicense);
-        ps.setTimestamp(4, r.timePeriod.startDateAndTime);
-        ps.setTimestamp(5, r.timePeriod.endDateAndTime);
-        ps.setString(6, r.location.city);
-        ps.setString(7, r.location.location);
+        ps.setString(1, r.vtName);
+        ps.setString(2, r.dlicense);
+        ps.setTimestamp(3, r.timePeriod.startDateAndTime);
+        ps.setTimestamp(4, r.timePeriod.endDateAndTime);
+        ps.setString(5, r.location.city);
+        ps.setString(6, r.location.location);
 
         //execute the update
         ps.executeUpdate();
@@ -102,7 +101,32 @@ public class Database {
         //commit changes (automatic) and close prepared statement
         ps.close();
 
-        Log.log("Reservation with confirmation number " + Integer.toString(r.confNum) + " successfully added");
+        Log.log("Reservation successfully added");
+
+        return getReservationJustAdded();
+    }
+
+    /**
+     * Find and return the Reservation object that was just added
+     * @return
+     */
+    public Reservation getReservationJustAdded() throws SQLException {
+        ResultSet rs = conn.prepareStatement(Queries.Reservation.GET_RECENT_RESERVATIONS).executeQuery();
+        Reservation res = new Reservation();
+        res.confNum = rs.getInt(1);
+        res.vtName = rs.getString(2);
+        res.dlicense = rs.getString(3);
+
+        TimePeriod tm = new TimePeriod();
+        tm.startDateAndTime = rs.getTimestamp(4);
+        tm.endDateAndTime = rs.getTimestamp(5);
+        res.timePeriod = tm;
+
+        Location loc = new Location("Vancouver", "UBC");
+        loc.city = rs.getString(6);
+        loc.location = rs.getString(7);
+        res.location = loc;
+        return res;
     }
 
     /**
@@ -319,19 +343,18 @@ public class Database {
      * @param r rental object to add
      * @throws Exception if there is an error adding the rental, for example if the values don't meet constraints
      */
-    public void addRental(Rental r) throws Exception {
+    public Rental addRental(Rental r) throws Exception {
 
         PreparedStatement ps = conn.prepareStatement(Queries.Rent.ADD_RENTAL);
 
         //Set values for parameters in ps
-        ps.setInt(1, r.rid);
-        ps.setString(2, r.vlicense);
-        ps.setString(3, r.dlicense);
-        ps.setTimestamp(4, r.timePeriod.startDateAndTime);
-        ps.setTimestamp(5, r.timePeriod.endDateAndTime);
-        ps.setInt(6, r.startOdometer);
-        ps.setLong(7, r.card.CardNo);
-        ps.setLong(8, r.confNo);
+        ps.setString(1, r.vlicense);
+        ps.setString(2, r.dlicense);
+        ps.setTimestamp(3, r.timePeriod.startDateAndTime);
+        ps.setTimestamp(4, r.timePeriod.endDateAndTime);
+        ps.setInt(5, r.startOdometer);
+        ps.setLong(6, r.card.CardNo);
+        ps.setLong(7, r.confNo);
 
         //execute the update
         ps.executeUpdate();
@@ -339,8 +362,29 @@ public class Database {
         //commit changes (automatic) and close prepared statement
         ps.close();
 
-        Log.log("Rental with rent id " + r.rid + " successfully added");
+        //Log.log("Rental with rent id " + r.rid + " successfully added");
 
+        return getRentalJustAdded();
+
+    }
+
+    public Rental getRentalJustAdded() throws Exception {
+        ResultSet rs = conn.prepareStatement(Queries.Rent.GET_RECENT_RENTALS).executeQuery();
+
+        int rid = rs.getInt("rId");
+        String vlicense = rs.getString("vLicense");
+        String dlicense = rs.getString("dLicense");
+
+        TimePeriod tm = new TimePeriod();
+        tm.startDateAndTime = rs.getTimestamp("fromDateTime");
+        tm.endDateAndTime = rs.getTimestamp("toDateTime");
+
+        int startOdometer = rs.getInt("odometer");
+
+        Card card = getCardMatching(new Card(rs.getLong("cardNo"), "", null));
+        int confNo = rs.getInt("confNo");
+
+        return new Rental(rid, vlicense, dlicense, tm, startOdometer, card, confNo);
     }
 
     /**

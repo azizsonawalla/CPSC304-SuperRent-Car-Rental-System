@@ -111,12 +111,11 @@ public class QueryOrchestrator {
     }
 
     public Reservation makeReservation(Reservation r) throws Exception {
-        // TODO: Implement this
         // r param doesn't have a confirmation number
         // DB will have to auto-generate this number
         // Return new reservation object which contains the auto-generated conf number
-        // db.addReservation(r);
-        return r;
+        return db.addReservation(r);
+
     }
 
     public List<Location> getAllLocationNames() throws Exception {
@@ -156,11 +155,10 @@ public class QueryOrchestrator {
         else return vehicles.get(0);
     }
 
-    public Rental addRental(Rental r) {
-        // TODO;
+    public Rental addRental(Rental r) throws Exception{
         // DB will have to autogenerate primary key for r
         // return new rental object with the primary key in it
-        return r;
+        return db.addRental(r);
     }
 
     public Vehicle getVehicle(String vlicense) throws Exception {

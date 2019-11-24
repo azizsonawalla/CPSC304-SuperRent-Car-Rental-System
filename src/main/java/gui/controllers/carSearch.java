@@ -91,7 +91,7 @@ public class carSearch extends Controller implements Initializable {
 
         if ((endDateValue == 31 && !Arrays.asList(1, 3, 5, 7, 8, 10, 12).contains(endMonthValue))
                 || (endDateValue > 28 && endMonthValue == 2)) {
-            showError("Invalid month and date combination");
+            showError("Invalid month and date combination for end date. Please change selection.");
         }
 
         return new Timestamp(endYearValue-1900, endMonthValue-1, endDateValue, endHourValue, endMinuteValue, 0, 0);
@@ -108,7 +108,7 @@ public class carSearch extends Controller implements Initializable {
         if (startAmValue.equals("PM")) startHourValue = (startHourValue + 12) % 24;
         if ((startDateValue == 31 && !Arrays.asList(1, 3, 5, 7, 8, 10, 12).contains(startMonthValue))
                 || (startDateValue > 28 && startMonthValue == 2)) {
-            showError("Invalid month and date combination");
+            showError("Invalid month and date combination for start date. Please change selection.");
         }
 
         return new Timestamp(startYearValue-1900, startMonthValue-1, startDateValue, startHourValue, startMinuteValue, 0, 0);
@@ -188,6 +188,7 @@ public class carSearch extends Controller implements Initializable {
             endYear.setValue(nextWeek.getYear() + 1900);
 
         } catch (Exception e) {
+            showError("Failed reset time selection. Please restart the application.");
             Log.log("Error resetting time period: " + e.getMessage());
         } finally {
             lock.unlock();

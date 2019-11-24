@@ -2,6 +2,7 @@ package gui;
 
 import gui.controllers.*;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -36,12 +37,16 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        initializeScenePanesMap();
+        // show splash
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("views/splash.fxml"));
+        loader.setController(new splash());
+        Pane root = loader.load();
+        this.scene = new Scene(root, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
         primaryStage.setTitle(Config.APP_TITLE);
-        this.scene = new Scene(scenePanes.get(Config.CUSTOMER_CAR_SEARCH).getKey(), Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
         scene.getStylesheets().add(getClass().getResource("views/style.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
+        Platform.runLater(initializeAndSet);
         primaryStage.show();
     }
 
@@ -100,6 +105,15 @@ public class Main extends Application {
     public void stop() throws Exception {
         super.stop();
     }
+
+    private Runnable initializeAndSet = () -> {
+        try {
+            this.initializeScenePanesMap();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        switchScene(Config.CUSTOMER_CAR_SEARCH);
+    };
 
     public static void main(String[] args) {
         launch(args);

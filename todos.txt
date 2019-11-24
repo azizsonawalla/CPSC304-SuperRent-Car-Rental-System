@@ -11,4 +11,4 @@ Bugs George found
 
 // TODO: Add to error messages "what to do"
 
-// TODO: Address allow special characters
+// TODO: Bug in make res with new customer

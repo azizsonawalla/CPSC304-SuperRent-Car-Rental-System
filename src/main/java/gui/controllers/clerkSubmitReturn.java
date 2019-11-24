@@ -21,7 +21,7 @@ public class clerkSubmitReturn extends Controller implements Initializable {
     private VehicleType vehicleType;
     private Customer customer;
     private TimePeriod t;
-    private long currentCalculatedCost;
+    private double currentCalculatedCost;
 
     @FXML private Button backToReservations, refreshCost, submitReturn;
     @FXML private Label invalidOdometer, rentalNumber, start, end, name, dlicense, startOdometer, result, vtname, w, wr, d, dr, h, hr, kmLimit, km, kmr, tc;
@@ -114,7 +114,7 @@ public class clerkSubmitReturn extends Controller implements Initializable {
         if (endOdometerValue >= 0) {
             long limit = (qo.getDailyKMLimit() * t.getDays()); // TODO: double check formula and calculations
             long kmVal = Math.max(0, (endOdometerValue - rental.startOdometer) - limit);
-            long tcVal = (wVal * (vehicleType.wirate + vehicleType.wrate))
+            double tcVal = (wVal * (vehicleType.wirate + vehicleType.wrate))
                         + (dVal * (vehicleType.dirate + vehicleType.drate))
                         + (hVal * (vehicleType.hirate + vehicleType.hrate))
                         + (kmVal * vehicleType.krate);

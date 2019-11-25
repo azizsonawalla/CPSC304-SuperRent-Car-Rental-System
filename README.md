@@ -2,16 +2,17 @@
 
 A cloud-connected rental car management system
 
-Download the desktop application:  [Windows Executable]()   |   [JAR File]()  (Mac/Windows)     # TODO: Add links to .exe and .jar
+Download the desktop application:  [Windows Executable / JAR File]()  (Windows/Mac)     # TODO: Add links to .exe and .jar
 
-> NOTE! You need an internet connection to use this application since the database is hosted in the cloud.
+> NOTE! You need an internet connection to use this application since the database is hosted on the cloud.
+
+> NOTE! Minimum screen resolution is 1000x800.
 
 In this README:
-
 * [Run the application](#run-the-application)
-    * Using the Windows Executable
-    * Using the JAR file (requires Java 8)
-    * In IntelliJ IDE (requires Maven plugin)
+    * [Using the Windows Executable](#windows)
+    * [Using the JAR file (requires Java 8)](#jar)
+    * [In IntelliJ IDE (requires Maven plugin)](#intellij)
 
 * [Where to find in the code:](#where-to-find-in-the-code)
     * [All the SQL queries](./src/main/java/model/Queries.java) 
@@ -25,17 +26,26 @@ In this README:
 
     * [Customer](#customer):
         * [View Reservation Options](#view-reservation-options)
-        * [Reservations](#customer_reservations)
+        * [Reservations](#customer-reservations)
     * [Clerk/Staff](#clerk):
-        * [Reservations](#clerk_reservations)
+        * [Reservations](#clerk-reservations)
         * [Rentals](#rentals)
         * [Returns](#returns)
         * [Reports](#reports)
 
-    * [Errors and troubleshooting](#errors_and_troubleshooting):
-        * [What happens if I put an invalid value?](#invalid_values)
-        * [Database connection error](#database_connection_error)
+    * [Errors and troubleshooting](#errors-and-troubleshooting):
+        * [What happens if I put an invalid value?](#invalid-values)
+        * [Database connection error](#database-connection-error)
+        
 ## Run the application
+### Windows:
+
+
+### JAR:
+
+
+### IntelliJ:
+
 
 ## Where to find in the code
 
@@ -47,7 +57,7 @@ View the number of available cars for a given car type/location/time:
 You must indicate the time period that you are interested in, and then you can use the drop down lists to refine the search
 results. You can choose a specific car type, and a location.
 
-![Diagram 1](./pictures/pic1.png "AnyBranch, AnyType, Customer Find Car") \TODO Change
+![Diagram 1](./pictures/pic1.png "AnyBranch, AnyType, Customer Find Car") 
 
 ![Diagram 2](./pictures/pic2.png "Customer Finds CarType, Looks at Car and then Chooses to Reserve")\TODO Change
 
@@ -85,7 +95,7 @@ If there was an open Reservation that we needed to start, then the clerk can eit
 the confirmation number, or the drivers license. When the clerk clicks on Start Rental For This Reservation, they are
  Taken to the following screen where they have to add the Credit Card information. 
  
-  ![Diagram 7](./pictures/pic8.png "Add Card")
+  ![Diagram 8](./pictures/pic8.png "Add Card")
   
  Note that the car is chosen at random from the available cars in that branch matching the same data type as the one in the reservation
  
@@ -93,13 +103,20 @@ the confirmation number, or the drivers license. When the clerk clicks on Start 
  After the rental is added, it can be found in the Ongoing Rentals Table. The Clerk can select a Rental Id number to process the return of that car.
  After they choose the number, they are taken to the page where they can process the return transaction and calculate the price of that rental.
  
- \\insert pic here
+  ![Diagram 9](./pictures/pic9.png "Return Screen")
+  
 #### Reports
 To generate Reports, the Clerk has to go to the Clerk view home page and click on view daily reports. From there, 
 they can chose to view either rental, or return reports. Which will be returned displayed based on the location or the vehicle type.
 
+![Diagram 10](./pictures/pic10.png "Report Secreen")
+
 ### Errors and troubleshooting:
 
 #### Invalid values
+The application will reject any invalid values and return a message to prompt you to inter a valid value.
+ ![Diagram 11](./pictures/pic11.png "Error Messege")
+
 
 #### Database connection error
+You need an internet connection to use this application since the database is hosted on the cloud.

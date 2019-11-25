@@ -48,12 +48,15 @@ In this README:
 
 ## Where to find in the code
 ###All the SQL queries
+
 [Click Here](./src/main/java/model/Queries.java) 
 
 ###Establishing connection to DB and JDBC calls
+
 [Click Here](./src/main/java/model/Database.java)
 
 ###UI Components
+
 [Click Here](./src/main/java/gui) We used JavaFx, the fxml files are in [views](./src/main/java/gui/views), while the UI components 
 are in [controllers](./src/main/java/gui/controllers).
 

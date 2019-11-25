@@ -20,7 +20,7 @@
             <Font name="Arial" size="43.0" />
          </font>
       </Label>
-      <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="33.0" layoutY="117.0" prefHeight="31.0" prefWidth="211.0" text="Car Search Results" textAlignment="RIGHT">
+      <Label contentDisplay="RIGHT" layoutX="33.0" layoutY="117.0" prefHeight="31.0" prefWidth="634.0" text="Vehicle Types and Locations Available:" textAlignment="RIGHT">
          <font>
             <Font name="Arial" size="24.0" />
          </font>
@@ -61,14 +61,13 @@
             <Font name="Arial" size="12.0" />
          </font>
       </Label>
-      <ComboBox fx:id="startHour" layoutX="729.0" layoutY="506.0" prefHeight="25.0" prefWidth="50.0" />
-      <Label contentDisplay="CENTER" layoutX="789.0" layoutY="508.0" prefHeight="22.0" prefWidth="31.0" text="MM:">
+      <ComboBox fx:id="startHour" layoutX="729.0" layoutY="506.0" prefHeight="25.0" prefWidth="70.0" />
+      <Label contentDisplay="CENTER" layoutX="821.0" layoutY="507.0" prefHeight="22.0" prefWidth="31.0" text="MM:">
          <font>
             <Font name="Arial" size="12.0" />
          </font>
       </Label>
-      <ComboBox fx:id="startMinute" layoutX="816.0" layoutY="507.0" prefHeight="25.0" prefWidth="63.0" />
-      <ComboBox fx:id="startAM" layoutX="892.0" layoutY="506.0" prefHeight="25.0" prefWidth="70.0" />
+      <ComboBox fx:id="startMinute" layoutX="853.0" layoutY="506.0" prefHeight="25.0" prefWidth="77.0" />
        <Label contentDisplay="CENTER" layoutX="704.0" layoutY="548.0" prefHeight="22.0" prefWidth="260.0" text="Select Reservation End Time">
            <font>
                <Font name="Arial" size="14.0" />
@@ -79,14 +78,13 @@
                <Font name="Arial" size="12.0" />
            </font>
        </Label>
-       <ComboBox fx:id="endHour" layoutX="729.0" layoutY="578.0" prefHeight="25.0" prefWidth="50.0" />
-       <Label contentDisplay="CENTER" layoutX="789.0" layoutY="581.0" prefHeight="22.0" prefWidth="31.0" text="MM:">
+       <ComboBox fx:id="endHour" layoutX="729.0" layoutY="578.0" prefHeight="25.0" prefWidth="70.0" />
+       <Label contentDisplay="CENTER" layoutX="821.0" layoutY="579.0" prefHeight="22.0" prefWidth="31.0" text="MM:">
            <font>
                <Font name="Arial" size="12.0" />
            </font>
        </Label>
-       <ComboBox fx:id="endMinute" layoutX="816.0" layoutY="580.0" prefHeight="25.0" prefWidth="63.0" />
-       <ComboBox fx:id="endAM" layoutX="892.0" layoutY="580.0" prefHeight="25.0" prefWidth="70.0" />
+       <ComboBox fx:id="endMinute" layoutX="853.0" layoutY="578.0" prefHeight="25.0" prefWidth="77.0" />
       <Button fx:id="searchButton" layoutX="703.0" layoutY="631.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="260.0" text="Search" />
       <Label contentDisplay="RIGHT" layoutX="33.0" layoutY="462.0" prefHeight="31.0" prefWidth="428.0" text="Select option from above to see details:" textAlignment="RIGHT">
          <font>
@@ -100,7 +98,7 @@
          </font>
       </Label>
       <ComboBox fx:id="endDate" layoutX="729.0" layoutY="428.0" prefHeight="25.0" prefWidth="49.0" />
-      <Label contentDisplay="CENTER" layoutX="789.0" layoutY="429.0" prefHeight="22.0" prefWidth="25.0" text="MM:">
+      <Label contentDisplay="CENTER" layoutX="789.0" layoutY="429.0" prefHeight="22.0" prefWidth="25.0" text="MO:">
          <font>
             <Font name="Arial" size="12.0" />
          </font>
@@ -113,21 +111,19 @@
          </font>
       </Label>
       <ComboBox fx:id="startDate" layoutX="730.0" layoutY="344.0" prefHeight="25.0" prefWidth="49.0" />
-      <Label contentDisplay="CENTER" layoutX="789.0" layoutY="345.0" prefHeight="22.0" prefWidth="25.0" text="MM:">
+      <Label contentDisplay="CENTER" layoutX="789.0" layoutY="345.0" prefHeight="22.0" prefWidth="25.0" text="MO:">
          <font>
             <Font name="Arial" size="12.0" />
          </font>
       </Label>
       <ComboBox fx:id="startMonth" layoutX="816.0" layoutY="344.0" prefHeight="25.0" prefWidth="63.0" />
       <ComboBox fx:id="startYear" layoutX="892.0" layoutY="344.0" prefHeight="25.0" prefWidth="70.0" />
-      <ComboBox fx:id="startResWithOption" layoutX="704.0" layoutY="728.0" prefHeight="38.0" prefWidth="59.0" />
-      <Button fx:id="startReservationButton" layoutX="779.0" layoutY="728.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="187.0" text="Start Reservation &gt;" />
+      <Button fx:id="startReservationButton" layoutX="706.0" layoutY="728.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="260.0" text="Start Reservation &gt;" />
       <Label contentDisplay="CENTER" layoutX="704.0" layoutY="695.0" prefHeight="22.0" prefWidth="260.0" text="Choose option from results to continue:">
          <font>
             <Font name="Arial" size="14.0" />
          </font>
       </Label>
-      <ComboBox fx:id="seeDetailsForOption" layoutX="471.0" layoutY="459.0" prefHeight="38.0" prefWidth="59.0" />
       <TableView fx:id="searchResults" layoutX="33.0" layoutY="168.0" prefHeight="268.0" prefWidth="634.0" />
       <TableView fx:id="searchResultDetails" layoutX="33.0" layoutY="512.0" prefHeight="256.0" prefWidth="634.0" />
    </children>

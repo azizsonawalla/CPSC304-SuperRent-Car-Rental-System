@@ -9,6 +9,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import model.Entities.Reservation;
 import model.Entities.TimePeriod;
+import model.Orchestrator.VTSearchResult;
 import model.Util.Log;
 
 import java.net.URL;
@@ -28,16 +29,15 @@ public class clerkCarSearch extends carSearch {
         super.startReservation = () -> {
             try {
                 lock.lock();
-                int optionSelected;
-                try {
-                    optionSelected = seeDetailsForOption.getValue()-1;
-                } catch (Exception e) {
+                SearchResult sr = searchResults.getSelectionModel().getSelectedItem();
+                if (sr == null) {
                     showError("There is no option selected to start reservation for");
                     return;
                 }
+                VTSearchResult vt = sr.vtResult;
                 Reservation res = new Reservation();
-                res.location = currentResults.get(optionSelected).location;
-                res.vtName = currentResults.get(optionSelected).vt.vtname;
+                res.location = vt.location;
+                res.vtName = vt.vt.vtname;
                 res.timePeriod = getCurrentTimePeriodSelection();
                 this.main.clerkResInProgress = res;
                 this.main.switchScene(Config.CLERK_MAKE_RESERVATION);
@@ -51,8 +51,8 @@ public class clerkCarSearch extends carSearch {
         super.resetTimePeriod = () -> {
             try {
                 lock.lock();
-                List<ComboBox> allDateTimeComboBox = Arrays.asList(endDate, endMonth, endYear, endHour, endMinute, endAM);
-                List<ComboBox> allTimeComboBox = Arrays.asList(endHour, endMinute, endAM);
+                List<ComboBox> allDateTimeComboBox = Arrays.asList(endDate, endMonth, endYear, endHour, endMinute);
+                List<ComboBox> allTimeComboBox = Arrays.asList(endHour, endMinute);
 
                 for (ComboBox c: allDateTimeComboBox) c.getItems().clear();
 
@@ -61,7 +61,6 @@ public class clerkCarSearch extends carSearch {
                 endYear.getItems().addAll(YEARS);
                 endHour.getItems().addAll(HOURS);
                 endMinute.getItems().addAll(MINUTES);
-                endAM.getItems().addAll(AMPM);
 
                 for (ComboBox c: allTimeComboBox) c.setValue(c.getItems().get(0));
                 Date tomorrow = new Date(System.currentTimeMillis() + 24*60*60*1000);

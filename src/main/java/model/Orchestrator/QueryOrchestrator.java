@@ -41,7 +41,6 @@ public class QueryOrchestrator {
      * Customer car search top table
      */
     public List<VTSearchResult> getVTSearchResultsFor(Location l, VehicleType vt, TimePeriod t) throws Exception {
-        // TODO: Filter results with 0 available out
         /*
         List<Reservation> reservations = db.getReservationsWith(t, vt, l);
          */
@@ -241,7 +240,6 @@ public class QueryOrchestrator {
         List<Reservation> reservations = db.getReservationsWith(null, null, l);
 
         List<ReturnReportEntry> returnsCreatedToday = new ArrayList<>();
-
         for (Return ret : returns) {
             for (Reservation reservation: reservations) {
                 for (Rental rental : rentals) {

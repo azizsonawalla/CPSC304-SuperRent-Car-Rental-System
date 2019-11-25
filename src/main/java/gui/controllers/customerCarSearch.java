@@ -3,6 +3,7 @@ package gui.controllers;
 import gui.Config;
 import gui.Main;
 import model.Entities.Reservation;
+import model.Entities.TimePeriod;
 import model.Orchestrator.VTSearchResult;
 import model.Util.Log;
 
@@ -21,7 +22,9 @@ public class customerCarSearch extends carSearch {
                 Reservation res = new Reservation();
                 res.location = vt.location;
                 res.vtName = vt.vt.vtname;
-                res.timePeriod = getCurrentTimePeriodSelection();
+                TimePeriod t = getCurrentTimePeriodSelection();
+                if (t == null) return;
+                res.timePeriod = t;
                 this.main.customerResInProgress = res;
                 this.main.switchScene(Config.CUSTOMER_MAKE_RES);
             } catch (Exception e) {

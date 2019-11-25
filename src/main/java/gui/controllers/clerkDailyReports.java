@@ -146,9 +146,9 @@ public class clerkDailyReports extends Controller implements Initializable {
                 byLocation.getColumns().add(column);
             }
 
-            for (Location l: rentalReport.countOfRentalsByLocation.keySet()) {
+            for (String l: rentalReport.countOfRentalsByLocation.keySet()) {
                 Integer count = rentalReport.countOfRentalsByLocation.get(l);
-                Breakdown b = new Breakdown("", l.toString(), Integer.toString(count), "");
+                Breakdown b = new Breakdown("", l, Integer.toString(count), "");
                 byLocation.getItems().add(b);
             }
             return;
@@ -219,11 +219,11 @@ public class clerkDailyReports extends Controller implements Initializable {
                 byLocation.getColumns().add(column);
             }
 
-            for (Location l: returnReport.breakDownByLocation.keySet()) {
+            for (String l: returnReport.breakDownByLocation.keySet()) {
                 Pair<Integer, Double> countRevenue = returnReport.breakDownByLocation.get(l);
                 Integer count = countRevenue.getKey();
                 Double revenue = countRevenue.getValue();
-                Breakdown b = new Breakdown("", l.toString(), Integer.toString(count), Double.toString(revenue));
+                Breakdown b = new Breakdown("", l, Integer.toString(count), Double.toString(revenue));
                 byLocation.getItems().add(b);
             }
         }

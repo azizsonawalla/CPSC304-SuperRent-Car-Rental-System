@@ -16,8 +16,8 @@
             <Font name="Arial" size="24.0" />
          </font>
       </Label>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="290.0" layoutX="33.0" layoutY="120.0" stroke="BLACK" strokeType="INSIDE" width="421.0" />
-      <Button fx:id="backToReservations" layoutX="33.0" layoutY="26.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="189.0" text="&lt; Back to Reservations" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="324.0" layoutX="33.0" layoutY="120.0" stroke="BLACK" strokeType="INSIDE" width="421.0" />
+      <Button fx:id="backToReservations" layoutX="33.0" layoutY="26.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="189.0" text="&lt; Back to Clerk Home" />
       <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="484.0" layoutY="26.0" prefHeight="61.0" prefWidth="367.0" text="SuperRent" textAlignment="RIGHT">
          <font>
             <Font name="Arial Bold" size="43.0" />
@@ -38,9 +38,9 @@
             <Font name="Arial" size="14.0" />
          </font>
       </Label>
-      <Button fx:id="submitReturn" layoutX="36.0" layoutY="630.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="260.0" text="Submit Return" />
+      <Button fx:id="submitReturn" layoutX="36.0" layoutY="666.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="260.0" text="Submit Return" />
       <Button layoutX="245.0" layoutY="26.0" mnemonicParsing="false" onAction="#switchToCustomer" prefHeight="61.0" prefWidth="211.0" text="Switch to Customer User" />
-      <Label fx:id="start" contentDisplay="CENTER" layoutX="63.0" layoutY="232.0" prefHeight="22.0" prefWidth="260.0" text="Rental Start:">
+      <Label fx:id="start" contentDisplay="CENTER" layoutX="63.0" layoutY="264.0" prefHeight="22.0" prefWidth="260.0" text="Rental Start:">
          <font>
             <Font name="Arial" size="14.0" />
          </font>
@@ -60,7 +60,7 @@
             <Font name="Arial" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="end" contentDisplay="CENTER" layoutX="63.0" layoutY="264.0" prefHeight="22.0" prefWidth="260.0" text="Rental End: ">
+      <Label fx:id="end" contentDisplay="CENTER" layoutX="63.0" layoutY="296.0" prefHeight="22.0" prefWidth="260.0" text="Rental End: ">
          <font>
             <Font name="Arial" size="14.0" />
          </font>
@@ -80,38 +80,38 @@
             <Font name="Arial" size="14.0" />
          </font>
       </Label>
-      <Label contentDisplay="RIGHT" layoutX="36.0" layoutY="434.0" prefHeight="31.0" prefWidth="421.0" text="Enter return information:" textAlignment="RIGHT">
+      <Label contentDisplay="RIGHT" layoutX="36.0" layoutY="470.0" prefHeight="31.0" prefWidth="421.0" text="Enter return information:" textAlignment="RIGHT">
          <font>
             <Font name="Arial" size="24.0" />
          </font>
       </Label>
-      <Label contentDisplay="CENTER" layoutX="36.0" layoutY="478.0" prefHeight="22.0" prefWidth="260.0" text="Start odometer reading:">
+      <Label contentDisplay="CENTER" layoutX="36.0" layoutY="514.0" prefHeight="22.0" prefWidth="260.0" text="Start odometer reading:">
          <font>
             <Font name="Arial" size="14.0" />
          </font>
       </Label>
-      <TextField fx:id="endOdometer" layoutX="36.0" layoutY="535.0" prefHeight="25.0" prefWidth="293.0" promptText="Integer value. Must be larger than starting reading" />
-      <Label fx:id="result" contentDisplay="CENTER" layoutX="36.0" layoutY="704.0" prefHeight="22.0" prefWidth="481.0" text="Success! / Error!">
+      <TextField fx:id="endOdometer" layoutX="36.0" layoutY="571.0" prefHeight="25.0" prefWidth="293.0" promptText="Integer value. Must be larger than starting reading" />
+      <Label fx:id="result" contentDisplay="CENTER" layoutX="36.0" layoutY="740.0" prefHeight="22.0" prefWidth="481.0" text="Success! / Error!">
          <font>
             <Font name="Arial" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="name" contentDisplay="CENTER" layoutX="63.0" layoutY="295.0" prefHeight="22.0" prefWidth="260.0" text="Customer Name:">
+      <Label fx:id="name" contentDisplay="CENTER" layoutX="63.0" layoutY="327.0" prefHeight="22.0" prefWidth="260.0" text="Customer Name:">
          <font>
             <Font name="Arial" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="dlicense" contentDisplay="CENTER" layoutX="63.0" layoutY="327.0" prefHeight="22.0" prefWidth="260.0" text="Customer license number:">
+      <Label fx:id="dlicense" contentDisplay="CENTER" layoutX="63.0" layoutY="359.0" prefHeight="22.0" prefWidth="260.0" text="Customer license number:">
          <font>
             <Font name="Arial" size="14.0" />
          </font>
       </Label>
-      <Label contentDisplay="CENTER" layoutX="36.0" layoutY="504.0" prefHeight="22.0" prefWidth="260.0" text="Enter current odometer reading:">
+      <Label contentDisplay="CENTER" layoutX="36.0" layoutY="540.0" prefHeight="22.0" prefWidth="260.0" text="Enter current odometer reading:">
          <font>
             <Font name="Arial" size="14.0" />
          </font>
       </Label>
-      <CheckBox fx:id="tankFull" layoutX="36.0" layoutY="581.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="121.0" text="Tank is full" />
+      <CheckBox fx:id="tankFull" layoutX="36.0" layoutY="617.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="121.0" text="Tank is full" />
       <Label fx:id="km" contentDisplay="CENTER" layoutX="571.0" layoutY="422.0" prefHeight="22.0" prefWidth="371.0" text="Total KM over limit (KM) = ">
          <font>
             <Font name="Arial" size="14.0" />
@@ -142,13 +142,18 @@
             <Font name="Arial" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="startOdometer" contentDisplay="CENTER" layoutX="63.0" layoutY="358.0" prefHeight="22.0" prefWidth="260.0" text="Start odometer:">
+      <Label fx:id="startOdometer" contentDisplay="CENTER" layoutX="63.0" layoutY="390.0" prefHeight="22.0" prefWidth="260.0" text="Start odometer:">
          <font>
             <Font name="Arial" size="14.0" />
          </font>
       </Label>
-      <Button fx:id="refreshCost" layoutX="343.0" layoutY="530.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="109.0" text="Refresh Cost" />
-      <Label fx:id="invalidOdometer" contentDisplay="CENTER" layoutX="343.0" layoutY="579.0" prefHeight="22.0" prefWidth="109.0" text="Invalid value" textFill="RED">
+      <Button fx:id="refreshCost" layoutX="343.0" layoutY="566.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="109.0" text="Refresh Cost" />
+      <Label fx:id="invalidOdometer" contentDisplay="CENTER" layoutX="343.0" layoutY="615.0" prefHeight="22.0" prefWidth="109.0" text="Invalid value" textFill="RED">
+         <font>
+            <Font name="Arial" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="resNumber" contentDisplay="CENTER" layoutX="63.0" layoutY="230.0" prefHeight="22.0" prefWidth="321.0" text="Reservation Number:">
          <font>
             <Font name="Arial" size="14.0" />
          </font>

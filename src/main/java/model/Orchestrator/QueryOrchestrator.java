@@ -202,7 +202,7 @@ public class QueryOrchestrator {
         });
 
         Map<String, Integer> countOfRentalsByVT = new HashMap<>();
-        Map<Location, Integer> countOfRentalsByLocation = new HashMap<>();
+        Map<String, Integer> countOfRentalsByLocation = new HashMap<>();
         for (Pair<Reservation, Rental> RR : rentalsStartedToday){
             if (countOfRentalsByVT.get(RR.getKey().vtName) != null) {
                 countOfRentalsByVT.put(RR.getKey().vtName , countOfRentalsByVT.get(RR.getKey().vtName) + 1);
@@ -210,11 +210,11 @@ public class QueryOrchestrator {
                 countOfRentalsByVT.put(RR.getKey().vtName , 1);
             }
 
-            if (countOfRentalsByLocation.get(new Location(RR.getKey().location.city, RR.getKey().location.location)) != null) {
-                countOfRentalsByLocation.put(new Location(RR.getKey().location.city, RR.getKey().location.location),
-                        countOfRentalsByLocation.get(new Location(RR.getKey().location.city, RR.getKey().location.location)) + 1);
+            if (countOfRentalsByLocation.get(RR.getKey().location.toString()) != null) {
+                countOfRentalsByLocation.put(RR.getKey().location.toString(),
+                        countOfRentalsByLocation.get(RR.getKey().location.toString()) + 1);
             } else {
-                countOfRentalsByLocation.put(new Location(RR.getKey().location.city, RR.getKey().location.location), 1);
+                countOfRentalsByLocation.put(RR.getKey().location.toString(), 1);
             }
         }
 
@@ -262,7 +262,7 @@ public class QueryOrchestrator {
         });
 
         Map<String, Pair<Integer, Double>> breakDownByVT = new HashMap<>();
-        Map<Location, Pair<Integer, Double>> breakDownByLocation = new HashMap<>();
+        Map<String, Pair<Integer, Double>> breakDownByLocation = new HashMap<>();
         Double totalReturnsRevenueToday = (double)0;
 
         for (ReturnReportEntry rre: returnsCreatedToday) {
@@ -276,11 +276,11 @@ public class QueryOrchestrator {
                 breakDownByVT.put(vtname, new Pair<>(1, rre.ret.cost));
             }
 
-            Location location = new Location(rre.res.location.city, rre.res.location.location);
+            String location = rre.res.location.toString();
             Pair<Integer, Double> value1 = breakDownByLocation.get(location);
             if (value1 != null) {
-                Integer i = value.getKey() + 1;
-                Double d = value.getValue() + rre.ret.cost;
+                Integer i = value1.getKey() + 1;
+                Double d = value1.getValue() + rre.ret.cost;
                 breakDownByLocation.put(location, new Pair<>(i, d));
             } else {
                 breakDownByLocation.put(location, new Pair<>(1, rre.ret.cost));

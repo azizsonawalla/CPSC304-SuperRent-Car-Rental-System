@@ -367,6 +367,13 @@ public class Database {
         //commit changes (automatic) and close prepared statement
         ps.close();
 
+        // Mark car as taken
+        Vehicle v = new Vehicle();
+        v.vlicense = r.vlicense;
+        v = getVehicleMatching(v);
+        v.status = Vehicle.VehicleStatus.RENTED;
+        updateVehicle(v);
+
         //Log.log("Rental with rent id " + r.rid + " successfully added");
         return r;
 

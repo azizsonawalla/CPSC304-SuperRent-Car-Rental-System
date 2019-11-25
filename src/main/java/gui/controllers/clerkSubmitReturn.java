@@ -26,7 +26,7 @@ public class clerkSubmitReturn extends Controller implements Initializable {
     private double currentCalculatedCost;
 
     @FXML private Button backToReservations, refreshCost, submitReturn;
-    @FXML private Label invalidOdometer, rentalNumber, start, end, name, dlicense, startOdometer, result, vtname, w, wr, d, dr, h, hr, kmLimit, km, kmr, tc;
+    @FXML private Label invalidOdometer, rentalNumber, resNumber, start, end, name, dlicense, startOdometer, result, vtname, w, wr, d, dr, h, hr, kmLimit, km, kmr, tc;
     @FXML private TextField endOdometer;
     @FXML private CheckBox tankFull;
 
@@ -92,6 +92,7 @@ public class clerkSubmitReturn extends Controller implements Initializable {
         if (rental == null) return;
 
         rentalNumber.setText(String.format("Rental Number: %d", rental.rid));
+        resNumber.setText(String.format("Reservation Number: %d", rental.confNo));
         start.setText(String.format("Start: %s", t.getStartAsTimeDateString()));
         end.setText(String.format("End: %s (Now)", t.getEndAsTimeDateString()));
         name.setText(String.format("Customer Name: %s", customer.name));

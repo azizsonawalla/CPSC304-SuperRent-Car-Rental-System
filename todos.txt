@@ -1,3 +1,4 @@
 // TODO: Fill up the readme
 
 // TODO: Show error at beginning if screen size of device is too small
+

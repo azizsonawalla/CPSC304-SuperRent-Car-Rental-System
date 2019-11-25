@@ -158,7 +158,7 @@ public class Queries {
         public static String GET_RESERVATIONS_WITH =
                 "SELECT * " +
                         "FROM Reservations " +
-                        "WHERE ((R.fromDateTime <= ? AND R.toDateTime > ?) OR (R.toDateTime >= ? AND R.fromDateTime < ?)) " +
+                        "WHERE (? <= R.toDateTime) AND (? >= R.fromDateTime) " +
                         "AND R.vtName = ? AND R.location = ? AND R.city = ?";
 
     }
@@ -221,7 +221,7 @@ public class Queries {
         public static String GET_RENTALS_WITH =
                 "SELECT * " +
                         "FROM Rent R, Reservations V " +
-                        "WHERE R.confNo = V.confNo AND ((R.fromDateTime <= ? AND R.toDateTime > ?) OR (R.toDateTime >= ? AND R.toDateTime < ?)) " +
+                        "WHERE R.confNo = V.confNo AND (? <= R.toDateTime) AND (? >= R.fromDateTime) " +
                         "AND V.vtName = ? AND V.location = ? AND V.city = ?";
 
         }

@@ -181,17 +181,13 @@ public class Database {
         //marker to indicate if a condition has been added to the WHERE clause (and if AND needs to be used)
         boolean marker = false;
 
-        //TODO: move this query to Util.Queries
         if (t == null && vt == null && l == null){
             //If no filters are provided, return all the results
             query = "SELECT * FROM Reservations";
         } else {
             query = "SELECT * FROM Reservations R WHERE ";
             if (t != null) {
-                //Given start time (from t) is at the same time or after R.startDateAndTime AND is before R.endDateAndTime
-                //Given end time (from t) is at the same time before R.endDateAndTime AND is after R.startDateAndTime
-                query += "((R.fromDateTime <= ? AND R.toDateTime > ?) OR " +
-                        "(R.toDateTime >= ? AND R.fromDateTime < ?)) ";
+                query += "(? <= R.toDateTime) AND (? >= R.fromDateTime) ";
                 marker = true;
             } if (vt != null) {
                 query += marker? "AND R.vtname = '" + vt.vtname + "' " :
@@ -206,10 +202,11 @@ public class Database {
         //Insert Timestamp values to prepared statement
         if (t != null){
             ps.setTimestamp(1, t.startDateAndTime);
-            ps.setTimestamp(2, t.startDateAndTime);
-            ps.setTimestamp(3, t.endDateAndTime);
-            ps.setTimestamp(4, t.endDateAndTime);
+            ps.setTimestamp(2, t.endDateAndTime);
+            //ps.setTimestamp(3, t.endDateAndTime);
+            //ps.setTimestamp(4, t.endDateAndTime);
         }
+        System.out.println(ps.toString());
         ResultSet rs = ps.executeQuery();
 
         List<Reservation> r = new ArrayList<>();
@@ -447,8 +444,7 @@ public class Database {
             if (t != null) {
                 //Given start time (from t) is at the same time or after R.startDateAndTime AND is before R.endDateAndTime
                 //Given end time (from t) is at the same time before R.endDateAndTime AND is after R.startDateAndTime
-                query += "((R.fromDateTime <= ? AND R.toDateTime > ?) OR " +
-                        "(R.toDateTime >= ? AND R.toDateTime < ?)) ";
+                query += "(? <= R.toDateTime) AND (? >= R.fromDateTime) ";
                 marker = true;
             } if (vt != null) {
                 query += marker? "AND V.vtName = '" + vt.vtname + "' " :
@@ -463,9 +459,7 @@ public class Database {
         //Insert Timestamp values to prepared statement
         if (t != null){
             ps.setTimestamp(1, t.startDateAndTime);
-            ps.setTimestamp(2, t.startDateAndTime);
-            ps.setTimestamp(3, t.endDateAndTime);
-            ps.setTimestamp(4, t.endDateAndTime);
+            ps.setTimestamp(2, t.endDateAndTime);
         }
         ResultSet rs = ps.executeQuery();
 

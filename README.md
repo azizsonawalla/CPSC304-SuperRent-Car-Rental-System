@@ -100,7 +100,7 @@ You'll also notice that the customer gets back their reservation confirmation nu
 ### Clerk:
 When the GUI launches, it automatically goes into the Customer view. To change to the Clerk view, you have to on the Clerk View
 
-![Diagram 4](./pictures/pic4.png "To Move to Clerk View Click Here")\TODO Change
+![Diagram 4](./pictures/pic4.png "To Move to Clerk View Click Here")
 
  This is the screen that the clerk gets. It is split into a section for the ongoing reservations, which includes every Reservation with an end date in the future,
  and a car that has not been picked up yet. And another section which is ongoing rentals, which includes all the cars that have been rented out but not yet returned.

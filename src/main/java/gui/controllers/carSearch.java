@@ -207,8 +207,8 @@ public class carSearch extends Controller implements Initializable {
                 currentResults = t == null ? new ArrayList<>() : qo.getVTSearchResultsFor(l, vt, t);
 
                 if (currentResults.size() > 0) {
-                    List<String> columnHeaders = Arrays.asList("Option No.", "Vehicle Type", "Features", "Current Location", "No. Avail.", "$/week", "$/day", "$/hr", "$/km", "$ ins./week", "$ ins./day", "$ ins./hour");
-                    List<String> propertyName = Arrays.asList("option", "vtName", "features", "location", "numAvail", "wrate", "drate", "hrate", "krate", "wirate", "dirate", "hirate");
+                    List<String> columnHeaders = Arrays.asList("Vehicle Type", "Features", "Current Location", "No. Avail.", "$/week", "$/day", "$/hr", "$/km", "$ ins./week", "$ ins./day", "$ ins./hour");
+                    List<String> propertyName = Arrays.asList("vtName", "features", "location", "numAvail", "wrate", "drate", "hrate", "krate", "wirate", "dirate", "hirate");
                     for (int i = 0; i < columnHeaders.size(); i++) {
                         TableColumn<SearchResult, String> column = new TableColumn<>(columnHeaders.get(i));
                         column.setCellValueFactory(new PropertyValueFactory<>(propertyName.get(i)));

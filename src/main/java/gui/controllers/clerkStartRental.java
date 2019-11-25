@@ -75,7 +75,7 @@ public class clerkStartRental extends Controller implements Initializable {
         }
 
         vehicleType.setText(String.format("Vehicle Type: %s", res.vtName));
-        start.setText(String.format("Start: %s (Now)", res.timePeriod.getStartAsTimeDateString()));
+        start.setText(String.format("Start: %s (Now)", TimePeriod.getTimestampAsTimeDateString(new Timestamp(System.currentTimeMillis()))));
         end.setText(String.format("End: %s", res.timePeriod.getEndAsTimeDateString()));
         name.setText(String.format("Customer Name: %s", c.name));
         dlicense.setText(String.format("Customer License: %s", c.dlicense));

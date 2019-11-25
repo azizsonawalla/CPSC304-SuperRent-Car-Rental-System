@@ -1136,7 +1136,8 @@ public class Database {
     }
 
     public Vehicle getVehicleMatching(Vehicle v) throws Exception {
-        PreparedStatement ps = conn.prepareStatement("SELECT * FROM Vehicle WHERE vLicense = '" + v.vlicense + "'");
+        PreparedStatement ps = conn.prepareStatement(Queries.Vehicle.GET_VEHICLE);
+        ps.setString(1, v.vlicense);
         ResultSet rs = ps.executeQuery();
 
         if (!rs.next()) {

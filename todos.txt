@@ -1,14 +1,3 @@
 // TODO: Fill up the readme
 
 // TODO: Show error at beginning if screen size of device is too small
-
-Bugs George found
-
-//TODO: Option selector in car search should be the same
-
-
-// Clerk Car Search
-
-// TODO: Add to error messages "what to do"
-
-// TODO: Bug in make res with new customer

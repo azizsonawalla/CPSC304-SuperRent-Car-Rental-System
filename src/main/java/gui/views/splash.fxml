@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label alignment="CENTER" contentDisplay="RIGHT" layoutX="48.0" layoutY="253.0" prefHeight="98.0" prefWidth="905.0" text="SuperRent" textAlignment="RIGHT">
+      <Label alignment="CENTER" contentDisplay="RIGHT" layoutX="48.0" layoutY="320.0" prefHeight="98.0" prefWidth="905.0" text="SuperRent" textAlignment="RIGHT">
          <font>
             <Font name="Arial Bold" size="86.0" />
          </font>
       </Label>
-      <Label alignment="CENTER" layoutX="157.0" layoutY="387.0" prefHeight="27.0" prefWidth="689.0" text="A cloud-connected car rental management system">
+      <Label alignment="CENTER" layoutX="157.0" layoutY="454.0" prefHeight="27.0" prefWidth="689.0" text="A cloud-connected car rental management system">
          <font>
             <Font name="Arial" size="24.0" />
          </font>
       </Label>
-      <ProgressIndicator layoutX="474.0" layoutY="509.0" />
    </children>
 </AnchorPane>

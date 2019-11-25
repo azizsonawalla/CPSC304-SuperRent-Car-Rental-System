@@ -9,7 +9,6 @@ import javafx.scene.control.Alert;
 import model.Orchestrator.QueryOrchestrator;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public abstract class Controller {
@@ -25,7 +24,6 @@ public abstract class Controller {
     List<Integer> YEARS = new ArrayList<>();
     List<Integer> HOURS = new ArrayList<>();
     List<Integer> MINUTES = new ArrayList<>();
-    List<String> AMPM = Arrays.asList("AM", "PM");
 
     Controller(Main main) {
         this.main = main;
@@ -44,7 +42,7 @@ public abstract class Controller {
         for (int i = 1; i <= 31; i++) DATES.add(i);
         for (int i = 1; i <= 12; i++) MONTHS.add(i);
         for (int i = 2019; i <= 2025; i++) YEARS.add(i);
-        for (int i = 1; i <= 12; i++) HOURS.add(i);
+        for (int i = 0; i <= 23; i++) HOURS.add(i);
         for (int i = 0; i <= 59; i++) MINUTES.add(i);
     }
 

@@ -9,6 +9,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import model.Entities.Reservation;
 import model.Entities.TimePeriod;
+import model.Orchestrator.VTSearchResult;
 import model.Util.Log;
 
 import java.net.URL;
@@ -28,16 +29,15 @@ public class clerkCarSearch extends carSearch {
         super.startReservation = () -> {
             try {
                 lock.lock();
-                int optionSelected;
-                try {
-                    optionSelected = seeDetailsForOption.getValue()-1;
-                } catch (Exception e) {
+                SearchResult sr = searchResults.getSelectionModel().getSelectedItem();
+                if (sr == null) {
                     showError("There is no option selected to start reservation for");
                     return;
                 }
+                VTSearchResult vt = sr.vtResult;
                 Reservation res = new Reservation();
-                res.location = currentResults.get(optionSelected).location;
-                res.vtName = currentResults.get(optionSelected).vt.vtname;
+                res.location = vt.location;
+                res.vtName = vt.vt.vtname;
                 res.timePeriod = getCurrentTimePeriodSelection();
                 this.main.clerkResInProgress = res;
                 this.main.switchScene(Config.CLERK_MAKE_RESERVATION);

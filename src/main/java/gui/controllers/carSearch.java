@@ -22,10 +22,11 @@ public class carSearch extends Controller implements Initializable {
     List<VTSearchResult> currentResults;
     Lock lock = new ReentrantLock();
 
-    private @FXML TableView searchResults, searchResultDetails;
+    @FXML TableView<SearchResult> searchResults;
+    private @FXML TableView searchResultDetails;
     private @FXML Button searchButton, startReservationButton;
     protected @FXML ComboBox<String> branchSelector, vtSelector;
-    protected @FXML ComboBox<Integer> startResWithOption, seeDetailsForOption, startDate, endDate, startMonth,
+    protected @FXML ComboBox<Integer> startDate, endDate, startMonth,
             endMonth, startYear, endYear, startHour, startMinute, endHour, endMinute;
 
     public carSearch(Main main) {
@@ -35,7 +36,7 @@ public class carSearch extends Controller implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         refreshAll();
         searchButton.setOnAction(event -> Platform.runLater(refreshVehicleTypeSearchResultTable));
-        seeDetailsForOption.setOnAction(event -> Platform.runLater(showVehicleDetails));
+        searchResults.getSelectionModel().selectedItemProperty().addListener(event -> Platform.runLater(showVehicleDetails));
         startReservationButton.setOnAction(event -> Platform.runLater(startReservation));
     }
 
@@ -200,9 +201,6 @@ public class carSearch extends Controller implements Initializable {
                 searchResults.getItems().clear();
                 searchResults.getColumns().clear();
 
-                startResWithOption.getItems().clear();
-                seeDetailsForOption.getItems().clear();
-
                 Location l = getCurrentLocationSelection();
                 VehicleType vt = getCurrentVTSelection();
                 TimePeriod t = getCurrentTimePeriodSelection();
@@ -212,7 +210,7 @@ public class carSearch extends Controller implements Initializable {
                     List<String> columnHeaders = Arrays.asList("Option No.", "Vehicle Type", "Features", "Current Location", "No. Avail.", "$/week", "$/day", "$/hr", "$/km", "$ ins./week", "$ ins./day", "$ ins./hour");
                     List<String> propertyName = Arrays.asList("option", "vtName", "features", "location", "numAvail", "wrate", "drate", "hrate", "krate", "wirate", "dirate", "hirate");
                     for (int i = 0; i < columnHeaders.size(); i++) {
-                        TableColumn<String, SearchResult> column = new TableColumn<>(columnHeaders.get(i));
+                        TableColumn<SearchResult, String> column = new TableColumn<>(columnHeaders.get(i));
                         column.setCellValueFactory(new PropertyValueFactory<>(propertyName.get(i)));
                         searchResults.getColumns().add(column);
                     }
@@ -220,16 +218,10 @@ public class carSearch extends Controller implements Initializable {
                     // Add items
                     int count = 1;
                     for (VTSearchResult r: currentResults) {
-                        SearchResult entry = new SearchResult(count, r.vt, r.location.toString(), r.numAvail);
+                        SearchResult entry = new SearchResult(count, r.vt, r.location.toString(), r.numAvail, r);
                         searchResults.getItems().add(entry);
                         count++;
                     }
-                    for (int i = 1; i <= currentResults.size(); i++) {
-                        seeDetailsForOption.getItems().add(i);
-                        startResWithOption.getItems().add(i);
-                    }
-                    seeDetailsForOption.setValue(1);
-                    startResWithOption.setValue(1);
                     Platform.runLater(showVehicleDetails);
                 } else {
                     searchResults.setPlaceholder(new Label("No results matched your search"));
@@ -251,13 +243,12 @@ public class carSearch extends Controller implements Initializable {
             searchResultDetails.getColumns().clear();
             searchResultDetails.getItems().clear();
 
-            int optionSelected = seeDetailsForOption.getValue() - 1;
-            if (optionSelected < 0) {
-                showError("There is no option selected to show details for");
+            SearchResult sr = searchResults.getSelectionModel().getSelectedItem();
+            if (sr == null) {
+                searchResultDetails.setPlaceholder(new Text("Select option from above to see details"));
                 return;
             }
-            VTSearchResult correspondingOption = currentResults.get(optionSelected);
-            List<Vehicle> vehicles = qo.getVehiclesFor(correspondingOption);
+            List<Vehicle> vehicles = qo.getVehiclesFor(sr.vtResult);
             searchResultDetails.getItems().clear();
             if (vehicles.size() > 0) {
                 List<String> columnHeaders = Arrays.asList("Make", "Model", "Type", "Colour", "Year", "License Plate", "Current Location");
@@ -291,12 +282,14 @@ public class carSearch extends Controller implements Initializable {
         VehicleType vt;
         String location;
         String numAvail;
+        VTSearchResult vtResult;
 
-        public SearchResult(int option, VehicleType vt, String location, int numAvail) {
+        public SearchResult(int option, VehicleType vt, String location, int numAvail, VTSearchResult vtResult) {
             this.option = String.valueOf(option);
             this.vt = vt;
             this.location = location;
             this.numAvail = String.valueOf(numAvail);
+            this.vtResult = vtResult;
         }
 
         public String getOption() {

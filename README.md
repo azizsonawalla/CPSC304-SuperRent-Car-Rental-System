@@ -2,11 +2,13 @@
 
 A cloud-connected rental car management system
 
-Download the desktop application:  [Windows Executable / JAR File]()  (Windows/Mac)     # TODO: Add links to .exe and .jar
+Download the desktop application:  [Windows Executable / JAR File](SuperRentExecutableJar.zip).
 
-> NOTE! You need an internet connection to use this application since the database is hosted on the cloud.
+[Click here](#run-the-application) for instructions on how to run the executable/jar file.
 
-> NOTE! Minimum screen resolution is 1000x800.
+> **Internet Connection Required**: This application requires an internet connection to work
+
+> **Minimum screen resolution**: This application requires a minimum display resolution of 1000x800 px
 
 In this README:
 * [Run the application](#run-the-application)
@@ -20,8 +22,6 @@ In this README:
     * [UI Components.](#ui-components)
 
 * [How to use the application:](#how-to-use-the-application)
-
-    // TODO: Attach wireframe here if time permits
 
     * [Customer](#customer):
         * [View Reservation Options](#view-reservation-options)
@@ -37,13 +37,30 @@ In this README:
         * [Database connection error](#database-connection-error)
         
 ## Run the application
-### Windows:
 
+> **Internet Connection Required**: This application requires an internet connection to work
+
+> **Minimum screen resolution**: This application requires a minimum display resolution of 1000x800 px
+
+### Windows Executable:
+
+1. Download the zip file [available here](SuperRentExecutableJar.zip)
+2. Extract the contents and make sure to keep all the contents in the same folder
+3. Double-click the .exe file to launch the application
 
 ### JAR:
 
+1. Download the zip file [available here](SuperRentExecutableJar.zip)
+2. Extract the contents and make sure to keep all the contents in the same folder
+3. Open the JAR using JRE 8. Other versions of the JRE will not work!
 
 ### IntelliJ:
+
+1. Clone this project
+2. Open the project using IntelliJ IDEA
+3. Install the IDEA Maven Plugin and Maven Integration Plugin if you don't already have them
+4. Right-click on the pom.xml file, click on 'Maven', and click on 'Re-import'
+5. Run the main method in src/java/gui/Main.java
 
 
 ## Where to find in the code

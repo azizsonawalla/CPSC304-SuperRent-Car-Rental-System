@@ -169,6 +169,30 @@ public class Database {
         else Log.log("Reservation with confirmation number " + Integer.toString(r.confNum) + " successfully deleted");
     }
 
+    public List<Reservation> getNoReturnReservationsWith(TimePeriod t, VehicleType vt, Location l) throws Exception {
+        List<Reservation> allMatching = getReservationsWith(t, vt, l);
+        List<Rental> rentals = getRentalsWith(null, null, null);
+        List<Return> returns = getReturnsWith(null, null, null);
+        List<Reservation> filtered = new ArrayList<>();
+
+        for (Reservation res: allMatching) {
+            boolean hasReturn = false;
+            for (Rental ren: rentals) {
+                if (res.confNum == ren.confNo) {
+                    for(Return ret: returns) {
+                        if (ret.rid == ren.rid) {
+                            hasReturn = true;
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+            if (!hasReturn) filtered.add(res);
+        }
+        return filtered;
+    }
+
     /**
      * Returns all reservations with the given VehicleType, Location and that *start within* the given TimePeriod
      * Params can be null - if param is null, results will not be filtered by that attribute. If all params are null,

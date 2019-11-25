@@ -56,7 +56,7 @@ public class QueryOrchestrator {
 
         //List of VTSearchResult
         List<VTSearchResult> vtSearchResults = db.getVTSearchResultsForHelper(l, vt);
-        List<Reservation> reservations = db.getReservationsWith(t, vt, l);
+        List<Reservation> reservations = db.getNoReturnReservationsWith(t, vt, l);
 
         for (Reservation r : reservations) {
             for (VTSearchResult vtSearchResult : vtSearchResults) {

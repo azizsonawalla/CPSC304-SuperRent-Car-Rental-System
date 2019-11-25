@@ -57,7 +57,7 @@ In this README:
 
 ### UI Components
 
-[Click Here](./src/main/java/gui) We used JavaFx, the fxml files are in [views](./src/main/java/gui/views), while the UI components 
+[Click Here.](./src/main/java/gui) We used JavaFx, the fxml files are in [views](./src/main/java/gui/views), while the UI components 
 are in [controllers](./src/main/java/gui/controllers).
 
 ## How to use the application

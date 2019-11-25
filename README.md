@@ -48,14 +48,17 @@ In this README:
 
 ## How to use the application
 #### Customer:
-* View the number of available cars for a given car type/location/time:
+
+##### View Reservation Options
+View the number of available cars for a given car type/location/time:
 You must indicate the time period that you are interested in, and then you can use the drop down lists to refine the search
 results. You can choose a specific car type, and a location.
 
-![Diagram 1](./pictures/pic1.png "AnyBranch, AnyType, Customer Find Car")
+![Diagram 1](./pictures/pic1.png "AnyBranch, AnyType, Customer Find Car") \TODO Change
 
-![Diagram 2](./pictures/pic2.png "Customer Finds CarType, Looks at Car and then Chooses to Reserve")
+![Diagram 2](./pictures/pic2.png "Customer Finds CarType, Looks at Car and then Chooses to Reserve")\TODO Change
 
+##### Reservations
 After choosing the car, the customer clicks on Start Reservation, and then they are moved to the next window where they can enter their info
 
 ![Diagram 3](./pictures/pic3.png "Customer Reserves, if Exisitng, it auto-fills the fields")
@@ -66,13 +69,14 @@ You'll also notice that the customer gets back their reservation confirmation nu
 #### Clerk:
 When the GUI launches, it automatically goes into the Customer view. To change to the Clerk view, you have to on the Clerk View
 
-![Diagram 4](./pictures/pic4.png "To Move to Clerk View Click Here")
+![Diagram 4](./pictures/pic4.png "To Move to Clerk View Click Here")\TODO Change
 
  This is the screen that the clerk gets. It is split into a section for the ongoing reservations, which includes every Reservation with an end date in the future,
  and a car that has not been picked up yet. And another section which is ongoing rentals, which includes all the cars that have been rented out but not yet returned.
  
  ![Diagram 5](./pictures/pic5.png "Clerk View")
  
+##### Reservations
  To start a rental without a reservation , the clerk clicks on Start Rental Without Reservation
  
  ![Diagram 6](./pictures/pic6.png "Start without Reservation ")
@@ -82,5 +86,21 @@ This will take them to a Reservation screen similar to the one that the customer
  information of the customer.
  
  ![Diagram 7](./pictures/pic7.png "Clerk View")
-
-If the Reservation did exis
+ 
+ ##### Rentals
+If there was an open Reservation that we needed to start, then the clerk can either find it through filtering based on 
+the confirmation number, or the drivers license. When the clerk clicks on Start Rental For This Reservation, they are
+ Taken to the following screen where they have to add the Credit Card information. 
+ 
+  ![Diagram 7](./pictures/pic8.png "Add Card")
+  
+ Note that the car is chosen at random from the available cars in that branch matching the same data type as the one in the reservation
+ 
+ ##### Returns
+ After the rental is added, it can be found in the Ongoing Rentals Table. The Clerk can select a Rental Id number to process the return of that car.
+ After they choose the number, they are taken to the page where they can process the return transaction and calculate the price of that rental.
+ 
+ \\insert pic here
+##### Reports
+To generate Reports, the Clerk has to go to the Clerk view home page and click on view daily reports. From there, 
+they can chose to view either rental, or return reports. Which will be returned displayed based on the location or the vehicle type.

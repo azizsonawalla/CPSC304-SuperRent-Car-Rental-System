@@ -15,10 +15,9 @@ In this README:
     * [In IntelliJ IDE (requires Maven plugin)](#intellij)
 
 * [Where to find in the code:](#where-to-find-in-the-code)
-    * [All the SQL queries](./src/main/java/model/Queries.java) 
-    * [Establishing connection to DB and JDBC calls](./src/main/java/model/Database.java)
-    * [UI Components.](./src/main/java/gui) We used JavaFx, the fxml files are in [views](./src/main/java/gui/views), 
-    while the UI components are in [controllers](./src/main/java/gui/controllers).
+    * [All the SQL queries](#all-the-sql-queries) 
+    * [Establishing connection to DB and JDBC calls](#establishing-connection-to-db-and-jdbc-calls)
+    * [UI Components.](#ui-components)
 
 * [How to use the application:](#how-to-use-the-application)
 
@@ -48,6 +47,15 @@ In this README:
 
 
 ## Where to find in the code
+###All the SQL queries
+[Click Here](./src/main/java/model/Queries.java) 
+
+###Establishing connection to DB and JDBC calls
+[Click Here](./src/main/java/model/Database.java)
+
+###UI Components
+[Click Here](./src/main/java/gui) We used JavaFx, the fxml files are in [views](./src/main/java/gui/views), while the UI components 
+are in [controllers](./src/main/java/gui/controllers).
 
 ## How to use the application
 ### Customer:

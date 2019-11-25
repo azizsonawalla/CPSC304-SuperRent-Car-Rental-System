@@ -38,7 +38,9 @@ public class clerkCarSearch extends carSearch {
                 Reservation res = new Reservation();
                 res.location = vt.location;
                 res.vtName = vt.vt.vtname;
-                res.timePeriod = getCurrentTimePeriodSelection();
+                TimePeriod t = getCurrentTimePeriodSelection();
+                if (t == null) return;
+                res.timePeriod = t;
                 this.main.clerkResInProgress = res;
                 this.main.switchScene(Config.CLERK_MAKE_RESERVATION);
             } catch (Exception e) {
